@@ -1,16 +1,24 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.5.2 → 1.5.3 (Project identity addition)
+Version change: 1.5.3 → 1.6.0 (Workspace structure redesign)
 
-Modified principles: None
+Modified sections:
+- State Storage: Complete redesign of directory structure
 
-Added sections:
-- Project Identity section (domain, GitHub org, naming)
+Key changes:
+- Bare clones moved from `.foundagent/repos/` to `repos/.bare/`
+- Worktrees moved from `.foundagent/worktrees/` to `repos/worktrees/<repo>/<branch>/`
+- Hierarchy changed from branch→repo to repo→branch
+- Worktrees now visible (not hidden in `.foundagent/`)
+- Config remains at root as `.foundagent.yaml`
+- State remains at `.foundagent/state.json`
 
-Removed sections: None
-
-Templates requiring updates: None
+Specs updated:
+- 001-workspace-init: FR-014, FR-015, FR-016 added for repos structure
+- 002-repo-add: FR-001, FR-005, FR-020 updated with new paths
+- 003-workspace-config: Removed worktree_dir setting (now fixed), added structure diagram
+- 004-worktree-create: FR-011, FR-028 updated with exact paths
 
 Follow-up TODOs: None
 -->
@@ -32,7 +40,6 @@ Follow-up TODOs: None
 **Domain Usage**:
 - `foundagent.dev` — Documentation site (when deployed)
 - `foundagent.dev/docs` — Full documentation
-- `foundagent.dev/install` — Installation instructions (optional redirect)
 
 ## Core Principles
 
@@ -301,27 +308,41 @@ produce clear error messages with line numbers and remediation hints.
 
 ### State Storage
 
-Foundagent state lives **per-workspace** in a `.foundagent/` directory:
+Foundagent state lives **per-workspace** with a clear separation between user-facing files and machine-managed state:
 
 ```
-workspace-root/
-├── .foundagent/
-│   ├── config.yaml          # Workspace configuration
-│   ├── state.json           # Runtime state (worktree mappings, etc.)
-│   ├── repos/               # Bare clones for multi-repo workspaces
-│   │   ├── repo-a.git/
-│   │   └── repo-b.git/
-│   └── worktrees/           # Worktree checkouts
-│       ├── feature-123/
-│       └── bugfix-456/
-├── .foundagent.yaml         # User-facing config (can also be here)
-└── ... (user's project files)
+my-project/                           # workspace root
+├── .foundagent.yaml                  # user-editable config (source of truth)
+├── .foundagent/                      # machine-managed state only
+│   └── state.json                    # runtime state (worktree mappings, etc.)
+├── my-project.code-workspace         # VS Code multi-root workspace file
+└── repos/                            # all repository data
+    ├── .bare/                        # bare clones (hidden from casual view)
+    │   ├── api.git/
+    │   ├── web.git/
+    │   └── lib.git/
+    └── worktrees/                    # working directories (visible)
+        ├── api/                      # repo name
+        │   ├── main/                 # branch name (default branch)
+        │   └── feature-123/          # branch name (feature branch)
+        ├── web/
+        │   ├── main/
+        │   └── feature-123/
+        └── lib/
+            ├── main/
+            └── feature-123/
 ```
+
+**Structure Rationale**:
+- **Repo → Branch hierarchy**: Easier to find all branches for a given repo
+- **Visible worktrees**: Users can interact directly with working directories
+- **Hidden bare clones**: `.bare/` keeps implementation details out of sight
+- **Default branch alongside features**: No special treatment; `main` lives in `worktrees/<repo>/main/`
 
 **Benefits**:
 - State travels with the workspace (portable, version-controllable if desired)
 - No global state pollution
-- Easy cleanup: delete `.foundagent/` to reset
+- Easy cleanup: delete `repos/` to remove all clones and worktrees
 - Multi-user friendly: each clone has its own state
 
 **State File Requirements**:
@@ -380,7 +401,7 @@ All errors MUST include a code for programmatic handling:
 **Error Output Format**:
 ```
 Error E101: Worktree 'feature-123' already exists
-  Location: /path/to/workspace/.foundagent/worktrees/feature-123
+  Location: /path/to/workspace/repos/worktrees/api/feature-123
   Hint: Use 'fa worktree switch feature-123' to switch to it, or
         'fa worktree remove feature-123 --force' to remove and recreate
 ```
@@ -790,4 +811,4 @@ informal practices, chat discussions, and undocumented conventions.
 - Code reviews MUST check for principle violations
 - Deviations MUST be documented with explicit justification in the PR description
 
-**Version**: 1.5.3 | **Ratified**: 2025-12-03 | **Last Amended**: 2025-12-03
+**Version**: 1.6.0 | **Ratified**: 2025-12-03 | **Last Amended**: 2025-12-06
