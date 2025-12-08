@@ -1,24 +1,18 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.5.3 → 1.6.0 (Workspace structure redesign)
+Version change: 1.6.0 → 1.7.0 (Agent-agnostic design principle)
 
 Modified sections:
-- State Storage: Complete redesign of directory structure
+- Core Principles: Added Principle VIII (Agent-Agnostic Design)
 
 Key changes:
-- Bare clones moved from `.foundagent/repos/` to `repos/.bare/`
-- Worktrees moved from `.foundagent/worktrees/` to `repos/worktrees/<repo>/<branch>/`
-- Hierarchy changed from branch→repo to repo→branch
-- Worktrees now visible (not hidden in `.foundagent/`)
-- Config remains at root as `.foundagent.yaml`
-- State remains at `.foundagent/state.json`
+- Explicit prohibition on agent-specific commands (no fa claude-code, fa cursor, etc.)
+- Explicit prohibition on agent-specific config generation
+- Clarified VS Code workspace files are allowed as IDE infrastructure (not agent-specific)
+- Emphasized CLI + JSON as universal integration surface
 
-Specs updated:
-- 001-workspace-init: FR-014, FR-015, FR-016 added for repos structure
-- 002-repo-add: FR-001, FR-005, FR-020 updated with new paths
-- 003-workspace-config: Removed worktree_dir setting (now fixed), added structure diagram
-- 004-worktree-create: FR-011, FR-028 updated with exact paths
+Specs updated: None required (no existing specs conflict)
 
 Follow-up TODOs: None
 -->
@@ -136,6 +130,29 @@ with AI coding agents. Requirements:
 
 **Rationale**: AI agents interact through text and require predictable, parseable output.
 Designing for agent compatibility from day one avoids costly retrofitting later.
+
+### VIII. Agent-Agnostic Design
+Foundagent MUST NOT include features specific to any particular AI coding agent or IDE.
+This means:
+
+- **No agent-specific commands**: No `fa claude-code`, `fa cursor`, `fa copilot` commands
+- **No agent-specific config**: No generating `.claude/settings.json`, `.cursor/`, etc.
+- **No agent-specific integrations**: No plugins, extensions, or hooks for specific agents
+- **Universal interface**: CLI + JSON output is the integration surface for ALL agents
+
+**What IS allowed**:
+- **VS Code workspace files**: `.code-workspace` is IDE infrastructure, not agent-specific.
+  Cursor, Windsurf, and VS Code forks all read this format. However, this is a convenience
+  feature — Foundagent MUST work fully without any IDE.
+- **Generic context output**: Commands like `fa status --json` provide workspace state that
+  any agent can consume. This is agent-agnostic information sharing.
+- **Documentation for agents**: Guides on how to use Foundagent with various agents are
+  welcome in docs, but the tool itself remains neutral.
+
+**Rationale**: The AI agent landscape is rapidly evolving. Coupling to specific agents
+creates maintenance burden and limits adoption. By providing a clean CLI/JSON interface,
+Foundagent works with current and future agents without modification. Agents that can
+run shell commands and parse JSON can use Foundagent — no special integration required.
 
 ## Cross-Platform Compatibility
 
@@ -811,4 +828,4 @@ informal practices, chat discussions, and undocumented conventions.
 - Code reviews MUST check for principle violations
 - Deviations MUST be documented with explicit justification in the PR description
 
-**Version**: 1.6.0 | **Ratified**: 2025-12-03 | **Last Amended**: 2025-12-06
+**Version**: 1.7.0 | **Ratified**: 2025-12-03 | **Last Amended**: 2025-12-08
