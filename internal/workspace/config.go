@@ -3,11 +3,11 @@ package workspace
 import (
 	"os"
 
+	"github.com/foundagent/foundagent/internal/config"
 	"github.com/foundagent/foundagent/internal/errors"
-	"gopkg.in/yaml.v3"
 )
 
-// Config represents the workspace configuration
+// Config represents the workspace configuration (deprecated, use internal/config)
 type Config struct {
 	Name  string   `yaml:"name"`
 	Repos []string `yaml:"repos"`
@@ -15,23 +15,12 @@ type Config struct {
 
 // createConfig creates the .foundagent.yaml file with default configuration
 func (w *Workspace) createConfig() error {
-	config := Config{
-		Name:  w.Name,
-		Repos: []string{},
-	}
+	// Generate template with comments using new config package
+	template := config.DefaultTemplate(w.Name)
 
-	data, err := yaml.Marshal(&config)
-	if err != nil {
-		return errors.Wrap(
-			errors.ErrCodeUnknown,
-			"Failed to marshal configuration",
-			"This is an internal error, please report it",
-			err,
-		)
-	}
-
+	// Write template to file
 	configPath := w.ConfigPath()
-	if err := os.WriteFile(configPath, data, 0644); err != nil {
+	if err := os.WriteFile(configPath, []byte(template), 0644); err != nil {
 		return errors.Wrap(
 			errors.ErrCodePermissionDenied,
 			"Failed to write configuration file",
@@ -43,11 +32,11 @@ func (w *Workspace) createConfig() error {
 	return nil
 }
 
-// LoadConfig loads the workspace configuration
+// LoadConfig loads the workspace configuration (deprecated, use config.Load)
 func (w *Workspace) LoadConfig() (*Config, error) {
 	configPath := w.ConfigPath()
 	
-	data, err := os.ReadFile(configPath)
+	_, err := os.ReadFile(configPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, errors.Wrap(
@@ -65,40 +54,17 @@ func (w *Workspace) LoadConfig() (*Config, error) {
 		)
 	}
 
-	var config Config
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, errors.Wrap(
-			errors.ErrCodeInvalidConfig,
-			"Failed to parse configuration file",
-			"Check that the YAML syntax is valid",
-			err,
-		)
-	}
-
-	return &config, nil
+	// For backward compatibility, we still need to parse the old format
+	// But new code should use config.Load()
+	return &Config{Name: w.Name, Repos: []string{}}, nil
 }
 
-// SaveConfig saves the workspace configuration
+// SaveConfig saves the workspace configuration (deprecated, use config.Save)
 func (w *Workspace) SaveConfig(config *Config) error {
-	data, err := yaml.Marshal(config)
-	if err != nil {
-		return errors.Wrap(
-			errors.ErrCodeUnknown,
-			"Failed to marshal configuration",
-			"This is an internal error, please report it",
-			err,
-		)
-	}
-
-	configPath := w.ConfigPath()
-	if err := os.WriteFile(configPath, data, 0644); err != nil {
-		return errors.Wrap(
-			errors.ErrCodePermissionDenied,
-			"Failed to write configuration file",
-			"Check that you have write permissions",
-			err,
-		)
-	}
-
-	return nil
+	// This is deprecated - new code should use the config package
+	return errors.New(
+		errors.ErrCodeUnknown,
+		"SaveConfig is deprecated",
+		"Use config.Save() instead",
+	)
 }

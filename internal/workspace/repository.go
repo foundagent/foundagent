@@ -32,28 +32,6 @@ func (w *Workspace) WorktreePath(repoName, branch string) string {
 
 // AddRepository registers a repository in the workspace
 func (w *Workspace) AddRepository(repo *Repository) error {
-	// Load current config
-	config, err := w.LoadConfig()
-	if err != nil {
-		return err
-	}
-
-	// Add repo to config if not already present
-	found := false
-	for _, r := range config.Repos {
-		if r == repo.Name {
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		config.Repos = append(config.Repos, repo.Name)
-		if err := w.SaveConfig(config); err != nil {
-			return err
-		}
-	}
-
 	// Load current state
 	state, err := w.LoadState()
 	if err != nil {
