@@ -25,8 +25,8 @@
 
 **Purpose**: Verify existing infrastructure and create command skeleton
 
-- [ ] T001 Verify Cobra dependency in go.mod supports subcommands
-- [ ] T002 [P] Create init command skeleton in internal/cli/init.go
+- [X] T001 Verify Cobra dependency in go.mod supports subcommands
+- [X] T002 [P] Create init command skeleton in internal/cli/init.go
 
 ---
 
@@ -36,12 +36,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Define Workspace struct and constants in internal/workspace/workspace.go
-- [ ] T004 [P] Define default config schema (YAML structure) in internal/workspace/config.go
-- [ ] T005 [P] Define state schema (JSON structure) in internal/workspace/state.go
-- [ ] T006 Implement workspace name validation (filesystem-safe characters) in internal/workspace/validation.go
-- [ ] T007 [P] Implement VS Code workspace file template generation in internal/workspace/vscode.go
-- [ ] T008 Add `init` command to rootCmd in internal/cli/root.go
+- [X] T003 Define Workspace struct and constants in internal/workspace/workspace.go
+- [X] T004 [P] Define default config schema (YAML structure) in internal/workspace/config.go
+- [X] T005 [P] Define state schema (JSON structure) in internal/workspace/state.go
+- [X] T006 Implement workspace name validation (filesystem-safe characters) in internal/workspace/validation.go
+- [X] T007 [P] Implement VS Code workspace file template generation in internal/workspace/vscode.go
+- [X] T008 Add `init` command to rootCmd in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -55,14 +55,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Implement directory creation with specified name in internal/cli/init.go
-- [ ] T010 [US1] Create `.foundagent/` subdirectory for machine-managed state in internal/workspace/workspace.go
-- [ ] T011 [US1] Generate `.foundagent.yaml` with default config (workspace name, empty repos) in internal/workspace/config.go
-- [ ] T012 [US1] Generate `.foundagent/state.json` initialized as empty object in internal/workspace/state.go
-- [ ] T013 [US1] Create `repos/` directory structure (`repos/.bare/`, `repos/worktrees/`) in internal/workspace/workspace.go
-- [ ] T014 [US1] Generate `<name>.code-workspace` file with folders array in internal/workspace/vscode.go
-- [ ] T015 [US1] Display success message with absolute path to created workspace in internal/cli/init.go
-- [ ] T016 [US1] Implement exit code 0 on success, non-zero on failure in internal/cli/init.go
+- [X] T009 [US1] Implement directory creation with specified name in internal/cli/init.go
+- [X] T010 [US1] Create `.foundagent/` subdirectory for machine-managed state in internal/workspace/workspace.go
+- [X] T011 [US1] Generate `.foundagent.yaml` with default config (workspace name, empty repos) in internal/workspace/config.go
+- [X] T012 [US1] Generate `.foundagent/state.json` initialized as empty object in internal/workspace/state.go
+- [X] T013 [US1] Create `repos/` directory structure (`repos/.bare/`, `repos/worktrees/`) in internal/workspace/workspace.go
+- [X] T014 [US1] Generate `<name>.code-workspace` file with folders array in internal/workspace/vscode.go
+- [X] T015 [US1] Display success message with absolute path to created workspace in internal/cli/init.go
+- [X] T016 [US1] Implement exit code 0 on success, non-zero on failure in internal/cli/init.go
 
 **Checkpoint**: `fa init my-app` creates complete workspace structure
 
@@ -76,10 +76,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Add `--json` flag to init command in internal/cli/init.go
-- [ ] T018 [US2] Define JSON output schema (path, name, status) in internal/cli/init.go
-- [ ] T019 [US2] Implement JSON error output with error code, message, remediation in internal/cli/init.go
-- [ ] T020 [US2] Suppress human-readable messages when `--json` flag is set in internal/cli/init.go
+- [X] T017 [US2] Add `--json` flag to init command in internal/cli/init.go
+- [X] T018 [US2] Define JSON output schema (path, name, status) in internal/cli/init.go
+- [X] T019 [US2] Implement JSON error output with error code, message, remediation in internal/cli/init.go
+- [X] T020 [US2] Suppress human-readable messages when `--json` flag is set in internal/cli/init.go
 
 **Checkpoint**: `fa init my-app --json` produces valid, parseable JSON
 
@@ -93,11 +93,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Detect existing `.foundagent/` directory and error without `--force` in internal/cli/init.go
-- [ ] T022 [US3] Add `--force` flag to init command in internal/cli/init.go
-- [ ] T023 [US3] Implement workspace regeneration logic (recreate config, state) in internal/workspace/workspace.go
-- [ ] T024 [US3] Preserve existing `repos/` directory contents during force reinit in internal/workspace/workspace.go
-- [ ] T025 [US3] Display clear error message suggesting `--force` when workspace exists in internal/cli/init.go
+- [X] T021 [US3] Detect existing `.foundagent/` directory and error without `--force` in internal/cli/init.go
+- [X] T022 [US3] Add `--force` flag to init command in internal/cli/init.go
+- [X] T023 [US3] Implement workspace regeneration logic (recreate config, state) in internal/workspace/workspace.go
+- [X] T024 [US3] Preserve existing `repos/` directory contents during force reinit in internal/workspace/workspace.go
+- [X] T025 [US3] Display clear error message suggesting `--force` when workspace exists in internal/cli/init.go
 
 **Checkpoint**: `fa init --force` restores workspace config while preserving repos
 
@@ -107,14 +107,14 @@
 
 **Purpose**: Edge cases, validation, and final polish
 
-- [ ] T026 [P] Handle empty name argument with usage error and example in internal/cli/init.go
-- [ ] T027 [P] Handle invalid filesystem characters in name with clear error in internal/workspace/validation.go
-- [ ] T028 [P] Handle path too long error with max path info in internal/workspace/validation.go
-- [ ] T029 [P] Handle permission denied with clear message in internal/cli/init.go
-- [ ] T030 [P] Handle `.` and `..` as invalid workspace names in internal/workspace/validation.go
-- [ ] T031 [P] Trim leading/trailing spaces from name in internal/workspace/validation.go
-- [ ] T032 Add help text with examples to init command in internal/cli/init.go
-- [ ] T033 Write integration test for init command in internal/cli/init_test.go
+- [X] T026 [P] Handle empty name argument with usage error and example in internal/cli/init.go
+- [X] T027 [P] Handle invalid filesystem characters in name with clear error in internal/workspace/validation.go
+- [X] T028 [P] Handle path too long error with max path info in internal/workspace/validation.go
+- [X] T029 [P] Handle permission denied with clear message in internal/cli/init.go
+- [X] T030 [P] Handle `.` and `..` as invalid workspace names in internal/workspace/validation.go
+- [X] T031 [P] Trim leading/trailing spaces from name in internal/workspace/validation.go
+- [X] T032 Add help text with examples to init command in internal/cli/init.go
+- [X] T033 Write integration test for init command in internal/cli/init_test.go
 
 ---
 
