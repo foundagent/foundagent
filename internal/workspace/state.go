@@ -9,7 +9,7 @@ import (
 
 // State represents the workspace runtime state
 type State struct {
-	// Currently empty but will be extended in future specs
+	Repositories map[string]*Repository `json:"repositories,omitempty"`
 }
 
 // createState creates the state.json file with initial empty state

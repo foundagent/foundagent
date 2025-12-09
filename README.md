@@ -98,6 +98,28 @@ fa init my-project --force
 fa init --help
 ```
 
+### Add Repositories
+
+```bash
+# Add a single repository
+fa add git@github.com:org/my-repo.git
+
+# Add with custom name
+fa add git@github.com:org/my-repo.git api-service
+
+# Add multiple repositories in parallel
+fa add git@github.com:org/repo1.git git@github.com:org/repo2.git
+
+# Get JSON output
+fa add git@github.com:org/my-repo.git --json
+
+# Force re-clone existing repository
+fa add git@github.com:org/my-repo.git --force
+
+# View help
+fa add --help
+```
+
 ### Workspace Structure
 
 - **`.foundagent.yaml`**: User-editable YAML configuration containing workspace name and repository list
@@ -130,22 +152,27 @@ go test ./... -v
 
 ## Project Status
 
-### Implemented Features (Spec 001)
+### Implemented Features (Specs 001-002)
 
 - ✅ Workspace initialization (`fa init`)
 - ✅ JSON output mode (`--json`)
 - ✅ Force reinitialize (`--force`)
+- ✅ Add repositories (`fa add`)
+- ✅ Parallel repository cloning
+- ✅ Custom repository names
+- ✅ Automatic worktree creation for default branch
+- ✅ VS Code workspace integration
 - ✅ Comprehensive error handling with remediation hints
-- ✅ VS Code workspace file generation
 - ✅ Cross-platform filesystem validation
 
 ### Planned Features
 
-- Repository management (`fa repo add`, `fa repo remove`)
-- Worktree management (`fa worktree create`, `fa worktree list`, `fa worktree remove`)
-- Workspace operations (`fa workspace status`, `fa workspace sync`)
+- Worktree management (`fa worktree create`, `fa worktree list`, `fa worktree remove`, `fa worktree switch`)
+- Repository removal (`fa repo remove`)
+- Workspace operations (`fa workspace status`, `fa workspace sync`, `fa workspace config`)
 - Shell completion support
 - Doctor command for workspace health checks
+- Version command
 
 ## Development
 

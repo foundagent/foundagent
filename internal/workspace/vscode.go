@@ -3,6 +3,7 @@ package workspace
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
 
 	"github.com/foundagent/foundagent/internal/errors"
 )
@@ -106,4 +107,31 @@ func (w *Workspace) SaveVSCodeWorkspace(workspace *VSCodeWorkspace) error {
 	}
 
 	return nil
+}
+
+// AddWorktreeFolder adds a worktree folder to the VS Code workspace
+func (w *Workspace) AddWorktreeFolder(worktreePath string) error {
+	workspace, err := w.LoadVSCodeWorkspace()
+	if err != nil {
+		return err
+	}
+
+	// Make path relative to workspace root
+	relPath, err := filepath.Rel(w.Path, worktreePath)
+	if err != nil {
+		// If relative path fails, use absolute path
+		relPath = worktreePath
+	}
+
+	// Check if folder already exists
+	for _, folder := range workspace.Folders {
+		if folder.Path == relPath {
+			return nil // Already exists
+		}
+	}
+
+	// Add new folder
+	workspace.Folders = append(workspace.Folders, VSCodeFolder{Path: relPath})
+
+	return w.SaveVSCodeWorkspace(workspace)
 }
