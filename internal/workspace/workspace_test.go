@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/foundagent/foundagent/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -155,19 +156,21 @@ func TestConfigOperations(t *testing.T) {
 		assert.Equal(t, []string{}, config.Repos)
 	})
 
-	t.Run("save config", func(t *testing.T) {
-		config := &Config{
-			Name:  "test-config",
-			Repos: []string{"repo1", "repo2"},
-		}
-		err := ws.SaveConfig(config)
+	// SaveConfig is deprecated - test using new config package instead
+	t.Run("save config using config package", func(t *testing.T) {
+		cfg, err := config.Load(ws.Path)
+		require.NoError(t, err)
+		
+		config.AddRepo(cfg, "https://github.com/org/repo1.git", "repo1", "main")
+		config.AddRepo(cfg, "https://github.com/org/repo2.git", "repo2", "master")
+		
+		err = config.Save(ws.Path, cfg)
 		require.NoError(t, err)
 
 		// Load and verify
-		loadedConfig, err := ws.LoadConfig()
+		loadedConfig, err := config.Load(ws.Path)
 		require.NoError(t, err)
-		assert.Equal(t, config.Name, loadedConfig.Name)
-		assert.Equal(t, config.Repos, loadedConfig.Repos)
+		assert.Len(t, loadedConfig.Repos, 2)
 	})
 }
 

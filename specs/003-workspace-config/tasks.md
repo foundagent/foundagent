@@ -26,8 +26,8 @@
 
 **Purpose**: Verify infrastructure for config file support
 
-- [ ] T001 Add YAML parsing dependency (gopkg.in/yaml.v3) to go.mod
-- [ ] T002 [P] Add TOML parsing dependency (github.com/BurntSushi/toml) to go.mod
+- [X] T001 Add YAML parsing dependency (gopkg.in/yaml.v3) to go.mod
+- [X] T002 [P] Add TOML parsing dependency (github.com/BurntSushi/toml) to go.mod
 
 ---
 
@@ -37,13 +37,13 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Define config file schema struct (workspace, repos, settings) in internal/config/schema.go
-- [ ] T004 [P] Implement YAML config parser in internal/config/yaml.go
-- [ ] T005 [P] Implement TOML config parser in internal/config/toml.go
-- [ ] T006 [P] Implement JSON config parser in internal/config/json.go
-- [ ] T007 Implement config file resolution order (YAML > TOML > JSON) in internal/config/loader.go
-- [ ] T008 Implement config validation with line-number errors in internal/config/validate.go
-- [ ] T009 Implement comment-preserving config writer for YAML in internal/config/writer.go
+- [X] T003 Define config file schema struct (workspace, repos, settings) in internal/config/schema.go
+- [X] T004 [P] Implement YAML config parser in internal/config/yaml.go
+- [X] T005 [P] Implement TOML config parser in internal/config/toml.go
+- [X] T006 [P] Implement JSON config parser in internal/config/json.go
+- [X] T007 Implement config file resolution order (YAML > TOML > JSON) in internal/config/loader.go
+- [X] T008 Implement config validation with line-number errors in internal/config/validate.go
+- [X] T009 Implement comment-preserving config writer for YAML in internal/config/writer.go
 
 **Checkpoint**: Foundation ready - config can be read, validated, and written
 
@@ -57,11 +57,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Create default config template with workspace section in internal/config/template.go
-- [ ] T011 [US1] Add empty repos list to default template in internal/config/template.go
-- [ ] T012 [US1] Add settings section with defaults (auto_create_worktree: true) in internal/config/template.go
-- [ ] T013 [US1] Include helpful comments explaining each section in internal/config/template.go
-- [ ] T014 [US1] Integrate config generation into init command in internal/cli/init.go
+- [X] T010 [US1] Create default config template with workspace section in internal/config/template.go
+- [X] T011 [US1] Add empty repos list to default template in internal/config/template.go
+- [X] T012 [US1] Add settings section with defaults (auto_create_worktree: true) in internal/config/template.go
+- [X] T013 [US1] Include helpful comments explaining each section in internal/config/template.go
+- [X] T014 [US1] Integrate config generation into init command in internal/cli/init.go
 
 **Checkpoint**: `fa init` creates `.foundagent.yaml` with documentation comments
 
@@ -75,10 +75,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Implement AddRepo function to update config in internal/config/writer.go
-- [ ] T016 [US2] Preserve existing comments and formatting when adding repo in internal/config/writer.go
-- [ ] T017 [US2] Integrate config update into add command in internal/cli/add.go
-- [ ] T018 [US2] Support custom name in config entry in internal/config/writer.go
+- [X] T015 [US2] Implement AddRepo function to update config in internal/config/writer.go
+- [X] T016 [US2] Preserve existing comments and formatting when adding repo in internal/config/writer.go
+- [X] T017 [US2] Integrate config update into add command in internal/cli/add.go
+- [X] T018 [US2] Support custom name in config entry in internal/config/writer.go
 
 **Checkpoint**: `fa add <url>` updates config file while preserving comments
 
@@ -92,13 +92,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Implement config-state diff function in internal/workspace/reconcile.go
-- [ ] T020 [US3] Detect repos in config but not cloned in internal/workspace/reconcile.go
-- [ ] T021 [US3] Detect repos cloned but not in config (stale) in internal/workspace/reconcile.go
-- [ ] T022 [US3] Implement `fa add` no-args mode to trigger reconciliation in internal/cli/add.go
-- [ ] T023 [US3] Clone missing repos when running `fa add` without arguments in internal/cli/add.go
-- [ ] T024 [US3] Display warning for stale repos with remediation hint in internal/cli/add.go
-- [ ] T025 [US3] Display summary of reconciliation actions taken in internal/cli/add.go
+- [X] T019 [US3] Implement config-state diff function in internal/workspace/reconcile.go
+- [X] T020 [US3] Detect repos in config but not cloned in internal/workspace/reconcile.go
+- [X] T021 [US3] Detect repos cloned but not in config (stale) in internal/workspace/reconcile.go
+- [X] T022 [US3] Implement `fa add` no-args mode to trigger reconciliation in internal/cli/add.go
+- [X] T023 [US3] Clone missing repos when running `fa add` without arguments in internal/cli/add.go
+- [X] T024 [US3] Display warning for stale repos with remediation hint in internal/cli/add.go
+- [X] T025 [US3] Display summary of reconciliation actions taken in internal/cli/add.go
 
 **Checkpoint**: `fa add` syncs workspace to match config file
 
@@ -112,9 +112,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T026 [US4] Initialize minimal workspace if running `fa add` with config but no `.foundagent/` in internal/cli/add.go
-- [ ] T027 [US4] Support parallel cloning of all repos from config in internal/cli/add.go
-- [ ] T028 [US4] Display progress for multi-repo setup from config in internal/cli/add.go
+- [X] T026 [US4] Initialize minimal workspace if running `fa add` with config but no `.foundagent/` in internal/cli/add.go
+- [X] T027 [US4] Support parallel cloning of all repos from config in internal/cli/add.go
+- [X] T028 [US4] Display progress for multi-repo setup from config in internal/cli/add.go
 
 **Checkpoint**: Team members can bootstrap workspace from shared config file
 
@@ -128,11 +128,11 @@
 
 ### Implementation for User Story 5
 
-- [ ] T029 [US5] Implement YAML syntax error detection with line numbers in internal/config/validate.go
-- [ ] T030 [US5] Validate repo URL format before clone attempt in internal/config/validate.go
-- [ ] T031 [US5] Detect duplicate repo names with error in internal/config/validate.go
-- [ ] T032 [US5] Warn (not error) on unknown config keys for forward compatibility in internal/config/validate.go
-- [ ] T033 [US5] Run validation on every command that loads config in internal/config/loader.go
+- [X] T029 [US5] Implement YAML syntax error detection with line numbers in internal/config/validate.go
+- [X] T030 [US5] Validate repo URL format before clone attempt in internal/config/validate.go
+- [X] T031 [US5] Detect duplicate repo names with error in internal/config/validate.go
+- [X] T032 [US5] Warn (not error) on unknown config keys for forward compatibility in internal/config/validate.go
+- [X] T033 [US5] Run validation on every command that loads config in internal/config/loader.go
 
 **Checkpoint**: Config errors are clear, actionable, and include line numbers
 
@@ -142,14 +142,14 @@
 
 **Purpose**: Edge cases and robustness
 
-- [ ] T034 [P] Handle missing config file - regenerate default with warning in internal/config/loader.go
-- [ ] T035 [P] Handle empty repos list as valid state in internal/config/validate.go
-- [ ] T036 [P] Handle duplicate URL entries - warn and use first in internal/config/validate.go
-- [ ] T037 [P] Handle read-only config file with clear error in internal/config/writer.go
-- [ ] T038 [P] Preserve user comments when config is updated by commands in internal/config/writer.go
-- [ ] T039 [P] Handle multiple config formats (warn if both .yaml and .toml exist) in internal/config/loader.go
-- [ ] T040 Write integration test for config loading in internal/config/loader_test.go
-- [ ] T041 Write integration test for config-state reconciliation in internal/workspace/reconcile_test.go
+- [X] T034 [P] Handle missing config file - regenerate default with warning in internal/config/loader.go
+- [X] T035 [P] Handle empty repos list as valid state in internal/config/validate.go
+- [X] T036 [P] Handle duplicate URL entries - warn and use first in internal/config/validate.go
+- [X] T037 [P] Handle read-only config file with clear error in internal/config/writer.go
+- [X] T038 [P] Preserve user comments when config is updated by commands in internal/config/writer.go
+- [X] T039 [P] Handle multiple config formats (warn if both .yaml and .toml exist) in internal/config/loader.go
+- [X] T040 Write integration test for config loading in internal/config/loader_test.go
+- [X] T041 Write integration test for config-state reconciliation in internal/workspace/reconcile_test.go
 
 ---
 
