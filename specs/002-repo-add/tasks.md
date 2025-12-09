@@ -26,8 +26,8 @@
 
 **Purpose**: Verify infrastructure and create command skeleton
 
-- [ ] T001 Verify workspace detection logic exists (from 001-workspace-init)
-- [ ] T002 [P] Create add command skeleton in internal/cli/add.go
+- [X] T001 Verify workspace detection logic exists (from 001-workspace-init)
+- [X] T002 [P] Create add command skeleton in internal/cli/add.go
 
 ---
 
@@ -37,13 +37,13 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Implement bare clone function (`git clone --bare`) in internal/git/clone.go
-- [ ] T004 [P] Implement repository URL parsing and name inference in internal/git/url.go
-- [ ] T005 [P] Implement worktree creation function (`git worktree add`) in internal/git/worktree.go
-- [ ] T006 [P] Implement default branch detection from remote in internal/git/remote.go
-- [ ] T007 Define Repository struct with name, URL, default branch in internal/workspace/repository.go
-- [ ] T008 Implement workspace detection (find `.foundagent.yaml` up the tree) in internal/workspace/discover.go
-- [ ] T009 Add `add` command to rootCmd in internal/cli/root.go
+- [X] T003 Implement bare clone function (`git clone --bare`) in internal/git/clone.go
+- [X] T004 [P] Implement repository URL parsing and name inference in internal/git/url.go
+- [X] T005 [P] Implement worktree creation function (`git worktree add`) in internal/git/worktree.go
+- [X] T006 [P] Implement default branch detection from remote in internal/git/remote.go
+- [X] T007 Define Repository struct with name, URL, default branch in internal/workspace/repository.go
+- [X] T008 Implement workspace detection (find `.foundagent.yaml` up the tree) in internal/workspace/discover.go
+- [X] T009 Add `add` command to rootCmd in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -57,14 +57,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Implement bare clone to `repos/.bare/<name>.git/` in internal/cli/add.go
-- [ ] T011 [US1] Create worktree for default branch at `repos/worktrees/<name>/<branch>/` in internal/cli/add.go
-- [ ] T012 [US1] Register repo in `.foundagent/state.json` with metadata in internal/workspace/state.go
-- [ ] T013 [US1] Register repo in `.foundagent.yaml` config in internal/workspace/config.go
-- [ ] T014 [US1] Update `.code-workspace` to include new worktree folder in internal/workspace/vscode.go
-- [ ] T015 [US1] Display progress during clone operation in internal/cli/add.go
-- [ ] T016 [US1] Display success message with repo name and worktree path in internal/cli/add.go
-- [ ] T017 [US1] Implement exit code 0 on success, non-zero on failure in internal/cli/add.go
+- [X] T010 [US1] Implement bare clone to `repos/.bare/<name>.git/` in internal/cli/add.go
+- [X] T011 [US1] Create worktree for default branch at `repos/worktrees/<name>/<branch>/` in internal/cli/add.go
+- [X] T012 [US1] Register repo in `.foundagent/state.json` with metadata in internal/workspace/state.go
+- [X] T013 [US1] Register repo in `.foundagent.yaml` config in internal/workspace/config.go
+- [X] T014 [US1] Update `.code-workspace` to include new worktree folder in internal/workspace/vscode.go
+- [X] T015 [US1] Display progress during clone operation in internal/cli/add.go
+- [X] T016 [US1] Display success message with repo name and worktree path in internal/cli/add.go
+- [X] T017 [US1] Implement exit code 0 on success, non-zero on failure in internal/cli/add.go
 
 **Checkpoint**: `fa add <url>` clones repo and creates working worktree
 
@@ -78,10 +78,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Accept multiple URL arguments in add command in internal/cli/add.go
-- [ ] T019 [US2] Implement parallel cloning with goroutines in internal/cli/add.go
-- [ ] T020 [US2] Collect and report partial success/failure for each repo in internal/cli/add.go
-- [ ] T021 [US2] Display summary showing success/failure status for each repo in internal/cli/add.go
+- [X] T018 [US2] Accept multiple URL arguments in add command in internal/cli/add.go
+- [X] T019 [US2] Implement parallel cloning with goroutines in internal/cli/add.go
+- [X] T020 [US2] Collect and report partial success/failure for each repo in internal/cli/add.go
+- [X] T021 [US2] Display summary showing success/failure status for each repo in internal/cli/add.go
 
 **Checkpoint**: `fa add <url1> <url2>` clones repos in parallel with summary
 
@@ -95,9 +95,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Accept optional name argument after URL in internal/cli/add.go
-- [ ] T023 [US3] Use custom name for bare clone and worktree paths in internal/cli/add.go
-- [ ] T024 [US3] Register with custom name in config and state in internal/cli/add.go
+- [X] T022 [US3] Accept optional name argument after URL in internal/cli/add.go
+- [X] T023 [US3] Use custom name for bare clone and worktree paths in internal/cli/add.go
+- [X] T024 [US3] Register with custom name in config and state in internal/cli/add.go
 
 **Checkpoint**: `fa add <url> api-service` uses custom name for all paths
 
@@ -111,10 +111,10 @@
 
 ### Implementation for User Story 4
 
-- [ ] T025 [US4] Check if repo name already exists before cloning in internal/cli/add.go
-- [ ] T026 [US4] Skip existing repos with message (not error) in internal/cli/add.go
-- [ ] T027 [US4] Add `--force` flag to re-clone existing repos in internal/cli/add.go
-- [ ] T028 [US4] Implement re-clone logic preserving worktrees when possible in internal/cli/add.go
+- [X] T025 [US4] Check if repo name already exists before cloning in internal/cli/add.go
+- [X] T026 [US4] Skip existing repos with message (not error) in internal/cli/add.go
+- [X] T027 [US4] Add `--force` flag to re-clone existing repos in internal/cli/add.go
+- [X] T028 [US4] Implement re-clone logic preserving worktrees when possible in internal/cli/add.go
 
 **Checkpoint**: Idempotent add - running twice is safe
 
@@ -128,10 +128,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T029 [US5] Add `--json` flag to add command in internal/cli/add.go
-- [ ] T030 [US5] Define JSON output schema (repo name, path, worktree path, status) in internal/cli/add.go
-- [ ] T031 [US5] Output JSON array when adding multiple repos in internal/cli/add.go
-- [ ] T032 [US5] Include error details in JSON for failed repos in internal/cli/add.go
+- [X] T029 [US5] Add `--json` flag to add command in internal/cli/add.go
+- [X] T030 [US5] Define JSON output schema (repo name, path, worktree path, status) in internal/cli/add.go
+- [X] T031 [US5] Output JSON array when adding multiple repos in internal/cli/add.go
+- [X] T032 [US5] Include error details in JSON for failed repos in internal/cli/add.go
 
 **Checkpoint**: `fa add --json` produces valid, parseable JSON
 
@@ -141,16 +141,16 @@
 
 **Purpose**: Edge cases, validation, and error handling
 
-- [ ] T033 [P] Validate command is run inside Foundagent workspace in internal/cli/add.go
-- [ ] T034 [P] Handle invalid/malformed URLs with clear error in internal/git/url.go
-- [ ] T035 [P] Handle auth failures with SSH/credential hints in internal/git/clone.go
-- [ ] T036 [P] Handle network failures with retry suggestion in internal/git/clone.go
-- [ ] T037 [P] Handle name collision when custom name already exists in internal/cli/add.go
-- [ ] T038 [P] Handle both SSH and HTTPS URL formats in internal/git/url.go
-- [ ] T039 [P] Handle repos with/without `.git` suffix in URL in internal/git/url.go
-- [ ] T040 [P] Handle empty repos (no commits) with warning in internal/cli/add.go
-- [ ] T041 Add help text with examples to add command in internal/cli/add.go
-- [ ] T042 Write integration test for add command in internal/cli/add_test.go
+- [X] T033 [P] Validate command is run inside Foundagent workspace in internal/cli/add.go
+- [X] T034 [P] Handle invalid/malformed URLs with clear error in internal/git/url.go
+- [X] T035 [P] Handle auth failures with SSH/credential hints in internal/git/clone.go
+- [X] T036 [P] Handle network failures with retry suggestion in internal/git/clone.go
+- [X] T037 [P] Handle name collision when custom name already exists in internal/cli/add.go
+- [X] T038 [P] Handle both SSH and HTTPS URL formats in internal/git/url.go
+- [X] T039 [P] Handle repos with/without `.git` suffix in URL in internal/git/url.go
+- [X] T040 [P] Handle empty repos (no commits) with warning in internal/cli/add.go
+- [X] T041 Add help text with examples to add command in internal/cli/add.go
+- [X] T042 Write integration test for add command in internal/cli/add_test.go
 
 ---
 
