@@ -26,8 +26,8 @@
 
 **Purpose**: Create command skeleton
 
-- [ ] T001 Create list subcommand skeleton in internal/cli/wt_list.go
-- [ ] T002 [P] Add `ls` alias for list subcommand in internal/cli/worktree.go
+- [X] T001 Create list subcommand skeleton in internal/cli/wt_list.go
+- [X] T002 [P] Add `ls` alias for list subcommand in internal/cli/worktree.go
 
 ---
 
@@ -37,11 +37,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Implement worktree discovery from filesystem in internal/workspace/worktree.go
-- [ ] T004 [P] Implement current worktree detection (based on CWD) in internal/workspace/worktree.go
-- [ ] T005 [P] Implement git status detection (clean/modified/untracked/conflict) in internal/git/status.go
-- [ ] T006 Implement parallel status detection across worktrees in internal/workspace/worktree.go
-- [ ] T007 Add `worktree list`, `wt list`, and `wt ls` commands to CLI in internal/cli/root.go
+- [X] T003 Implement worktree discovery from filesystem in internal/workspace/worktree.go
+- [X] T004 [P] Implement current worktree detection (based on CWD) in internal/workspace/worktree.go
+- [X] T005 [P] Implement git status detection (clean/modified/untracked/conflict) in internal/git/status.go
+- [X] T006 Implement parallel status detection across worktrees in internal/workspace/worktree.go
+- [X] T007 Add `worktree list`, `wt list`, and `wt ls` commands to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - worktrees can be discovered with status
 
@@ -55,12 +55,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Discover all worktrees from `repos/worktrees/<repo>/<branch>/` structure in internal/cli/wt_list.go
-- [ ] T009 [US1] Group worktrees by branch name in internal/cli/wt_list.go
-- [ ] T010 [US1] Display branch name as group header in internal/cli/wt_list.go
-- [ ] T011 [US1] Display repo name and path for each worktree in internal/cli/wt_list.go
-- [ ] T012 [US1] Indicate current/active worktree with marker (e.g., `*`) in internal/cli/wt_list.go
-- [ ] T013 [US1] Sort branches alphabetically, then repos alphabetically in internal/cli/wt_list.go
+- [X] T008 [US1] Discover all worktrees from `repos/worktrees/<repo>/<branch>/` structure in internal/cli/wt_list.go
+- [X] T009 [US1] Group worktrees by branch name in internal/cli/wt_list.go
+- [X] T010 [US1] Display branch name as group header in internal/cli/wt_list.go
+- [X] T011 [US1] Display repo name and path for each worktree in internal/cli/wt_list.go
+- [X] T012 [US1] Indicate current/active worktree with marker (e.g., `*`) in internal/cli/wt_list.go
+- [X] T013 [US1] Sort branches alphabetically, then repos alphabetically in internal/cli/wt_list.go
 
 **Checkpoint**: `fa wt list` shows all worktrees organized by branch
 
@@ -74,10 +74,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Add `--json` flag to list command in internal/cli/wt_list.go
-- [ ] T015 [US2] Define JSON schema with worktrees array in internal/cli/wt_list.go
-- [ ] T016 [US2] Include branch, repo, path, is_current, status for each worktree in internal/cli/wt_list.go
-- [ ] T017 [US2] Include workspace metadata (name, total_worktrees, total_branches) in internal/cli/wt_list.go
+- [X] T014 [US2] Add `--json` flag to list command in internal/cli/wt_list.go
+- [X] T015 [US2] Define JSON schema with worktrees array in internal/cli/wt_list.go
+- [X] T016 [US2] Include branch, repo, path, is_current, status for each worktree in internal/cli/wt_list.go
+- [X] T017 [US2] Include workspace metadata (name, total_worktrees, total_branches) in internal/cli/wt_list.go
 
 **Checkpoint**: `fa wt list --json` produces valid, parseable JSON
 
@@ -91,11 +91,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Detect uncommitted changes in each worktree in internal/git/status.go
-- [ ] T019 [US3] Detect untracked files in each worktree in internal/git/status.go
-- [ ] T020 [US3] Detect merge conflicts in each worktree in internal/git/status.go
-- [ ] T021 [US3] Display status indicator (e.g., `[modified]`, `[untracked]`) for dirty worktrees in internal/cli/wt_list.go
-- [ ] T022 [US3] Run status detection in parallel for performance in internal/cli/wt_list.go
+- [X] T018 [US3] Detect uncommitted changes in each worktree in internal/git/status.go
+- [X] T019 [US3] Detect untracked files in each worktree in internal/git/status.go
+- [X] T020 [US3] Detect merge conflicts in each worktree in internal/git/status.go
+- [X] T021 [US3] Display status indicator (e.g., `[modified]`, `[untracked]`) for dirty worktrees in internal/cli/wt_list.go
+- [X] T022 [US3] Run status detection in parallel for performance in internal/cli/wt_list.go
 
 **Checkpoint**: Dirty worktrees clearly marked with status indicators
 
@@ -109,9 +109,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] Accept optional branch argument for filtering in internal/cli/wt_list.go
-- [ ] T024 [US4] Filter worktrees to match specified branch in internal/cli/wt_list.go
-- [ ] T025 [US4] Display message when no worktrees found for branch in internal/cli/wt_list.go
+- [X] T023 [US4] Accept optional branch argument for filtering in internal/cli/wt_list.go
+- [X] T024 [US4] Filter worktrees to match specified branch in internal/cli/wt_list.go
+- [X] T025 [US4] Display message when no worktrees found for branch in internal/cli/wt_list.go
 
 **Checkpoint**: `fa wt list feature-x` filters to specific branch
 
@@ -121,12 +121,12 @@
 
 **Purpose**: Edge cases and error handling
 
-- [ ] T026 [P] Handle empty workspace (no repos) with helpful message in internal/cli/wt_list.go
-- [ ] T027 [P] Handle repos with no worktrees with helpful message in internal/cli/wt_list.go
-- [ ] T028 [P] Handle corrupted worktrees gracefully (show error, continue) in internal/cli/wt_list.go
-- [ ] T029 [P] Validate command is run inside Foundagent workspace in internal/cli/wt_list.go
-- [ ] T030 Add help text with examples to wt list command in internal/cli/wt_list.go
-- [ ] T031 Write integration test for wt list command in internal/cli/wt_list_test.go
+- [X] T026 [P] Handle empty workspace (no repos) with helpful message in internal/cli/wt_list.go
+- [X] T027 [P] Handle repos with no worktrees with helpful message in internal/cli/wt_list.go
+- [X] T028 [P] Handle corrupted worktrees gracefully (show error, continue) in internal/cli/wt_list.go
+- [X] T029 [P] Validate command is run inside Foundagent workspace in internal/cli/wt_list.go
+- [X] T030 Add help text with examples to wt list command in internal/cli/wt_list.go
+- [X] T031 Write integration test for wt list command in internal/cli/wt_list_test.go
 
 ---
 
