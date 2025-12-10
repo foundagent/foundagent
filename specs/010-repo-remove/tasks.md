@@ -26,8 +26,8 @@
 
 **Purpose**: Create command skeleton
 
-- [ ] T001 Create remove command skeleton in internal/cli/remove.go
-- [ ] T002 [P] Add `rm` alias for remove command in internal/cli/root.go
+- [X] T001 Create remove command skeleton in internal/cli/remove.go
+- [X] T002 [P] Add `rm` alias for remove command in internal/cli/root.go
 
 ---
 
@@ -37,11 +37,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Implement repo existence check by name in internal/workspace/repository.go
-- [ ] T004 [P] Reuse dirty worktree detection from wt remove (internal/git/status.go)
-- [ ] T005 [P] Reuse CWD-inside-worktree detection from wt remove (internal/workspace/worktree.go)
-- [ ] T006 Implement bare clone deletion in internal/git/clone.go
-- [ ] T007 Add `remove` and `rm` commands to CLI in internal/cli/root.go
+- [X] T003 Implement repo existence check by name in internal/workspace/repository.go
+- [X] T004 [P] Reuse dirty worktree detection from wt remove (internal/git/status.go)
+- [X] T005 [P] Reuse CWD-inside-worktree detection from wt remove (internal/workspace/worktree.go)
+- [X] T006 Implement bare clone deletion in internal/git/clone.go
+- [X] T007 Add `remove` and `rm` commands to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - repo removal infrastructure available
 
@@ -55,14 +55,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Require repo name argument in internal/cli/remove.go
-- [ ] T009 [US1] Verify repo exists in workspace in internal/cli/remove.go
-- [ ] T010 [US1] Remove repo from `.foundagent.yaml` config in internal/config/writer.go
-- [ ] T011 [US1] Delete bare clone at `repos/.bare/<name>.git/` in internal/cli/remove.go
-- [ ] T012 [US1] Delete all worktrees at `repos/worktrees/<name>/` using git worktree remove in internal/cli/remove.go
-- [ ] T013 [US1] Update `.code-workspace` to remove worktree folders in internal/cli/remove.go
-- [ ] T014 [US1] Update `.foundagent/state.json` to remove repo entries in internal/workspace/state.go
-- [ ] T015 [US1] Display confirmation of what was removed in internal/cli/remove.go
+- [X] T008 [US1] Require repo name argument in internal/cli/remove.go
+- [X] T009 [US1] Verify repo exists in workspace in internal/cli/remove.go
+- [X] T010 [US1] Remove repo from `.foundagent.yaml` config in internal/config/writer.go
+- [X] T011 [US1] Delete bare clone at `repos/.bare/<name>.git/` in internal/cli/remove.go
+- [X] T012 [US1] Delete all worktrees at `repos/worktrees/<name>/` using git worktree remove in internal/cli/remove.go
+- [X] T013 [US1] Update `.code-workspace` to remove worktree folders in internal/cli/remove.go
+- [X] T014 [US1] Update `.foundagent/state.json` to remove repo entries in internal/workspace/state.go
+- [X] T015 [US1] Display confirmation of what was removed in internal/cli/remove.go
 
 **Checkpoint**: `fa remove api` completely removes repo from workspace
 
@@ -76,12 +76,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] Check all repo's worktrees for uncommitted changes in internal/cli/remove.go
-- [ ] T017 [US2] Check all repo's worktrees for untracked files in internal/cli/remove.go
-- [ ] T018 [US2] Block removal if any worktree is dirty in internal/cli/remove.go
-- [ ] T019 [US2] List all dirty worktrees in error message in internal/cli/remove.go
-- [ ] T020 [US2] Add `--force` flag to override dirty check in internal/cli/remove.go
-- [ ] T021 [US2] Check if CWD is inside repo's worktree and block in internal/cli/remove.go
+- [X] T016 [US2] Check all repo's worktrees for uncommitted changes in internal/cli/remove.go
+- [X] T017 [US2] Check all repo's worktrees for untracked files in internal/cli/remove.go
+- [X] T018 [US2] Block removal if any worktree is dirty in internal/cli/remove.go
+- [X] T019 [US2] List all dirty worktrees in error message in internal/cli/remove.go
+- [X] T020 [US2] Add `--force` flag to override dirty check in internal/cli/remove.go
+- [X] T021 [US2] Check if CWD is inside repo's worktree and block in internal/cli/remove.go
 
 **Checkpoint**: Dirty worktrees protected, `--force` required to override
 
@@ -95,11 +95,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Add `--config-only` flag to remove command in internal/cli/remove.go
-- [ ] T023 [US3] Only remove from `.foundagent.yaml` when --config-only in internal/cli/remove.go
-- [ ] T024 [US3] Skip bare clone and worktree deletion in internal/cli/remove.go
-- [ ] T025 [US3] Still update workspace file (remove folders) in internal/cli/remove.go
-- [ ] T026 [US3] Display message that files were kept in internal/cli/remove.go
+- [X] T022 [US3] Add `--config-only` flag to remove command in internal/cli/remove.go
+- [X] T023 [US3] Only remove from `.foundagent.yaml` when --config-only in internal/cli/remove.go
+- [X] T024 [US3] Skip bare clone and worktree deletion in internal/cli/remove.go
+- [X] T025 [US3] Still update workspace file (remove folders) in internal/cli/remove.go
+- [X] T026 [US3] Display message that files were kept in internal/cli/remove.go
 
 **Checkpoint**: `fa remove --config-only` removes from config but keeps files
 
@@ -113,9 +113,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T027 [US4] Add `--json` flag to remove command in internal/cli/remove.go
-- [ ] T028 [US4] Define JSON schema (repo_name, removed_from_config, files_deleted, worktrees_deleted) in internal/cli/remove.go
-- [ ] T029 [US4] Include error details in JSON on failure in internal/cli/remove.go
+- [X] T027 [US4] Add `--json` flag to remove command in internal/cli/remove.go
+- [X] T028 [US4] Define JSON schema (repo_name, removed_from_config, files_deleted, worktrees_deleted) in internal/cli/remove.go
+- [X] T029 [US4] Include error details in JSON on failure in internal/cli/remove.go
 
 **Checkpoint**: `fa remove --json` produces valid, parseable JSON
 
@@ -129,10 +129,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T030 [US5] Accept multiple repo name arguments in internal/cli/remove.go
-- [ ] T031 [US5] Process each repo and collect results in internal/cli/remove.go
-- [ ] T032 [US5] Skip dirty repos, continue with clean (unless --force) in internal/cli/remove.go
-- [ ] T033 [US5] Display summary of removed/skipped/failed repos in internal/cli/remove.go
+- [X] T030 [US5] Accept multiple repo name arguments in internal/cli/remove.go
+- [X] T031 [US5] Process each repo and collect results in internal/cli/remove.go
+- [X] T032 [US5] Skip dirty repos, continue with clean (unless --force) in internal/cli/remove.go
+- [X] T033 [US5] Display summary of removed/skipped/failed repos in internal/cli/remove.go
 
 **Checkpoint**: `fa remove api web` removes multiple repos
 
@@ -142,14 +142,14 @@
 
 **Purpose**: Edge cases and error handling
 
-- [ ] T034 [P] Handle repo not found with helpful message in internal/cli/remove.go
-- [ ] T035 [P] Handle orphaned repo (cloned but not in config) with confirmation in internal/cli/remove.go
-- [ ] T036 [P] Suggest similar repo names on typo in internal/cli/remove.go
-- [ ] T037 [P] Handle locked worktrees with clear error in internal/cli/remove.go
-- [ ] T038 [P] Handle permission denied with clear message in internal/cli/remove.go
-- [ ] T039 [P] Validate command is run inside Foundagent workspace in internal/cli/remove.go
-- [ ] T040 Add help text with examples to remove command in internal/cli/remove.go
-- [ ] T041 Write integration test for remove command in internal/cli/remove_test.go
+- [X] T034 [P] Handle repo not found with helpful message in internal/cli/remove.go
+- [X] T035 [P] Handle orphaned repo (cloned but not in config) with confirmation in internal/cli/remove.go
+- [X] T036 [P] Suggest similar repo names on typo in internal/cli/remove.go
+- [X] T037 [P] Handle locked worktrees with clear error in internal/cli/remove.go
+- [X] T038 [P] Handle permission denied with clear message in internal/cli/remove.go
+- [X] T039 [P] Validate command is run inside Foundagent workspace in internal/cli/remove.go
+- [X] T040 Add help text with examples to remove command in internal/cli/remove.go
+- [X] T041 Write integration test for remove command in internal/cli/remove_test.go
 
 ---
 
