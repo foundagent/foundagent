@@ -135,3 +135,37 @@ func (w *Workspace) AddWorktreeFolder(worktreePath string) error {
 
 	return w.SaveVSCodeWorkspace(workspace)
 }
+
+// AddWorktreeFolders adds multiple worktree folders to the VS Code workspace
+func (w *Workspace) AddWorktreeFolders(worktreePaths []string) error {
+	workspace, err := w.LoadVSCodeWorkspace()
+	if err != nil {
+		return err
+	}
+
+	// Convert to relative paths and check for duplicates
+	existingPaths := make(map[string]bool)
+	for _, folder := range workspace.Folders {
+		existingPaths[folder.Path] = true
+	}
+
+	for _, worktreePath := range worktreePaths {
+		// Make path relative to workspace root
+		relPath, err := filepath.Rel(w.Path, worktreePath)
+		if err != nil {
+			// If relative path fails, use absolute path
+			relPath = worktreePath
+		}
+
+		// Skip if already exists
+		if existingPaths[relPath] {
+			continue
+		}
+
+		// Add new folder
+		workspace.Folders = append(workspace.Folders, VSCodeFolder{Path: relPath})
+		existingPaths[relPath] = true
+	}
+
+	return w.SaveVSCodeWorkspace(workspace)
+}

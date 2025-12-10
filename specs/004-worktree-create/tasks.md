@@ -26,9 +26,9 @@
 
 **Purpose**: Create command skeleton and verify dependencies
 
-- [ ] T001 Create worktree command group skeleton in internal/cli/worktree.go
-- [ ] T002 [P] Create `wt` alias for worktree command in internal/cli/root.go
-- [ ] T003 [P] Create create subcommand skeleton in internal/cli/wt_create.go
+- [X] T001 Create worktree command group skeleton in internal/cli/worktree.go
+- [X] T002 [P] Create `wt` alias for worktree command in internal/cli/root.go
+- [X] T003 [P] Create create subcommand skeleton in internal/cli/wt_create.go
 
 ---
 
@@ -38,12 +38,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Implement branch name validation (valid git branch format) in internal/git/validation.go
-- [ ] T005 [P] Implement branch existence check across all repos in internal/git/branch.go
-- [ ] T006 [P] Implement worktree existence check in internal/workspace/worktree.go
-- [ ] T007 Implement parallel operation executor with error collection in internal/workspace/parallel.go
-- [ ] T008 Implement VS Code workspace file update (add folders) in internal/workspace/vscode.go
-- [ ] T009 Add `worktree create` and `wt create` commands to CLI in internal/cli/root.go
+- [X] T004 Implement branch name validation (valid git branch format) in internal/git/validation.go
+- [X] T005 [P] Implement branch existence check across all repos in internal/git/branch.go
+- [X] T006 [P] Implement worktree existence check in internal/workspace/worktree.go
+- [X] T007 Implement parallel operation executor with error collection in internal/workspace/parallel.go
+- [X] T008 Implement VS Code workspace file update (add folders) in internal/workspace/vscode.go
+- [X] T009 Add `worktree create` and `wt create` commands to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - branch validation and parallel execution available
 
@@ -57,15 +57,15 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Get list of all repos from workspace config in internal/cli/wt_create.go
-- [ ] T011 [US1] Detect default branch for each repo in internal/git/branch.go
-- [ ] T012 [US1] Create new branch from default branch in each repo in internal/git/branch.go
-- [ ] T013 [US1] Create worktree at `repos/worktrees/<repo>/<branch>/` for each repo in internal/git/worktree.go
-- [ ] T014 [US1] Execute worktree creation in parallel across repos in internal/cli/wt_create.go
-- [ ] T015 [US1] Update `.code-workspace` to include all new worktree folders in internal/cli/wt_create.go
-- [ ] T016 [US1] Update `.foundagent/state.json` with worktree info in internal/workspace/state.go
-- [ ] T017 [US1] Display progress for each repo during creation in internal/cli/wt_create.go
-- [ ] T018 [US1] Display summary of created worktrees with paths in internal/cli/wt_create.go
+- [X] T010 [US1] Get list of all repos from workspace config in internal/cli/wt_create.go
+- [X] T011 [US1] Detect default branch for each repo in internal/git/branch.go
+- [X] T012 [US1] Create new branch from default branch in each repo in internal/git/branch.go
+- [X] T013 [US1] Create worktree at `repos/worktrees/<repo>/<branch>/` for each repo in internal/git/worktree.go
+- [X] T014 [US1] Execute worktree creation in parallel across repos in internal/cli/wt_create.go
+- [X] T015 [US1] Update `.code-workspace` to include all new worktree folders in internal/cli/wt_create.go
+- [X] T016 [US1] Update `.foundagent/state.json` with worktree info in internal/workspace/state.go
+- [X] T017 [US1] Display progress for each repo during creation in internal/cli/wt_create.go
+- [X] T018 [US1] Display summary of created worktrees with paths in internal/cli/wt_create.go
 
 **Checkpoint**: `fa wt create feature-123` creates worktrees in all repos
 
@@ -79,10 +79,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Add `--from` flag to accept source branch in internal/cli/wt_create.go
-- [ ] T020 [US2] Validate `--from` branch exists in ALL repos before starting in internal/cli/wt_create.go
-- [ ] T021 [US2] Create new branch from specified source branch in internal/git/branch.go
-- [ ] T022 [US2] Error with list of repos missing `--from` branch if validation fails in internal/cli/wt_create.go
+- [X] T019 [US2] Add `--from` flag to accept source branch in internal/cli/wt_create.go
+- [X] T020 [US2] Validate `--from` branch exists in ALL repos before starting in internal/cli/wt_create.go
+- [X] T021 [US2] Create new branch from specified source branch in internal/git/branch.go
+- [X] T022 [US2] Error with list of repos missing `--from` branch if validation fails in internal/cli/wt_create.go
 
 **Checkpoint**: `fa wt create --from release-2.0` creates from specified branch
 
@@ -96,11 +96,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Implement pre-validation phase before any worktree creation in internal/cli/wt_create.go
-- [ ] T024 [US3] Check `--from` branch exists in every repo during pre-validation in internal/cli/wt_create.go
-- [ ] T025 [US3] Check target branch name doesn't already exist (without worktree) in internal/cli/wt_create.go
-- [ ] T026 [US3] Abort with clear error listing all failing repos if validation fails in internal/cli/wt_create.go
-- [ ] T027 [US3] Only proceed to creation if all validations pass in internal/cli/wt_create.go
+- [X] T023 [US3] Implement pre-validation phase before any worktree creation in internal/cli/wt_create.go
+- [X] T024 [US3] Check `--from` branch exists in every repo during pre-validation in internal/cli/wt_create.go
+- [X] T025 [US3] Check target branch name doesn't already exist (without worktree) in internal/cli/wt_create.go
+- [X] T026 [US3] Abort with clear error listing all failing repos if validation fails in internal/cli/wt_create.go
+- [X] T027 [US3] Only proceed to creation if all validations pass in internal/cli/wt_create.go
 
 **Checkpoint**: Atomic all-or-nothing - no partial states on validation failure
 
@@ -114,11 +114,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T028 [US4] Add `--force` flag to recreate existing worktrees in internal/cli/wt_create.go
-- [ ] T029 [US4] Check for uncommitted changes before force remove in internal/git/status.go
-- [ ] T030 [US4] Warn about uncommitted changes and require confirmation or `--force` in internal/cli/wt_create.go
-- [ ] T031 [US4] Remove existing worktrees before recreation in internal/git/worktree.go
-- [ ] T032 [US4] Recreate worktrees from source branch in internal/cli/wt_create.go
+- [X] T028 [US4] Add `--force` flag to recreate existing worktrees in internal/cli/wt_create.go
+- [X] T029 [US4] Check for uncommitted changes before force remove in internal/git/status.go
+- [X] T030 [US4] Warn about uncommitted changes and require confirmation or `--force` in internal/cli/wt_create.go
+- [X] T031 [US4] Remove existing worktrees before recreation in internal/git/worktree.go
+- [X] T032 [US4] Recreate worktrees from source branch in internal/cli/wt_create.go
 
 **Checkpoint**: `fa wt create --force` recreates worktrees fresh
 
@@ -132,9 +132,9 @@
 
 ### Implementation for User Story 5
 
-- [ ] T033 [US5] Detect if target branch exists in repo without worktree in internal/git/branch.go
-- [ ] T034 [US5] Error with suggestion to use `fa wt switch` instead in internal/cli/wt_create.go
-- [ ] T035 [US5] List all repos with existing branches in error message in internal/cli/wt_create.go
+- [X] T033 [US5] Detect if target branch exists in repo without worktree in internal/git/branch.go
+- [X] T034 [US5] Error with suggestion to use `fa wt switch` instead in internal/cli/wt_create.go
+- [X] T035 [US5] List all repos with existing branches in error message in internal/cli/wt_create.go
 
 **Checkpoint**: Clear guidance to use switch for existing branches
 
@@ -144,12 +144,12 @@
 
 **Purpose**: Edge cases and error handling
 
-- [ ] T036 [P] Handle empty workspace (no repos) with hint to run `fa add` in internal/cli/wt_create.go
-- [ ] T037 [P] Handle invalid branch name characters with clear error in internal/git/validation.go
-- [ ] T038 [P] Handle missing `.code-workspace` file - create or warn in internal/workspace/vscode.go
-- [ ] T039 [P] Add `--json` flag for machine-readable output in internal/cli/wt_create.go
-- [ ] T040 Add help text with examples to wt create command in internal/cli/wt_create.go
-- [ ] T041 Write integration test for wt create command in internal/cli/wt_create_test.go
+- [X] T036 [P] Handle empty workspace (no repos) with hint to run `fa add` in internal/cli/wt_create.go
+- [X] T037 [P] Handle invalid branch name characters with clear error in internal/git/validation.go
+- [X] T038 [P] Handle missing `.code-workspace` file - create or warn in internal/workspace/vscode.go
+- [X] T039 [P] Add `--json` flag for machine-readable output in internal/cli/wt_create.go
+- [X] T040 Add help text with examples to wt create command in internal/cli/wt_create.go
+- [X] T041 Write integration test for wt create command in internal/cli/wt_create_test.go
 
 ---
 
