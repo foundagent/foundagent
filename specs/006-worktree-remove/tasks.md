@@ -26,8 +26,8 @@
 
 **Purpose**: Create command skeleton
 
-- [ ] T001 Create remove subcommand skeleton in internal/cli/wt_remove.go
-- [ ] T002 [P] Add `rm` alias for remove subcommand in internal/cli/worktree.go
+- [X] T001 Create remove subcommand skeleton in internal/cli/wt_remove.go
+- [X] T002 [P] Add `rm` alias for remove subcommand in internal/cli/worktree.go
 
 ---
 
@@ -37,11 +37,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Implement git worktree remove function in internal/git/worktree.go
-- [ ] T004 [P] Implement dirty worktree detection (uncommitted/untracked) in internal/git/status.go
-- [ ] T005 [P] Implement CWD-inside-worktree detection in internal/workspace/worktree.go
-- [ ] T006 Implement VS Code workspace file update (remove folders) in internal/workspace/vscode.go
-- [ ] T007 Add `worktree remove`, `wt remove`, and `wt rm` commands to CLI in internal/cli/root.go
+- [X] T003 Implement git worktree remove function in internal/git/worktree.go
+- [X] T004 [P] Implement dirty worktree detection (uncommitted/untracked) in internal/git/status.go
+- [X] T005 [P] Implement CWD-inside-worktree detection in internal/workspace/worktree.go
+- [X] T006 Implement VS Code workspace file update (remove folders) in internal/workspace/vscode.go
+- [X] T007 Add `worktree remove`, `wt remove`, and `wt rm` commands to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - worktree removal with safety checks available
 
@@ -55,14 +55,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Require branch name argument in internal/cli/wt_remove.go
-- [ ] T009 [US1] Find all worktrees for specified branch across repos in internal/cli/wt_remove.go
-- [ ] T010 [US1] Remove worktrees using `git worktree remove` in internal/git/worktree.go
-- [ ] T011 [US1] Delete worktree directories from filesystem in internal/cli/wt_remove.go
-- [ ] T012 [US1] Update `.code-workspace` to remove worktree folders in internal/cli/wt_remove.go
-- [ ] T013 [US1] Update `.foundagent/state.json` to remove worktree entries in internal/workspace/state.go
-- [ ] T014 [US1] Display progress for each repo during removal in internal/cli/wt_remove.go
-- [ ] T015 [US1] Display summary of removed worktrees in internal/cli/wt_remove.go
+- [X] T008 [US1] Require branch name argument in internal/cli/wt_remove.go
+- [X] T009 [US1] Find all worktrees for specified branch across repos in internal/cli/wt_remove.go
+- [X] T010 [US1] Remove worktrees using `git worktree remove` in internal/git/worktree.go
+- [X] T011 [US1] Delete worktree directories from filesystem in internal/cli/wt_remove.go
+- [X] T012 [US1] Update `.code-workspace` to remove worktree folders in internal/cli/wt_remove.go
+- [X] T013 [US1] Update `.foundagent/state.json` to remove worktree entries in internal/workspace/state.go
+- [X] T014 [US1] Display progress for each repo during removal in internal/cli/wt_remove.go
+- [X] T015 [US1] Display summary of removed worktrees in internal/cli/wt_remove.go
 
 **Checkpoint**: `fa wt remove feature-123` removes worktrees from all repos
 
@@ -76,13 +76,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] Check all target worktrees for uncommitted changes in internal/cli/wt_remove.go
-- [ ] T017 [US2] Check all target worktrees for untracked files in internal/cli/wt_remove.go
-- [ ] T018 [US2] Block removal if any worktree is dirty in internal/cli/wt_remove.go
-- [ ] T019 [US2] List all dirty worktrees in error message in internal/cli/wt_remove.go
-- [ ] T020 [US2] Add `--force` flag to override dirty check in internal/cli/wt_remove.go
-- [ ] T021 [US2] Check if CWD is inside target worktree and block (even with --force) in internal/cli/wt_remove.go
-- [ ] T022 [US2] Warn before removing default branch worktrees (require --force) in internal/cli/wt_remove.go
+- [X] T016 [US2] Check all target worktrees for uncommitted changes in internal/cli/wt_remove.go
+- [X] T017 [US2] Check all target worktrees for untracked files in internal/cli/wt_remove.go
+- [X] T018 [US2] Block removal if any worktree is dirty in internal/cli/wt_remove.go
+- [X] T019 [US2] List all dirty worktrees in error message in internal/cli/wt_remove.go
+- [X] T020 [US2] Add `--force` flag to override dirty check in internal/cli/wt_remove.go
+- [X] T021 [US2] Check if CWD is inside target worktree and block (even with --force) in internal/cli/wt_remove.go
+- [X] T022 [US2] Warn before removing default branch worktrees (require --force) in internal/cli/wt_remove.go
 
 **Checkpoint**: Dirty worktrees protected, `--force` required to override
 
@@ -96,12 +96,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Add `--delete-branch` flag to remove command in internal/cli/wt_remove.go
-- [ ] T024 [US3] Check if branch is merged before deletion in internal/git/branch.go
-- [ ] T025 [US3] Warn about unmerged branches and require --force in internal/cli/wt_remove.go
-- [ ] T026 [US3] Delete branch from each repo after worktree removal in internal/git/branch.go
-- [ ] T027 [US3] Skip branch deletion if worktree removal failed in internal/cli/wt_remove.go
-- [ ] T028 [US3] Display confirmation of both worktree removal and branch deletion in internal/cli/wt_remove.go
+- [X] T023 [US3] Add `--delete-branch` flag to remove command in internal/cli/wt_remove.go
+- [X] T024 [US3] Check if branch is merged before deletion in internal/git/branch.go
+- [X] T025 [US3] Warn about unmerged branches and require --force in internal/cli/wt_remove.go
+- [X] T026 [US3] Delete branch from each repo after worktree removal in internal/git/branch.go
+- [X] T027 [US3] Skip branch deletion if worktree removal failed in internal/cli/wt_remove.go
+- [X] T028 [US3] Display confirmation of both worktree removal and branch deletion in internal/cli/wt_remove.go
 
 **Checkpoint**: `fa wt remove --delete-branch` cleans up both worktrees and branches
 
@@ -115,9 +115,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T029 [US4] Add `--json` flag to remove command in internal/cli/wt_remove.go
-- [ ] T030 [US4] Define JSON schema with per-worktree status in internal/cli/wt_remove.go
-- [ ] T031 [US4] Include status (removed, skipped, failed) for each worktree in internal/cli/wt_remove.go
+- [X] T029 [US4] Add `--json` flag to remove command in internal/cli/wt_remove.go
+- [X] T030 [US4] Define JSON schema with per-worktree status in internal/cli/wt_remove.go
+- [X] T031 [US4] Include status (removed, skipped, failed) for each worktree in internal/cli/wt_remove.go
 
 **Checkpoint**: `fa wt remove --json` produces valid, parseable JSON
 
@@ -127,13 +127,13 @@
 
 **Purpose**: Edge cases and error handling
 
-- [ ] T032 [P] Handle branch not found with helpful message in internal/cli/wt_remove.go
-- [ ] T033 [P] Handle partial worktrees (branch in some repos) - remove what exists in internal/cli/wt_remove.go
-- [ ] T034 [P] Handle locked worktrees with clear error in internal/cli/wt_remove.go
-- [ ] T035 [P] Handle permission denied with clear message in internal/cli/wt_remove.go
-- [ ] T036 [P] Validate command is run inside Foundagent workspace in internal/cli/wt_remove.go
-- [ ] T037 Add help text with examples to wt remove command in internal/cli/wt_remove.go
-- [ ] T038 Write integration test for wt remove command in internal/cli/wt_remove_test.go
+- [X] T032 [P] Handle branch not found with helpful message in internal/cli/wt_remove.go
+- [X] T033 [P] Handle partial worktrees (branch in some repos) - remove what exists in internal/cli/wt_remove.go
+- [X] T034 [P] Handle locked worktrees with clear error in internal/cli/wt_remove.go
+- [X] T035 [P] Handle permission denied with clear message in internal/cli/wt_remove.go
+- [X] T036 [P] Validate command is run inside Foundagent workspace in internal/cli/wt_remove.go
+- [X] T037 Add help text with examples to wt remove command in internal/cli/wt_remove.go
+- [X] T038 Write integration test for wt remove command in internal/cli/wt_remove_test.go
 
 ---
 
