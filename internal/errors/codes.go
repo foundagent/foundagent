@@ -28,6 +28,10 @@ const (
 	ErrCodeBranchNotFound      = "E304" // Branch not found
 	ErrCodeInvalidOperation    = "E305" // Invalid operation (e.g., removing worktree you're in)
 
+	// Network errors (E4xx)
+	ErrCodeNetworkError        = "E401" // Network operation failed
+	ErrCodeAuthenticationFailed = "E402" // Authentication failed
+
 	// General errors (E9xx)
 	ErrCodeUnknown             = "E999" // Unknown error
 )

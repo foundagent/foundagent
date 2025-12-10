@@ -26,7 +26,7 @@
 
 **Purpose**: Create command skeleton
 
-- [ ] T001 Create sync command skeleton in internal/cli/sync.go
+- [X] T001 Create sync command skeleton in internal/cli/sync.go
 
 ---
 
@@ -36,12 +36,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Implement git fetch function (update remote refs) in internal/git/remote.go
-- [ ] T003 [P] Implement git pull function (fast-forward only) in internal/git/remote.go
-- [ ] T004 [P] Implement git push function in internal/git/remote.go
-- [ ] T005 [P] Implement ahead/behind commit count detection in internal/git/remote.go
-- [ ] T006 Implement parallel network operation executor in internal/workspace/parallel.go
-- [ ] T007 Add `sync` command to CLI in internal/cli/root.go
+- [X] T002 Implement git fetch function (update remote refs) in internal/git/remote.go
+- [X] T003 [P] Implement git pull function (fast-forward only) in internal/git/remote.go
+- [X] T004 [P] Implement git push function in internal/git/remote.go
+- [X] T005 [P] Implement ahead/behind commit count detection in internal/git/remote.go
+- [X] T006 Implement parallel network operation executor in internal/workspace/parallel.go
+- [X] T007 Add `sync` command to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - git network operations available
 
@@ -55,12 +55,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Get list of all repos from workspace in internal/cli/sync.go
-- [ ] T009 [US1] Fetch from origin remote for each repo in parallel in internal/cli/sync.go
-- [ ] T010 [US1] Display progress for each repo during fetch in internal/cli/sync.go
-- [ ] T011 [US1] Detect repos with available updates (commits behind) in internal/cli/sync.go
-- [ ] T012 [US1] Display summary showing which repos have updates in internal/cli/sync.go
-- [ ] T013 [US1] Display "already up-to-date" for repos with no changes in internal/cli/sync.go
+- [X] T008 [US1] Get list of all repos from workspace in internal/cli/sync.go
+- [X] T009 [US1] Fetch from origin remote for each repo in parallel in internal/cli/sync.go
+- [X] T010 [US1] Display progress for each repo during fetch in internal/cli/sync.go
+- [X] T011 [US1] Detect repos with available updates (commits behind) in internal/cli/sync.go
+- [X] T012 [US1] Display summary showing which repos have updates in internal/cli/sync.go
+- [X] T013 [US1] Display "already up-to-date" for repos with no changes in internal/cli/sync.go
 
 **Checkpoint**: `fa sync` fetches from all remotes and shows update summary
 
@@ -74,13 +74,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Add `--pull` flag to sync command in internal/cli/sync.go
-- [ ] T015 [US2] Determine current branch from CWD or state in internal/cli/sync.go
-- [ ] T016 [US2] Pull all worktrees for current branch after fetch in internal/cli/sync.go
-- [ ] T017 [US2] Skip worktrees with uncommitted changes (warn and list) in internal/cli/sync.go
-- [ ] T018 [US2] Fail gracefully on non-fast-forward (suggest merge/rebase) in internal/cli/sync.go
-- [ ] T019 [US2] Add `--stash` flag to stash changes before pull in internal/cli/sync.go
-- [ ] T020 [US2] Implement stash before pull, pop after in internal/git/stash.go
+- [X] T014 [US2] Add `--pull` flag to sync command in internal/cli/sync.go
+- [X] T015 [US2] Determine current branch from CWD or state in internal/cli/sync.go
+- [X] T016 [US2] Pull all worktrees for current branch after fetch in internal/cli/sync.go
+- [X] T017 [US2] Skip worktrees with uncommitted changes (warn and list) in internal/cli/sync.go
+- [X] T018 [US2] Fail gracefully on non-fast-forward (suggest merge/rebase) in internal/cli/sync.go
+- [X] T019 [US2] Add `--stash` flag to stash changes before pull in internal/cli/sync.go
+- [X] T020 [US2] Implement stash before pull, pop after in internal/git/stash.go
 
 **Checkpoint**: `fa sync --pull` updates current branch worktrees
 
@@ -94,11 +94,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Collect per-repo results (success/failure) during sync in internal/cli/sync.go
-- [ ] T022 [US3] Continue syncing other repos when one fails in internal/cli/sync.go
-- [ ] T023 [US3] Display clear error for each failed repo with suggestion in internal/cli/sync.go
-- [ ] T024 [US3] Include auth failure hints (SSH keys, credentials) in internal/cli/sync.go
-- [ ] T025 [US3] Exit with non-zero code if any repo fails in internal/cli/sync.go
+- [X] T021 [US3] Collect per-repo results (success/failure) during sync in internal/cli/sync.go
+- [X] T022 [US3] Continue syncing other repos when one fails in internal/cli/sync.go
+- [X] T023 [US3] Display clear error for each failed repo with suggestion in internal/cli/sync.go
+- [X] T024 [US3] Include auth failure hints (SSH keys, credentials) in internal/cli/sync.go
+- [X] T025 [US3] Exit with non-zero code if any repo fails in internal/cli/sync.go
 
 **Checkpoint**: Partial failures don't block successful repos
 
@@ -112,9 +112,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T026 [US4] Accept optional branch argument in internal/cli/sync.go
-- [ ] T027 [US4] Sync worktrees for specified branch instead of current in internal/cli/sync.go
-- [ ] T028 [US4] Skip repos where branch doesn't exist with message in internal/cli/sync.go
+- [X] T026 [US4] Accept optional branch argument in internal/cli/sync.go
+- [X] T027 [US4] Sync worktrees for specified branch instead of current in internal/cli/sync.go
+- [X] T028 [US4] Skip repos where branch doesn't exist with message in internal/cli/sync.go
 
 **Checkpoint**: `fa sync feature-123` syncs specific branch
 
@@ -128,10 +128,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T029 [US5] Add `--json` flag to sync command in internal/cli/sync.go
-- [ ] T030 [US5] Define JSON schema with repos array in internal/cli/sync.go
-- [ ] T031 [US5] Include name, status, error, refs_updated for each repo in internal/cli/sync.go
-- [ ] T032 [US5] Include summary with counts (synced, updated, failed, skipped) in internal/cli/sync.go
+- [X] T029 [US5] Add `--json` flag to sync command in internal/cli/sync.go
+- [X] T030 [US5] Define JSON schema with repos array in internal/cli/sync.go
+- [X] T031 [US5] Include name, status, error, refs_updated for each repo in internal/cli/sync.go
+- [X] T032 [US5] Include summary with counts (synced, updated, failed, skipped) in internal/cli/sync.go
 
 **Checkpoint**: `fa sync --json` produces valid, parseable JSON
 
@@ -145,11 +145,11 @@
 
 ### Implementation for User Story 6
 
-- [ ] T033 [US6] Add `--push` flag to sync command in internal/cli/sync.go
-- [ ] T034 [US6] Detect repos with local commits ahead of remote in internal/cli/sync.go
-- [ ] T035 [US6] Push only repos with unpushed commits in internal/cli/sync.go
-- [ ] T036 [US6] Fail gracefully if remote has new commits (suggest pull first) in internal/cli/sync.go
-- [ ] T037 [US6] Display "Nothing to push" when no repos have unpushed commits in internal/cli/sync.go
+- [X] T033 [US6] Add `--push` flag to sync command in internal/cli/sync.go
+- [X] T034 [US6] Detect repos with local commits ahead of remote in internal/cli/sync.go
+- [X] T035 [US6] Push only repos with unpushed commits in internal/cli/sync.go
+- [X] T036 [US6] Fail gracefully if remote has new commits (suggest pull first) in internal/cli/sync.go
+- [X] T037 [US6] Display "Nothing to push" when no repos have unpushed commits in internal/cli/sync.go
 
 **Checkpoint**: `fa sync --push` pushes repos with local changes
 
@@ -159,12 +159,12 @@
 
 **Purpose**: Edge cases and polish
 
-- [ ] T038 [P] Handle empty workspace (no repos) with helpful message in internal/cli/sync.go
-- [ ] T039 [P] Add `-v` / `--verbose` flag for detailed progress in internal/cli/sync.go
-- [ ] T040 [P] Handle detached HEAD worktrees with warning in internal/cli/sync.go
-- [ ] T041 [P] Validate command is run inside Foundagent workspace in internal/cli/sync.go
-- [ ] T042 Add help text with examples to sync command in internal/cli/sync.go
-- [ ] T043 Write integration test for sync command in internal/cli/sync_test.go
+- [X] T038 [P] Handle empty workspace (no repos) with helpful message in internal/cli/sync.go
+- [X] T039 [P] Add `-v` / `--verbose` flag for detailed progress in internal/cli/sync.go
+- [X] T040 [P] Handle detached HEAD worktrees with warning in internal/cli/sync.go
+- [X] T041 [P] Validate command is run inside Foundagent workspace in internal/cli/sync.go
+- [X] T042 Add help text with examples to sync command in internal/cli/sync.go
+- [X] T043 Write integration test for sync command in internal/cli/sync_test.go
 
 ---
 
