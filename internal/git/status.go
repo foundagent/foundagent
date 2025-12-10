@@ -65,3 +65,45 @@ func HasConflicts(worktreePath string) (bool, error) {
 
 	return strings.TrimSpace(string(output)) != "", nil
 }
+
+// GetModifiedFiles returns a list of modified files
+func GetModifiedFiles(worktreePath string) ([]string, error) {
+	cmd := exec.Command("git", "-C", worktreePath, "diff", "--name-only", "HEAD")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			"Failed to get modified files",
+			"Verify the worktree path is valid",
+			err,
+		)
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return []string{}, nil
+	}
+
+	return strings.Split(outputStr, "\n"), nil
+}
+
+// GetUntrackedFiles returns a list of untracked files
+func GetUntrackedFiles(worktreePath string) ([]string, error) {
+	cmd := exec.Command("git", "-C", worktreePath, "ls-files", "--others", "--exclude-standard")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			"Failed to get untracked files",
+			"Verify the worktree path is valid",
+			err,
+		)
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return []string{}, nil
+	}
+
+	return strings.Split(outputStr, "\n"), nil
+}
