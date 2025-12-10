@@ -25,8 +25,8 @@
 
 **Purpose**: Create version infrastructure
 
-- [ ] T001 Create version package with build-time variables in internal/version/version.go
-- [ ] T002 [P] Create version command skeleton in internal/cli/version.go
+- [X] T001 Create version package with build-time variables in internal/version/version.go
+- [X] T002 [P] Create version command skeleton in internal/cli/version.go
 
 ---
 
@@ -36,10 +36,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Define version variables (Version, Commit, BuildDate, GoVersion) in internal/version/version.go
-- [ ] T004 [P] Update build process to inject version via ldflags in Makefile or build script
-- [ ] T005 [P] Add `--version` flag to root command in internal/cli/root.go
-- [ ] T006 Add `version` command to CLI in internal/cli/root.go
+- [X] T003 Define version variables (Version, Commit, BuildDate, GoVersion) in internal/version/version.go
+- [X] T004 [P] Update build process to inject version via ldflags in Makefile or build script
+- [X] T005 [P] Add `--version` flag to root command in internal/cli/root.go
+- [X] T006 Add `version` command to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - version info available at build time
 
@@ -53,10 +53,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement version output (e.g., "foundagent v1.0.0") in internal/cli/version.go
-- [ ] T008 [US1] Ensure `fa version` and `fa --version` produce same output in internal/cli/version.go
-- [ ] T009 [US1] Ensure `foundagent version` works identically in internal/cli/version.go
-- [ ] T010 [US1] Format version as single line for easy parsing in internal/cli/version.go
+- [X] T007 [US1] Implement version output (e.g., "foundagent v1.0.0") in internal/cli/version.go
+- [X] T008 [US1] Ensure `fa version` and `fa --version` produce same output in internal/cli/version.go
+- [X] T009 [US1] Ensure `foundagent version` works identically in internal/cli/version.go
+- [X] T010 [US1] Format version as single line for easy parsing in internal/cli/version.go
 
 **Checkpoint**: `fa version` shows version number
 
@@ -70,11 +70,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Add `--full` flag to version command in internal/cli/version.go
-- [ ] T012 [US2] Display git commit hash (short, 7 chars) in internal/cli/version.go
-- [ ] T013 [US2] Display build date (ISO 8601 format) in internal/cli/version.go
-- [ ] T014 [US2] Display Go version used to build in internal/cli/version.go
-- [ ] T015 [US2] Display OS and architecture (e.g., "darwin/arm64") in internal/cli/version.go
+- [X] T011 [US2] Add `--full` flag to version command in internal/cli/version.go
+- [X] T012 [US2] Display git commit hash (short, 7 chars) in internal/cli/version.go
+- [X] T013 [US2] Display build date (ISO 8601 format) in internal/cli/version.go
+- [X] T014 [US2] Display Go version used to build in internal/cli/version.go
+- [X] T015 [US2] Display OS and architecture (e.g., "darwin/arm64") in internal/cli/version.go
 
 **Checkpoint**: `fa version --full` shows complete build metadata
 
@@ -88,9 +88,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Add `--json` flag to version command in internal/cli/version.go
-- [ ] T017 [US3] Define JSON schema (version, commit, build_date, go_version, os, arch) in internal/cli/version.go
-- [ ] T018 [US3] Output valid JSON with all fields in internal/cli/version.go
+- [X] T016 [US3] Add `--json` flag to version command in internal/cli/version.go
+- [X] T017 [US3] Define JSON schema (version, commit, build_date, go_version, os, arch) in internal/cli/version.go
+- [X] T018 [US3] Output valid JSON with all fields in internal/cli/version.go
 
 **Checkpoint**: `fa version --json` produces valid, parseable JSON
 
@@ -104,13 +104,13 @@
 
 ### Implementation for User Story 4
 
-- [ ] T019 [US4] Add `--check` flag to version command in internal/cli/version.go
-- [ ] T020 [US4] Query GitHub releases API for latest version in internal/version/update.go
-- [ ] T021 [US4] Compare local version to latest release in internal/version/update.go
-- [ ] T022 [US4] Display "You're up to date" if current in internal/cli/version.go
-- [ ] T023 [US4] Display "Update available: vX.Y.Z" with download URL if newer exists in internal/cli/version.go
-- [ ] T024 [US4] Handle network failure gracefully (show local version, warn about check failure) in internal/cli/version.go
-- [ ] T025 [US4] Use timeout (5 seconds) for update check in internal/version/update.go
+- [X] T019 [US4] Add `--check` flag to version command in internal/cli/version.go
+- [X] T020 [US4] Query GitHub releases API for latest version in internal/version/update.go
+- [X] T021 [US4] Compare local version to latest release in internal/version/update.go
+- [X] T022 [US4] Display "You're up to date" if current in internal/cli/version.go
+- [X] T023 [US4] Display "Update available: vX.Y.Z" with download URL if newer exists in internal/cli/version.go
+- [X] T024 [US4] Handle network failure gracefully (show local version, warn about check failure) in internal/cli/version.go
+- [X] T025 [US4] Use timeout (5 seconds) for update check in internal/version/update.go
 
 **Checkpoint**: `fa version --check` reports update availability
 
@@ -120,11 +120,11 @@
 
 **Purpose**: Edge cases and development builds
 
-- [ ] T026 [P] Handle development builds (no version tag) - show "dev" in internal/version/version.go
-- [ ] T027 [P] Handle missing commit hash - show "unknown" in internal/version/version.go
-- [ ] T028 [P] Ensure `fa` and `foundagent` show identical output in internal/cli/version.go
-- [ ] T029 Add help text to version command in internal/cli/version.go
-- [ ] T030 Write unit test for version command in internal/cli/version_test.go
+- [X] T026 [P] Handle development builds (no version tag) - show "dev" in internal/version/version.go
+- [X] T027 [P] Handle missing commit hash - show "unknown" in internal/version/version.go
+- [X] T028 [P] Ensure `fa` and `foundagent` show identical output in internal/cli/version.go
+- [X] T029 Add help text to version command in internal/cli/version.go
+- [X] T030 Write unit test for version command in internal/cli/version_test.go
 
 ---
 
