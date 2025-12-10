@@ -8,6 +8,7 @@ const (
 	ErrCodePathTooLong         = "E003" // Path exceeds OS limits
 	ErrCodeInvalidConfig       = "E004" // Invalid configuration file
 	ErrCodeConfigNotFound      = "E005" // Configuration file not found
+	ErrCodeInvalidInput        = "E006" // Invalid input provided
 
 	// Filesystem errors (E1xx)
 	ErrCodePermissionDenied    = "E101" // Permission denied
@@ -19,6 +20,12 @@ const (
 	ErrCodeGitNotInstalled     = "E201" // Git not installed
 	ErrCodeGitOperationFailed  = "E202" // Git operation failed
 	ErrCodeInvalidRepository   = "E203" // Invalid git repository
+
+	// Worktree errors (E3xx)
+	ErrCodeWorktreeExists      = "E301" // Worktree already exists
+	ErrCodeWorktreeNotFound    = "E302" // Worktree not found
+	ErrCodeBranchExists        = "E303" // Branch already exists
+	ErrCodeBranchNotFound      = "E304" // Branch not found
 
 	// General errors (E9xx)
 	ErrCodeUnknown             = "E999" // Unknown error

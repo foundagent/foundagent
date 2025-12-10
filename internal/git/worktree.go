@@ -19,12 +19,11 @@ type WorktreeAddOptions struct {
 
 // WorktreeAdd creates a new worktree from a bare repository
 func WorktreeAdd(opts WorktreeAddOptions) error {
-	args := []string{"worktree", "add"}
+	args := []string{"--git-dir=" + opts.BareRepoPath, "worktree", "add"}
 
 	args = append(args, opts.WorktreePath, opts.Branch)
 
 	cmd := exec.Command("git", args...)
-	cmd.Dir = opts.BareRepoPath
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
@@ -33,6 +32,53 @@ func WorktreeAdd(opts WorktreeAddOptions) error {
 			errors.ErrCodeGitOperationFailed,
 			fmt.Sprintf("Failed to create worktree for branch %s", opts.Branch),
 			"Ensure the branch exists in the remote repository",
+			err,
+		)
+	}
+
+	return nil
+}
+
+// WorktreeAddNew creates a new worktree with a new branch from a source branch
+func WorktreeAddNew(bareRepoPath, worktreePath, newBranch, sourceBranch string) error {
+	// Create worktree with new branch checked out from source branch
+	args := []string{"--git-dir=" + bareRepoPath, "worktree", "add", "-b", newBranch, worktreePath, sourceBranch}
+
+	cmd := exec.Command("git", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		return errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			fmt.Sprintf("Failed to create worktree with new branch %s from %s", newBranch, sourceBranch),
+			"Ensure the source branch exists",
+			err,
+		)
+	}
+
+	return nil
+}
+
+// WorktreeRemove removes a worktree
+func WorktreeRemove(bareRepoPath, worktreePath string, force bool) error {
+	args := []string{"--git-dir=" + bareRepoPath, "worktree", "remove"}
+	
+	if force {
+		args = append(args, "--force")
+	}
+	
+	args = append(args, worktreePath)
+
+	cmd := exec.Command("git", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		return errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			fmt.Sprintf("Failed to remove worktree at %s", worktreePath),
+			"Check that worktree exists and has no uncommitted changes (use --force to override)",
 			err,
 		)
 	}
