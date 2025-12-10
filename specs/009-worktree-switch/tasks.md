@@ -25,7 +25,7 @@
 
 **Purpose**: Create command skeleton
 
-- [ ] T001 Create switch subcommand skeleton in internal/cli/wt_switch.go
+- [X] T001 Create switch subcommand skeleton in internal/cli/wt_switch.go
 
 ---
 
@@ -35,10 +35,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Implement current branch detection from workspace file in internal/workspace/vscode.go
-- [ ] T003 [P] Implement available branches list from worktrees in internal/workspace/worktree.go
-- [ ] T004 [P] Implement workspace file folder replacement in internal/workspace/vscode.go
-- [ ] T005 Add `worktree switch` and `wt switch` commands to CLI in internal/cli/root.go
+- [X] T002 Implement current branch detection from workspace file in internal/workspace/vscode.go
+- [X] T003 [P] Implement available branches list from worktrees in internal/workspace/worktree.go
+- [X] T004 [P] Implement workspace file folder replacement in internal/workspace/vscode.go
+- [X] T005 Add `worktree switch` and `wt switch` commands to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - workspace file manipulation available
 
@@ -52,14 +52,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Validate target branch has worktrees in internal/cli/wt_switch.go
-- [ ] T007 [US1] Get list of worktrees for target branch in internal/cli/wt_switch.go
-- [ ] T008 [US1] Replace current branch worktree folders with target branch folders in internal/workspace/vscode.go
-- [ ] T009 [US1] Preserve non-worktree folders in workspace file in internal/workspace/vscode.go
-- [ ] T010 [US1] Preserve workspace settings in workspace file in internal/workspace/vscode.go
-- [ ] T011 [US1] Update `.foundagent/state.json` to track current branch in internal/workspace/state.go
-- [ ] T012 [US1] Display confirmation with workspace file path in internal/cli/wt_switch.go
-- [ ] T013 [US1] Handle already on target branch (no-op with message) in internal/cli/wt_switch.go
+- [X] T006 [US1] Validate target branch has worktrees in internal/cli/wt_switch.go
+- [X] T007 [US1] Get list of worktrees for target branch in internal/cli/wt_switch.go
+- [X] T008 [US1] Replace current branch worktree folders with target branch folders in internal/workspace/vscode.go
+- [X] T009 [US1] Preserve non-worktree folders in workspace file in internal/workspace/vscode.go
+- [X] T010 [US1] Preserve workspace settings in workspace file in internal/workspace/vscode.go
+- [X] T011 [US1] Update `.foundagent/state.json` to track current branch in internal/workspace/state.go
+- [X] T012 [US1] Display confirmation with workspace file path in internal/cli/wt_switch.go
+- [X] T013 [US1] Handle already on target branch (no-op with message) in internal/cli/wt_switch.go
 
 **Checkpoint**: `fa wt switch feature-123` updates workspace file
 
@@ -73,10 +73,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Check current worktrees for uncommitted changes in internal/cli/wt_switch.go
-- [ ] T015 [US2] Display warning listing dirty worktrees in internal/cli/wt_switch.go
-- [ ] T016 [US2] Proceed with switch despite warning (changes remain in original) in internal/cli/wt_switch.go
-- [ ] T017 [US2] Add `--quiet` flag to suppress warnings in internal/cli/wt_switch.go
+- [X] T014 [US2] Check current worktrees for uncommitted changes in internal/cli/wt_switch.go
+- [X] T015 [US2] Display warning listing dirty worktrees in internal/cli/wt_switch.go
+- [X] T016 [US2] Proceed with switch despite warning (changes remain in original) in internal/cli/wt_switch.go
+- [X] T017 [US2] Add `--quiet` flag to suppress warnings in internal/cli/wt_switch.go
 
 **Checkpoint**: Users warned about uncommitted work before switch
 
@@ -90,12 +90,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Add `--create` flag to switch command in internal/cli/wt_switch.go
-- [ ] T019 [US3] Add `--from` flag (only with --create) for source branch in internal/cli/wt_switch.go
-- [ ] T020 [US3] Invoke worktree creation logic from wt create in internal/cli/wt_switch.go
-- [ ] T021 [US3] Validate --from branch exists if specified in internal/cli/wt_switch.go
-- [ ] T022 [US3] Switch to newly created worktrees after creation in internal/cli/wt_switch.go
-- [ ] T023 [US3] Error without --create if worktrees don't exist in internal/cli/wt_switch.go
+- [X] T018 [US3] Add `--create` flag to switch command in internal/cli/wt_switch.go
+- [X] T019 [US3] Add `--from` flag (only with --create) for source branch in internal/cli/wt_switch.go
+- [X] T020 [US3] Invoke worktree creation logic from wt create in internal/cli/wt_switch.go
+- [X] T021 [US3] Validate --from branch exists if specified in internal/cli/wt_switch.go
+- [X] T022 [US3] Switch to newly created worktrees after creation in internal/cli/wt_switch.go
+- [X] T023 [US3] Error without --create if worktrees don't exist in internal/cli/wt_switch.go
 
 **Checkpoint**: `fa wt switch --create` creates and switches in one command
 
@@ -109,9 +109,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T024 [US4] Add `--json` flag to switch command in internal/cli/wt_switch.go
-- [ ] T025 [US4] Define JSON schema (switched_to, previous_branch, workspace_file, warnings) in internal/cli/wt_switch.go
-- [ ] T026 [US4] Include error details in JSON on failure in internal/cli/wt_switch.go
+- [X] T024 [US4] Add `--json` flag to switch command in internal/cli/wt_switch.go
+- [X] T025 [US4] Define JSON schema (switched_to, previous_branch, workspace_file, warnings) in internal/cli/wt_switch.go
+- [X] T026 [US4] Include error details in JSON on failure in internal/cli/wt_switch.go
 
 **Checkpoint**: `fa wt switch --json` produces valid, parseable JSON
 
@@ -125,9 +125,9 @@
 
 ### Implementation for User Story 5
 
-- [ ] T027 [US5] Detect no-args invocation in internal/cli/wt_switch.go
-- [ ] T028 [US5] List all branches that have worktrees in internal/cli/wt_switch.go
-- [ ] T029 [US5] Mark current branch in the list in internal/cli/wt_switch.go
+- [X] T027 [US5] Detect no-args invocation in internal/cli/wt_switch.go
+- [X] T028 [US5] List all branches that have worktrees in internal/cli/wt_switch.go
+- [X] T029 [US5] Mark current branch in the list in internal/cli/wt_switch.go
 
 **Checkpoint**: `fa wt switch` shows available branches when no args
 
@@ -137,12 +137,12 @@
 
 **Purpose**: Edge cases and error handling
 
-- [ ] T030 [P] Handle partial worktrees (branch in some repos) with warning in internal/cli/wt_switch.go
-- [ ] T031 [P] Handle missing workspace file - create it in internal/workspace/vscode.go
-- [ ] T032 [P] Handle no worktrees in workspace with helpful message in internal/cli/wt_switch.go
-- [ ] T033 [P] Validate command is run inside Foundagent workspace in internal/cli/wt_switch.go
-- [ ] T034 Add help text with examples to wt switch command in internal/cli/wt_switch.go
-- [ ] T035 Write integration test for wt switch command in internal/cli/wt_switch_test.go
+- [X] T030 [P] Handle partial worktrees (branch in some repos) with warning in internal/cli/wt_switch.go
+- [X] T031 [P] Handle missing workspace file - create it in internal/workspace/vscode.go
+- [X] T032 [P] Handle no worktrees in workspace with helpful message in internal/cli/wt_switch.go
+- [X] T033 [P] Validate command is run inside Foundagent workspace in internal/cli/wt_switch.go
+- [X] T034 Add help text with examples to wt switch command in internal/cli/wt_switch.go
+- [X] T035 Write integration test for wt switch command in internal/cli/wt_switch_test.go
 
 ---
 

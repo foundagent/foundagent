@@ -9,7 +9,8 @@ import (
 
 // State represents the workspace runtime state
 type State struct {
-	Repositories map[string]*Repository `json:"repositories,omitempty"`
+	CurrentBranch string                    `json:"current_branch,omitempty"`
+	Repositories  map[string]*Repository    `json:"repositories,omitempty"`
 }
 
 // createState creates the state.json file with initial empty state
