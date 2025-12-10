@@ -33,3 +33,35 @@ func IsClean(worktreePath string) (bool, error) {
 	}
 	return !hasChanges, nil
 }
+
+// HasUntrackedFiles checks if a worktree has untracked files
+func HasUntrackedFiles(worktreePath string) (bool, error) {
+	cmd := exec.Command("git", "-C", worktreePath, "ls-files", "--others", "--exclude-standard")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return false, errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			"Failed to check for untracked files",
+			"Verify the worktree path is valid",
+			err,
+		)
+	}
+
+	return strings.TrimSpace(string(output)) != "", nil
+}
+
+// HasConflicts checks if a worktree has merge conflicts
+func HasConflicts(worktreePath string) (bool, error) {
+	cmd := exec.Command("git", "-C", worktreePath, "diff", "--name-only", "--diff-filter=U")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return false, errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			"Failed to check for merge conflicts",
+			"Verify the worktree path is valid",
+			err,
+		)
+	}
+
+	return strings.TrimSpace(string(output)) != "", nil
+}

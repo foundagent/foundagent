@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+// WorktreeDetail contains information about a single worktree
+type WorktreeDetail struct {
+	Branch string
+	Repo   string
+	Path   string
+}
+
 // WorktreeExists checks if a worktree exists for a given repo and branch
 func (w *Workspace) WorktreeExists(repoName, branch string) (bool, error) {
 	worktreePath := w.WorktreePath(repoName, branch)
@@ -97,4 +104,37 @@ func (w *Workspace) FindWorktree(branch string) (string, error) {
 
 	repoName := parts[0]
 	return w.WorktreePath(repoName, branch), nil
+}
+
+// GetWorktreesForRepo returns all worktrees for a repository
+func GetWorktreesForRepo(workspaceRoot, repoName string) ([]WorktreeDetail, error) {
+	worktreeBase := filepath.Join(workspaceRoot, ReposDir, WorktreesDir, repoName)
+	
+	// Check if directory exists
+	if _, err := os.Stat(worktreeBase); os.IsNotExist(err) {
+		return []WorktreeDetail{}, nil
+	}
+
+	entries, err := os.ReadDir(worktreeBase)
+	if err != nil {
+		return nil, err
+	}
+
+	worktrees := make([]WorktreeDetail, 0)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			worktrees = append(worktrees, WorktreeDetail{
+				Branch: entry.Name(),
+				Repo:   repoName,
+				Path:   filepath.Join(worktreeBase, entry.Name()),
+			})
+		}
+	}
+	return worktrees, nil
+}
+
+// PathExists checks if a path exists
+func PathExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
