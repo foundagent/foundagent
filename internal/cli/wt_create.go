@@ -295,7 +295,7 @@ func createWorktreeForRepo(ws *workspace.Workspace, repo config.RepoConfig, targ
 			// Delete branch if it exists
 			branchExists, _ := git.BranchExists(bareRepoPath, targetBranch)
 			if branchExists {
-				if err := git.DeleteBranch(bareRepoPath, targetBranch); err != nil {
+				if err := git.DeleteBranch(bareRepoPath, targetBranch, true); err != nil {
 					return createResult{
 						RepoName: repo.Name,
 						Branch:   targetBranch,

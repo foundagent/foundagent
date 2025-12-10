@@ -42,18 +42,46 @@ func CreateBranch(bareRepoPath, newBranch, sourceBranch string) error {
 }
 
 // DeleteBranch deletes a branch from a bare repository
-func DeleteBranch(bareRepoPath, branchName string) error {
-	cmd := exec.Command("git", "--git-dir="+bareRepoPath, "branch", "-D", branchName)
+func DeleteBranch(bareRepoPath, branchName string, force bool) error {
+	deleteFlag := "-d"
+	if force {
+		deleteFlag = "-D"
+	}
+	
+	cmd := exec.Command("git", "--git-dir="+bareRepoPath, "branch", deleteFlag, branchName)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return errors.Wrap(
 			errors.ErrCodeGitOperationFailed,
 			"Failed to delete branch: "+strings.TrimSpace(string(output)),
-			"Check that branch exists",
+			"Check that branch exists and is fully merged (or use --force)",
 			err,
 		)
 	}
 	return nil
+}
+
+// IsBranchMerged checks if a branch is fully merged into another branch
+func IsBranchMerged(bareRepoPath, branch, baseBranch string) (bool, error) {
+	// Use git branch --merged to check if branch is in the merged list
+	cmd := exec.Command("git", "--git-dir="+bareRepoPath, "branch", "--merged", baseBranch, "--format=%(refname:short)")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return false, errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			"Failed to check if branch is merged",
+			"Check repository state",
+			err,
+		)
+	}
+
+	mergedBranches := strings.Split(strings.TrimSpace(string(output)), "\n")
+	for _, b := range mergedBranches {
+		if strings.TrimSpace(b) == branch {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 // GetBranches lists all branches in a repository

@@ -26,6 +26,7 @@ const (
 	ErrCodeWorktreeNotFound    = "E302" // Worktree not found
 	ErrCodeBranchExists        = "E303" // Branch already exists
 	ErrCodeBranchNotFound      = "E304" // Branch not found
+	ErrCodeInvalidOperation    = "E305" // Invalid operation (e.g., removing worktree you're in)
 
 	// General errors (E9xx)
 	ErrCodeUnknown             = "E999" // Unknown error
