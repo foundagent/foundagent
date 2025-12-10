@@ -26,8 +26,8 @@
 
 **Purpose**: Create doctor infrastructure
 
-- [ ] T001 Create doctor package with check framework in internal/doctor/doctor.go
-- [ ] T002 [P] Create doctor command skeleton in internal/cli/doctor.go
+- [X] T001 Create doctor package with check framework in internal/doctor/doctor.go
+- [X] T002 [P] Create doctor command skeleton in internal/cli/doctor.go
 
 ---
 
@@ -37,11 +37,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Define Check interface (Name, Run, Remediation) in internal/doctor/check.go
-- [ ] T004 [P] Define CheckResult struct (Name, Status, Message, Remediation, Fixable) in internal/doctor/check.go
-- [ ] T005 [P] Define Status enum (Pass, Warn, Fail) in internal/doctor/check.go
-- [ ] T006 Implement check runner with result collection in internal/doctor/runner.go
-- [ ] T007 Add `doctor` command to CLI in internal/cli/root.go
+- [X] T003 Define Check interface (Name, Run, Remediation) in internal/doctor/check.go
+- [X] T004 [P] Define CheckResult struct (Name, Status, Message, Remediation, Fixable) in internal/doctor/check.go
+- [X] T005 [P] Define Status enum (Pass, Warn, Fail) in internal/doctor/check.go
+- [X] T006 Implement check runner with result collection in internal/doctor/runner.go
+- [X] T007 Add `doctor` command to CLI in internal/cli/root.go
 
 **Checkpoint**: Foundation ready - check framework available
 
@@ -55,23 +55,23 @@
 
 ### Environment Checks
 
-- [ ] T008 [US1] Implement Git installation check in internal/doctor/checks/git.go
-- [ ] T009 [US1] Implement Git version check (minimum version) in internal/doctor/checks/git.go
+- [X] T008 [US1] Implement Git installation check in internal/doctor/checks/git.go
+- [X] T009 [US1] Implement Git version check (minimum version) in internal/doctor/checks/git.go
 
 ### Workspace Structure Checks
 
-- [ ] T010 [US1] Implement `.foundagent.yaml` exists and valid check in internal/doctor/checks/config.go
-- [ ] T011 [US1] Implement `.foundagent/` directory exists check in internal/doctor/checks/structure.go
-- [ ] T012 [US1] Implement `.foundagent/state.json` exists and valid check in internal/doctor/checks/state.go
-- [ ] T013 [US1] Implement `repos/` directory exists check in internal/doctor/checks/structure.go
-- [ ] T014 [US1] Implement `repos/.bare/` directory exists check in internal/doctor/checks/structure.go
-- [ ] T015 [US1] Implement `repos/worktrees/` directory exists check in internal/doctor/checks/structure.go
+- [X] T010 [US1] Implement `.foundagent.yaml` exists and valid check in internal/doctor/checks/config.go
+- [X] T011 [US1] Implement `.foundagent/` directory exists check in internal/doctor/checks/structure.go
+- [X] T012 [US1] Implement `.foundagent/state.json` exists and valid check in internal/doctor/checks/state.go
+- [X] T013 [US1] Implement `repos/` directory exists check in internal/doctor/checks/structure.go
+- [X] T014 [US1] Implement `repos/.bare/` directory exists check in internal/doctor/checks/structure.go
+- [X] T015 [US1] Implement `repos/worktrees/` directory exists check in internal/doctor/checks/structure.go
 
 ### Output
 
-- [ ] T016 [US1] Display check name, status (✓/✗), and message for each check in internal/cli/doctor.go
-- [ ] T017 [US1] Display summary line (e.g., "5 checks passed, 1 failed") in internal/cli/doctor.go
-- [ ] T018 [US1] Exit with code 0 if all pass, non-zero if any fail in internal/cli/doctor.go
+- [X] T016 [US1] Display check name, status (✓/✗), and message for each check in internal/cli/doctor.go
+- [X] T017 [US1] Display summary line (e.g., "5 checks passed, 1 failed") in internal/cli/doctor.go
+- [X] T018 [US1] Exit with code 0 if all pass, non-zero if any fail in internal/cli/doctor.go
 
 **Checkpoint**: `fa doctor` shows health check summary
 
@@ -85,25 +85,25 @@
 
 ### Repository Checks
 
-- [ ] T019 [US2] Implement check: each repo in config has bare clone in `repos/.bare/` in internal/doctor/checks/repos.go
-- [ ] T020 [US2] Implement check: each bare clone is valid Git repository in internal/doctor/checks/repos.go
-- [ ] T021 [US2] Implement check: detect orphaned bare clones (not in config) in internal/doctor/checks/repos.go
+- [X] T019 [US2] Implement check: each repo in config has bare clone in `repos/.bare/` in internal/doctor/checks/repos.go
+- [X] T020 [US2] Implement check: each bare clone is valid Git repository in internal/doctor/checks/repos.go
+- [X] T021 [US2] Implement check: detect orphaned bare clones (not in config) in internal/doctor/checks/repos.go
 
 ### Worktree Checks
 
-- [ ] T022 [US2] Implement check: worktrees in state.json exist on disk in internal/doctor/checks/worktrees.go
-- [ ] T023 [US2] Implement check: worktrees on disk are tracked by git worktree in internal/doctor/checks/worktrees.go
-- [ ] T024 [US2] Implement check: detect orphaned worktree directories in internal/doctor/checks/worktrees.go
-- [ ] T025 [US2] Implement check: worktree paths match expected structure in internal/doctor/checks/worktrees.go
+- [X] T022 [US2] Implement check: worktrees in state.json exist on disk in internal/doctor/checks/worktrees.go
+- [X] T023 [US2] Implement check: worktrees on disk are tracked by git worktree in internal/doctor/checks/worktrees.go
+- [X] T024 [US2] Implement check: detect orphaned worktree directories in internal/doctor/checks/worktrees.go
+- [X] T025 [US2] Implement check: worktree paths match expected structure in internal/doctor/checks/worktrees.go
 
 ### State Consistency Checks
 
-- [ ] T026 [US2] Implement check: config and state.json are in sync in internal/doctor/checks/consistency.go
-- [ ] T027 [US2] Implement check: `.code-workspace` matches current worktrees in internal/doctor/checks/consistency.go
+- [X] T026 [US2] Implement check: config and state.json are in sync in internal/doctor/checks/consistency.go
+- [X] T027 [US2] Implement check: `.code-workspace` matches current worktrees in internal/doctor/checks/consistency.go
 
 ### Remediation
 
-- [ ] T028 [US2] Include clear remediation steps in all check failures in internal/doctor/checks/*.go
+- [X] T028 [US2] Include clear remediation steps in all check failures in internal/doctor/checks/*.go
 
 **Checkpoint**: All failures include explanation and remediation
 
@@ -117,9 +117,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T029 [US3] Add `--json` flag to doctor command in internal/cli/doctor.go
-- [ ] T030 [US3] Define JSON schema with checks array (name, status, message, remediation, fixable) in internal/cli/doctor.go
-- [ ] T031 [US3] Include summary object (total, passed, warnings, failed) in internal/cli/doctor.go
+- [X] T029 [US3] Add `--json` flag to doctor command in internal/cli/doctor.go
+- [X] T030 [US3] Define JSON schema with checks array (name, status, message, remediation, fixable) in internal/cli/doctor.go
+- [X] T031 [US3] Include summary object (total, passed, warnings, failed) in internal/cli/doctor.go
 
 **Checkpoint**: `fa doctor --json` produces valid, parseable JSON
 
@@ -133,13 +133,13 @@
 
 ### Implementation for User Story 4
 
-- [ ] T032 [US4] Add `--fix` flag to doctor command in internal/cli/doctor.go
-- [ ] T033 [US4] Mark fixable checks in check definitions in internal/doctor/check.go
-- [ ] T034 [US4] Implement fix: regenerate missing state.json from filesystem in internal/doctor/fixes/state.go
-- [ ] T035 [US4] Implement fix: sync workspace file with current worktrees in internal/doctor/fixes/vscode.go
-- [ ] T036 [US4] Implement fix: remove orphaned state entries in internal/doctor/fixes/state.go
-- [ ] T037 [US4] Display what was fixed vs what needs manual intervention in internal/cli/doctor.go
-- [ ] T038 [US4] Never auto-fix destructive operations (e.g., deleting repos) in internal/doctor/fixes/*.go
+- [X] T032 [US4] Add `--fix` flag to doctor command in internal/cli/doctor.go
+- [X] T033 [US4] Mark fixable checks in check definitions in internal/doctor/check.go
+- [X] T034 [US4] Implement fix: regenerate missing state.json from filesystem in internal/doctor/fixes/state.go
+- [X] T035 [US4] Implement fix: sync workspace file with current worktrees in internal/doctor/fixes/vscode.go
+- [X] T036 [US4] Implement fix: remove orphaned state entries in internal/doctor/fixes/state.go
+- [X] T037 [US4] Display what was fixed vs what needs manual intervention in internal/cli/doctor.go
+- [X] T038 [US4] Never auto-fix destructive operations (e.g., deleting repos) in internal/doctor/fixes/*.go
 
 **Checkpoint**: `fa doctor --fix` repairs fixable issues
 
@@ -149,12 +149,12 @@
 
 **Purpose**: Edge cases and additional flags
 
-- [ ] T039 [P] Handle not in workspace with clear error in internal/cli/doctor.go
-- [ ] T040 [P] Handle partial workspace (some files missing) gracefully in internal/cli/doctor.go
-- [ ] T041 [P] Add `-v` / `--verbose` flag for detailed check output in internal/cli/doctor.go
-- [ ] T042 [P] Group checks by category in verbose output in internal/cli/doctor.go
-- [ ] T043 Add help text with examples to doctor command in internal/cli/doctor.go
-- [ ] T044 Write integration test for doctor command in internal/cli/doctor_test.go
+- [X] T039 [P] Handle not in workspace with clear error in internal/cli/doctor.go
+- [X] T040 [P] Handle partial workspace (some files missing) gracefully in internal/cli/doctor.go
+- [X] T041 [P] Add `-v` / `--verbose` flag for detailed check output in internal/cli/doctor.go
+- [X] T042 [P] Group checks by category in verbose output in internal/cli/doctor.go
+- [X] T043 Add help text with examples to doctor command in internal/cli/doctor.go
+- [X] T044 Write integration test for doctor command in internal/cli/doctor_test.go
 
 ---
 
