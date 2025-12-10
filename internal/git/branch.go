@@ -106,3 +106,22 @@ func GetBranches(bareRepoPath string) ([]string, error) {
 	}
 	return branches, nil
 }
+
+// IsDetachedHead checks if a worktree is in detached HEAD state
+func IsDetachedHead(worktreePath string) (bool, error) {
+	cmd := exec.Command("git", "-C", worktreePath, "symbolic-ref", "-q", "HEAD")
+	err := cmd.Run()
+	if err != nil {
+		// Exit code 1 means detached HEAD
+		if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
+			return true, nil
+		}
+		return false, errors.Wrap(
+			errors.ErrCodeGitOperationFailed,
+			"Failed to check HEAD state",
+			"Check repository state with 'git status'",
+			err,
+		)
+	}
+	return false, nil
+}
