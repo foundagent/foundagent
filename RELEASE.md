@@ -61,9 +61,9 @@ Once the tag is pushed, GitHub Actions will automatically:
 - [ ] Announce on relevant channels
 - [ ] Update Homebrew formula (if applicable)
 
-## Manual Release (if needed)
+## Local Build (if needed)
 
-If you need to create a release manually:
+If you need to build binaries locally for testing:
 
 ```bash
 # Build all platform binaries
@@ -71,8 +71,6 @@ make release
 
 # This creates binaries in dist/ directory
 ls -l dist/
-
-# Create GitHub release manually and upload files from dist/
 ```
 
 ## Hotfix Release
@@ -115,14 +113,18 @@ If a release has critical issues:
 
 ## Pre-releases
 
-For beta or release candidate versions:
+For beta or release candidate versions, use tags with `-alpha`, `-beta`, or `-rc` suffixes:
 
 ```bash
-# Create pre-release tag
+# Examples of pre-release tags
+git tag -a v1.0.0-beta -m "Beta release"
 git tag -a v1.0.0-rc.1 -m "Release Candidate 1"
-git push origin v1.0.0-rc.1
+git tag -a v1.0.0-alpha.1 -m "Alpha release 1"
 
-# GitHub Actions will mark this as a pre-release automatically
+# Push the tag
+git push origin v1.0.0-beta
+
+# GitHub Actions will automatically detect and mark it as a pre-release
 ```
 
 ## Release Schedule

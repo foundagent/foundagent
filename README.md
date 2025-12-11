@@ -1,6 +1,10 @@
-# Foundagent
+<div align="center">
 
-A Git worktree workspace manager with VS Code integration.
+# <img src="assets/foundagent_logo.png" width="40" alt="Foundagent Logo" style="vertical-align: middle;"> &nbsp; Foundagent
+
+The foundational workspace manager for agentic development
+
+</div>
 
 ## Overview
 
@@ -8,13 +12,34 @@ Foundagent is a CLI tool for managing multi-repository development environments 
 
 ## Installation
 
-### Prerequisites
+### From GitHub Releases (Recommended)
 
-- Go 1.21 or later
+Download the latest pre-built binary for your platform from the [GitHub Releases](https://github.com/foundagent/foundagent/releases) page.
+
+**macOS/Linux:**
+```bash
+# Download the binary (replace VERSION and PLATFORM with appropriate values)
+curl -L -o foundagent https://github.com/foundagent/foundagent/releases/download/VERSION/foundagent-PLATFORM
+
+# Make it executable
+chmod +x foundagent
+
+# Move to a location in your PATH
+sudo mv foundagent /usr/local/bin/fa
+```
+
+**Prerequisites:**
 - Git
 
 ### Build from Source
 
+If you prefer to build from source:
+
+**Prerequisites:**
+- Go 1.25 or later
+- Git
+
+**Build:**
 ```bash
 git clone https://github.com/foundagent/foundagent.git
 cd foundagent
