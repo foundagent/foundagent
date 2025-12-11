@@ -34,7 +34,7 @@ func (c WorktreesCheck) Run() CheckResult {
 	// Check each worktree
 	for _, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
-			wtPath := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir, repo.Name, wt)
+			wtPath := c.Workspace.WorktreePath(repo.Name, wt)
 
 			// Check if directory exists
 			if _, err := os.Stat(wtPath); os.IsNotExist(err) {
@@ -95,16 +95,16 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 		}
 	}
 
-	worktreesDir := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir)
+	reposDir := filepath.Join(c.Workspace.Path, workspace.ReposDir)
 
-	// Get all directories in worktrees/
-	entries, err := os.ReadDir(worktreesDir)
+	// Get all repo directories in repos/
+	entries, err := os.ReadDir(reposDir)
 	if err != nil {
 		// Directory doesn't exist or can't be read
 		return CheckResult{
 			Name:    c.Name(),
 			Status:  StatusPass,
-			Message: "No worktrees found",
+			Message: "No repos found",
 			Fixable: false,
 		}
 	}
@@ -137,9 +137,9 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 			continue
 		}
 
-		// Check worktrees within this repo
-		repoPath := filepath.Join(worktreesDir, repoName)
-		wtEntries, err := os.ReadDir(repoPath)
+		// Check worktrees within this repo (repos/<repo-name>/worktrees/)
+		worktreesPath := c.Workspace.WorktreeBasePath(repoName)
+		wtEntries, err := os.ReadDir(worktreesPath)
 		if err != nil {
 			continue
 		}

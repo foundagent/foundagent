@@ -17,7 +17,7 @@ A developer wants to start working on a new feature that spans multiple reposito
 
 **Acceptance Scenarios**:
 
-1. **Given** a workspace with 3 repos (api, web, lib), **When** I run `fa wt create feature-123`, **Then** worktrees are created at `repos/worktrees/api/feature-123/`, `repos/worktrees/web/feature-123/`, and `repos/worktrees/lib/feature-123/`
+1. **Given** a workspace with 3 repos (api, web, lib), **When** I run `fa wt create feature-123`, **Then** worktrees are created at `repos/api/worktrees/feature-123/`, `repos/web/worktrees/feature-123/`, and `repos/lib/worktrees/feature-123/`
 2. **Given** the worktree creation succeeds, **When** I check the `.code-workspace` file, **Then** all 3 new worktree directories are included as folders
 3. **Given** all repos have `main` as default branch, **When** I run `fa wt create feature-123`, **Then** each worktree is based on that repo's `main` branch
 4. **Given** repos have different default branches (main, master, develop), **When** I run `fa wt create feature-123`, **Then** each worktree is based on its repo's own default branch
@@ -119,7 +119,7 @@ A developer accidentally runs `fa wt create feature-123` when that branch alread
 
 #### Worktree Creation
 - **FR-010**: System MUST create worktrees across ALL repos in the workspace
-- **FR-011**: System MUST create each worktree at `repos/worktrees/<repo>/<branch>/`
+- **FR-011**: System MUST create each worktree at `repos/<repo>/worktrees/<branch>/`
 - **FR-012**: System MUST create worktrees in parallel for performance
 - **FR-013**: System MUST create a new branch with the specified name in each repo
 - **FR-014**: New branch MUST be based on the source branch (default or `--from`)
@@ -158,8 +158,8 @@ A developer accidentally runs `fa wt create feature-123` when that branch alread
 - Users have already initialized a workspace with `fa init` and added repos with `fa add`
 - Git is installed and available on the system PATH
 - Users have appropriate permissions to create directories in the workspace
-- Worktrees are created at `repos/worktrees/<repo>/<branch>/` following repo → branch hierarchy
-- Bare clones exist at `repos/.bare/<repo>.git/`
+- Worktrees are created at `repos/<repo>/worktrees/<branch>/` following repo → branch hierarchy
+- Bare clones exist at `repos/<repo>/.bare/`
 
 ## Success Criteria *(mandatory)*
 

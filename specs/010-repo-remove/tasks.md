@@ -58,7 +58,7 @@
 - [X] T008 [US1] Require repo name argument in internal/cli/remove.go
 - [X] T009 [US1] Verify repo exists in workspace in internal/cli/remove.go
 - [X] T010 [US1] Remove repo from `.foundagent.yaml` config in internal/config/writer.go
-- [X] T011 [US1] Delete bare clone at `repos/.bare/<name>.git/` in internal/cli/remove.go
+- [X] T011 [US1] Delete bare clone at `repos/<name>/.bare/` in internal/cli/remove.go
 - [X] T012 [US1] Delete all worktrees at `repos/worktrees/<name>/` using git worktree remove in internal/cli/remove.go
 - [X] T013 [US1] Update `.code-workspace` to remove worktree folders in internal/cli/remove.go
 - [X] T014 [US1] Update `.foundagent/state.json` to remove repo entries in internal/workspace/state.go
@@ -224,8 +224,8 @@ After Foundational (Phase 2) completes:
 ## Notes
 
 - Repos identified by local name (from config), not URL
-- Bare clones at `repos/.bare/<name>.git/`
-- Worktrees at `repos/worktrees/<name>/<branch>/`
+- Bare clones at `repos/<name>/.bare/`
+- Worktrees at `repos/<name>/worktrees/<branch>/`
 - Non-destructive by default - dirty worktrees require `--force`
 - Removal is permanent (no undo)
 - All error messages must include actionable remediation per constitution

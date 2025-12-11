@@ -17,7 +17,7 @@ A developer is working on `main` and needs to switch to `feature-123` to review 
 
 **Acceptance Scenarios**:
 
-1. **Given** worktrees exist for `main` and `feature-123`, **When** I run `fa wt switch feature-123`, **Then** the `.code-workspace` file is updated to include `repos/worktrees/api/feature-123/`, `repos/worktrees/web/feature-123/`, `repos/worktrees/lib/feature-123/`
+1. **Given** worktrees exist for `main` and `feature-123`, **When** I run `fa wt switch feature-123`, **Then** the `.code-workspace` file is updated to include `repos/api/worktrees/feature-123/`, `repos/web/worktrees/feature-123/`, `repos/lib/worktrees/feature-123/`
 2. **Given** I switch to `feature-123`, **When** I check the `.code-workspace` file, **Then** the `main` worktree folders are no longer listed
 3. **Given** switch completes, **When** I reload VS Code, **Then** I see all repos at the `feature-123` branch
 
@@ -150,7 +150,7 @@ A developer isn't sure which branches have worktrees. Running `fa wt switch` wit
 
 ### Assumptions
 
-- Worktrees exist at `repos/worktrees/<repo>/<branch>/` following canonical structure
+- Worktrees exist at `repos/<repo>/worktrees/<branch>/` following canonical structure
 - Switching only updates the `.code-workspace` file — actual git worktrees remain unchanged
 - Users reload VS Code after switch to see the new folders (or VS Code auto-detects)
 - Current branch determined from workspace file contents or `.foundagent/state.json`

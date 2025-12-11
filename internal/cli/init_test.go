@@ -47,9 +47,9 @@ func TestInitCommand(t *testing.T) {
 				require.NoError(t, json.Unmarshal(stateData, &state))
 
 				// Check repos structure
+				// Note: Individual repo directories (repos/<repo-name>/.bare/ and worktrees/)
+				// are created when repos are added, not during init
 				assert.DirExists(t, filepath.Join(wsPath, "repos"))
-				assert.DirExists(t, filepath.Join(wsPath, "repos", ".bare"))
-				assert.DirExists(t, filepath.Join(wsPath, "repos", "worktrees"))
 
 				// Check VS Code workspace file
 				vscPath := filepath.Join(wsPath, "test-workspace.code-workspace")
@@ -152,7 +152,7 @@ func TestInitCommand(t *testing.T) {
 			oldCwd, err := os.Getwd()
 			require.NoError(t, err)
 			require.NoError(t, os.Chdir(tmpDir))
-			defer os.Chdir(oldCwd)
+			defer func() { _ = os.Chdir(oldCwd) }()
 
 			// Run setup if provided
 			if tt.setupFunc != nil {
@@ -185,7 +185,7 @@ func TestInitCommand(t *testing.T) {
 			// Restore stdout and read captured output
 			w.Close()
 			os.Stdout = oldStdout
-			buf.ReadFrom(r)
+			_, _ = buf.ReadFrom(r)
 			output := buf.String()
 
 			// Check error expectation

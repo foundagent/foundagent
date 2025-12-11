@@ -34,5 +34,5 @@
 - Follows graceful degradation principle: partial failures don't block success
 - Protects uncommitted changes: dirty worktrees skipped or stashed
 - Fast-forward only for `--pull` (no auto-merge complexity)
-- Paths follow canonical structure: `repos/worktrees/<repo>/<branch>/`, `repos/.bare/<repo>.git/`
+- Paths follow canonical structure: `repos/<repo>/worktrees/<branch>/`, `repos/<repo>/.bare/`
 - All items pass validation - spec is ready for `/speckit.clarify` or `/speckit.plan`

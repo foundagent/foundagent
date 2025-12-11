@@ -83,8 +83,8 @@ A developer has a corrupted or misconfigured workspace and wants to reinitialize
 - **FR-012**: System MUST display a success message with the absolute path to the created workspace
 - **FR-013**: System MUST exit with code 0 on success, non-zero on failure
 - **FR-014**: System MUST create a `repos/` directory at workspace root for repository storage
-- **FR-015**: System MUST create `repos/.bare/` subdirectory for bare clones
-- **FR-016**: System MUST create `repos/worktrees/` subdirectory for working directories
+- **FR-015**: System MUST create `repos/<repo-name>/.bare/` subdirectory for bare clones
+- **FR-016**: System MUST create `repos/<repo-name>/worktrees/` subdirectory for working directories
 
 ### Key Entities
 

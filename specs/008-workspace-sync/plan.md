@@ -12,7 +12,7 @@ Implement `fa sync` command that fetches from all remotes in parallel, with opti
 
 **Language/Version**: Go 1.21+  
 **Primary Dependencies**: Cobra (CLI), go-git (fetch/push), os/exec (git pull fallback)  
-**Storage**: Updates bare clones at `repos/.bare/`, worktrees at `repos/worktrees/`  
+**Storage**: Updates bare clones at `repos/<repo-name>/.bare/`, worktrees at `repos/<repo-name>/worktrees/`  
 **Testing**: `go test` with `testify/assert`, table-driven tests, mocked network  
 **Target Platform**: macOS, Linux, Windows  
 **Project Type**: Single Go CLI application  

@@ -34,7 +34,7 @@ A developer tries to remove a repo that has uncommitted changes in one or more w
 
 **Acceptance Scenarios**:
 
-1. **Given** repo `api` has uncommitted changes in `repos/worktrees/api/feature-x/`, **When** I run `fa remove api`, **Then** command fails with error listing dirty worktrees
+1. **Given** repo `api` has uncommitted changes in `repos/api/worktrees/feature-x/`, **When** I run `fa remove api`, **Then** command fails with error listing dirty worktrees
 2. **Given** removal is blocked, **When** I see the error, **Then** it includes hint: "Use `--force` to remove anyway, or commit/stash changes first"
 3. **Given** dirty worktrees exist, **When** I run `fa remove api --force`, **Then** repo and all worktrees are removed including dirty ones
 
@@ -120,7 +120,7 @@ A developer wants to remove several repos at once. They run `fa remove api web` 
 
 #### Removal Process
 - **FR-013**: System MUST remove repo from `.foundagent.yaml` config
-- **FR-014**: System MUST delete bare clone at `repos/.bare/<name>.git/`
+- **FR-014**: System MUST delete bare clone at `repos/<name>/.bare/`
 - **FR-015**: System MUST delete all worktrees at `repos/worktrees/<name>/`
 - **FR-016**: System MUST use `git worktree remove` for proper worktree cleanup
 - **FR-017**: System MUST update `.code-workspace` to remove worktree folders
@@ -141,15 +141,15 @@ A developer wants to remove several repos at once. They run `fa remove api web` 
 
 ### Key Entities
 
-- **Repository**: A repo to be removed, identified by its local name. Located at `repos/.bare/<name>.git/` with worktrees at `repos/worktrees/<name>/`.
+- **Repository**: A repo to be removed, identified by its local name. Located at `repos/<name>/.bare/` with worktrees at `repos/worktrees/<name>/`.
 - **Dirty Worktree**: A worktree with uncommitted changes that blocks removal.
 - **Removal Scope**: What gets removed — config entry, bare clone, worktrees, or just config (with `--config-only`).
 
 ### Assumptions
 
 - Repos identified by local name (as shown in config), not by URL
-- Bare clones at `repos/.bare/<name>.git/`
-- Worktrees at `repos/worktrees/<name>/<branch>/`
+- Bare clones at `repos/<name>/.bare/`
+- Worktrees at `repos/<name>/worktrees/<branch>/`
 - Removal is permanent (no undo) — hence safety checks
 
 ## Success Criteria *(mandatory)*

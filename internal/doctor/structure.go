@@ -65,29 +65,8 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 		}
 	}
 
-	// Check repos/.bare/
-	bareDir := filepath.Join(reposDir, workspace.BareDir)
-	if _, err := os.Stat(bareDir); os.IsNotExist(err) {
-		return CheckResult{
-			Name:        c.Name(),
-			Status:      StatusWarn,
-			Message:     "repos/.bare/ directory not found",
-			Remediation: "Create directory: mkdir -p repos/.bare",
-			Fixable:     true,
-		}
-	}
-
-	// Check repos/worktrees/
-	worktreesDir := filepath.Join(reposDir, workspace.WorktreesDir)
-	if _, err := os.Stat(worktreesDir); os.IsNotExist(err) {
-		return CheckResult{
-			Name:        c.Name(),
-			Status:      StatusWarn,
-			Message:     "repos/worktrees/ directory not found",
-			Remediation: "Create directory: mkdir -p repos/worktrees",
-			Fixable:     true,
-		}
-	}
+	// Note: Individual repo directories (repos/<repo-name>/.bare/ and repos/<repo-name>/worktrees/)
+	// are created when repos are added, so we don't check for them here
 
 	return CheckResult{
 		Name:    c.Name(),

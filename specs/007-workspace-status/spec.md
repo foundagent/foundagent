@@ -34,8 +34,8 @@ A developer wants to quickly see if they have any uncommitted changes across all
 
 **Acceptance Scenarios**:
 
-1. **Given** worktree `repos/worktrees/api/feature-x/` has uncommitted changes, **When** I run `fa status`, **Then** that worktree shows `[modified]` or similar indicator
-2. **Given** worktree `repos/worktrees/web/main/` has untracked files, **When** I run `fa status`, **Then** that worktree shows `[untracked]` or similar indicator
+1. **Given** worktree `repos/api/worktrees/feature-x/` has uncommitted changes, **When** I run `fa status`, **Then** that worktree shows `[modified]` or similar indicator
+2. **Given** worktree `repos/web/worktrees/main/` has untracked files, **When** I run `fa status`, **Then** that worktree shows `[untracked]` or similar indicator
 3. **Given** all worktrees are clean, **When** I run `fa status`, **Then** I see "All worktrees clean" or similar message
 
 ---
@@ -116,13 +116,13 @@ A developer wants more details about their workspace, including file counts and 
 
 #### Repo Status
 - **FR-010**: System MUST list all repos from config
-- **FR-011**: System MUST show clone status for each repo (bare clone exists in `repos/.bare/<name>.git/`)
+- **FR-011**: System MUST show clone status for each repo (bare clone exists in `repos/<name>/.bare/`)
 - **FR-012**: System MUST show repos that are cloned but not in config
 - **FR-013**: System MUST show repo URL and local name
 
 #### Worktree Status
 - **FR-014**: System MUST list all worktrees grouped by branch
-- **FR-015**: System MUST show path for each worktree (e.g., `repos/worktrees/api/main/`)
+- **FR-015**: System MUST show path for each worktree (e.g., `repos/api/worktrees/main/`)
 - **FR-016**: System MUST show status for each worktree (clean/modified/untracked/conflict)
 - **FR-017**: System MUST highlight the current worktree
 - **FR-018**: Status detection MUST run in parallel for performance
@@ -135,7 +135,7 @@ A developer wants more details about their workspace, including file counts and 
 #### JSON Output
 - **FR-022**: JSON MUST include `workspace` object with name and root path
 - **FR-023**: JSON MUST include `repos` array with name, url, clone_status, in_config
-- **FR-024**: JSON MUST include `worktrees` array with branch, repo, path (e.g., `repos/worktrees/api/main/`), status, is_current
+- **FR-024**: JSON MUST include `worktrees` array with branch, repo, path (e.g., `repos/api/worktrees/main/`), status, is_current
 - **FR-025**: JSON MUST include `summary` object with counts and sync_status
 - **FR-026**: When dirty worktrees exist, JSON `summary.has_uncommitted_changes` MUST be true
 
@@ -156,8 +156,8 @@ A developer wants more details about their workspace, including file counts and 
 
 - Status is a read-only operation; no changes to filesystem or config
 - Status checks are local only (no network/remote checks) for speed
-- Current worktree detected by checking if CWD is inside `repos/worktrees/<repo>/<branch>/`
-- Bare clones located at `repos/.bare/<repo>.git/`
+- Current worktree detected by checking if CWD is inside `repos/<repo>/worktrees/<branch>/`
+- Bare clones located at `repos/<repo>/.bare/`
 - Parallel status detection for performance in large workspaces
 
 ## Success Criteria *(mandatory)*

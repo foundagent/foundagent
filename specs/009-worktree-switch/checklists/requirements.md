@@ -34,5 +34,5 @@
 - Switch only updates `.code-workspace` file — worktree files untouched
 - Warns about uncommitted changes but proceeds (no data loss possible)
 - `--create` flag combines create + switch for convenience
-- Paths follow canonical structure: `repos/worktrees/<repo>/<branch>/`
+- Paths follow canonical structure: `repos/<repo>/worktrees/<branch>/`
 - All items pass validation - spec is ready for `/speckit.clarify` or `/speckit.plan`

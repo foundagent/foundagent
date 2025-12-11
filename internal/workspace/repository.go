@@ -17,12 +17,12 @@ type Repository struct {
 
 // BareRepoPath returns the path to the bare repository
 func (w *Workspace) BareRepoPath(repoName string) string {
-	return filepath.Join(w.Path, ReposDir, BareDir, repoName+".git")
+	return filepath.Join(w.Path, ReposDir, repoName, BareDir)
 }
 
 // WorktreeBasePath returns the base path for worktrees of a repository
 func (w *Workspace) WorktreeBasePath(repoName string) string {
-	return filepath.Join(w.Path, ReposDir, WorktreesDir, repoName)
+	return filepath.Join(w.Path, ReposDir, repoName, WorktreesDir)
 }
 
 // WorktreePath returns the path to a specific worktree

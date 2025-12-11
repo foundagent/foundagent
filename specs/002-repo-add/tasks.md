@@ -53,12 +53,12 @@
 
 **Goal**: Clone repo as bare clone and create default branch worktree with `fa add <url>`
 
-**Independent Test**: Run `fa add <public-repo-url>`, verify bare clone at `repos/.bare/`, worktree at `repos/worktrees/<name>/main/`
+**Independent Test**: Run `fa add <public-repo-url>`, verify bare clone at `repos/<repo-name>/.bare/`, worktree at `repos/worktrees/<name>/main/`
 
 ### Implementation for User Story 1
 
-- [X] T010 [US1] Implement bare clone to `repos/.bare/<name>.git/` in internal/cli/add.go
-- [X] T011 [US1] Create worktree for default branch at `repos/worktrees/<name>/<branch>/` in internal/cli/add.go
+- [X] T010 [US1] Implement bare clone to `repos/<name>/.bare/` in internal/cli/add.go
+- [X] T011 [US1] Create worktree for default branch at `repos/<name>/worktrees/<branch>/` in internal/cli/add.go
 - [X] T012 [US1] Register repo in `.foundagent/state.json` with metadata in internal/workspace/state.go
 - [X] T013 [US1] Register repo in `.foundagent.yaml` config in internal/workspace/config.go
 - [X] T014 [US1] Update `.code-workspace` to include new worktree folder in internal/workspace/vscode.go
@@ -219,8 +219,8 @@ After Foundational (Phase 2) completes:
 
 ## Notes
 
-- Bare clones stored at `repos/.bare/<name>.git/`
-- Worktrees at `repos/worktrees/<repo>/<branch>/`
+- Bare clones stored at `repos/<name>/.bare/`
+- Worktrees at `repos/<repo>/worktrees/<branch>/`
 - URL parsing must handle: `git@github.com:org/repo.git`, `https://github.com/org/repo.git`, with/without `.git`
 - Git credentials handled by system (SSH agent, credential helper)
 - Parallel cloning uses goroutines with error collection

@@ -37,7 +37,7 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Implement repo clone status detection (bare clone exists in `repos/.bare/`) in internal/workspace/repository.go
+- [X] T003 Implement repo clone status detection (bare clone exists in `repos/<repo-name>/.bare/`) in internal/workspace/repository.go
 - [X] T004 [P] Implement config-state comparison (repos in config vs cloned) in internal/workspace/reconcile.go
 - [X] T005 [P] Reuse worktree discovery from wt list (internal/workspace/worktree.go)
 - [X] T006 [P] Reuse git status detection from wt list (internal/git/status.go)
@@ -225,8 +225,8 @@ After Foundational (Phase 2) completes:
 ## Notes
 
 - Status is read-only - no changes to filesystem or config
-- Bare clones at `repos/.bare/<repo>.git/`
-- Worktrees at `repos/worktrees/<repo>/<branch>/`
+- Bare clones at `repos/<repo>/.bare/`
+- Worktrees at `repos/<repo>/worktrees/<branch>/`
 - Status checks are local only (no network) for speed
 - Parallel status detection for performance
 - All error messages must include actionable remediation per constitution

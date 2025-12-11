@@ -31,5 +31,5 @@
 
 ## Notes
 
-- Spec follows canonical workspace structure: `repos/worktrees/<repo>/<branch>/`
+- Spec follows canonical workspace structure: `repos/<repo>/worktrees/<branch>/`
 - All items pass validation - spec is ready for `/speckit.clarify` or `/speckit.plan`

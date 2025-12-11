@@ -34,7 +34,7 @@ A developer wants to update their current worktree with the latest changes from 
 
 **Acceptance Scenarios**:
 
-1. **Given** I'm in worktree `repos/worktrees/api/main/`, **When** I run `fa sync --pull`, **Then** all worktrees for `main` branch are pulled (api, web, lib)
+1. **Given** I'm in worktree `repos/api/worktrees/main/`, **When** I run `fa sync --pull`, **Then** all worktrees for `main` branch are pulled (api, web, lib)
 2. **Given** remote has new commits that fast-forward, **When** pull completes, **Then** worktree is updated to latest
 3. **Given** remote has diverged (non-fast-forward), **When** pull would fail, **Then** sync reports conflict and suggests merge/rebase
 4. **Given** worktree has uncommitted changes, **When** I run `fa sync --pull`, **Then** sync warns and skips that worktree (or stashes with `--stash`)
@@ -177,8 +177,8 @@ A developer has committed changes across multiple repos and wants to push them a
 ### Assumptions
 
 - All repos use standard remote named `origin` (future: support multiple remotes)
-- Bare clones at `repos/.bare/<repo>.git/` store fetched refs
-- Worktrees at `repos/worktrees/<repo>/<branch>/` are updated by pull
+- Bare clones at `repos/<repo>/.bare/` store fetched refs
+- Worktrees at `repos/<repo>/worktrees/<branch>/` are updated by pull
 - Auth handled by system Git credentials (SSH agent, credential helper)
 - Fast-forward only for `--pull` (no auto-merge to avoid conflicts)
 

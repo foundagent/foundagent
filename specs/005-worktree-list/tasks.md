@@ -55,7 +55,7 @@
 
 ### Implementation for User Story 1
 
-- [X] T008 [US1] Discover all worktrees from `repos/worktrees/<repo>/<branch>/` structure in internal/cli/wt_list.go
+- [X] T008 [US1] Discover all worktrees from `repos/<repo>/worktrees/<branch>/` structure in internal/cli/wt_list.go
 - [X] T009 [US1] Group worktrees by branch name in internal/cli/wt_list.go
 - [X] T010 [US1] Display branch name as group header in internal/cli/wt_list.go
 - [X] T011 [US1] Display repo name and path for each worktree in internal/cli/wt_list.go
@@ -193,7 +193,7 @@ After Foundational (Phase 2) completes:
 
 ## Notes
 
-- Worktrees at `repos/worktrees/<repo>/<branch>/`
+- Worktrees at `repos/<repo>/worktrees/<branch>/`
 - Current worktree detected by checking if CWD is inside a worktree path
 - Status detection runs in parallel for performance (up to 50 worktrees in <5s)
 - Clean is implicit (no indicator) - only dirty states shown

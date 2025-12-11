@@ -206,7 +206,7 @@ After Foundational (Phase 2) completes:
 
 ## Notes
 
-- Worktrees at `repos/worktrees/<repo>/<branch>/`
+- Worktrees at `repos/<repo>/worktrees/<branch>/`
 - Uses `git worktree remove` for proper cleanup
 - Non-destructive by default - dirty worktrees require `--force`
 - CWD check prevents removing worktree you're standing in

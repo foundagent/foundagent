@@ -60,12 +60,9 @@ func (f *Fixer) fixStateFile() CheckResult {
 	// Build new state from config
 	state := &workspace.State{Repositories: make(map[string]*workspace.Repository)}
 
-	bareDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.BareDir)
-	worktreesDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir)
-
 	for _, repoConfig := range cfg.Repos {
 		// Check if bare clone exists
-		repoPath := filepath.Join(bareDir, repoConfig.Name+".git")
+		repoPath := f.Workspace.BareRepoPath(repoConfig.Name)
 		if _, err := os.Stat(repoPath); os.IsNotExist(err) {
 			continue // Skip if bare clone doesn't exist
 		}
@@ -77,17 +74,13 @@ func (f *Fixer) fixStateFile() CheckResult {
 		}
 
 		// Find worktrees for this repo
+		worktreesDir := f.Workspace.WorktreeBasePath(repoConfig.Name)
 		entries, err := os.ReadDir(worktreesDir)
 		if err == nil {
 			for _, entry := range entries {
 				if !entry.IsDir() {
 					continue
 				}
-
-				// Check if worktree belongs to this repo
-				// Naming convention: {repo}-{branch}
-				// We'll add worktrees that start with repo name
-				// This is a heuristic, actual implementation would check git config
 				repo.Worktrees = append(repo.Worktrees, entry.Name())
 			}
 		}
@@ -115,21 +108,17 @@ func (f *Fixer) fixStateFile() CheckResult {
 }
 
 func (f *Fixer) fixWorkspaceStructure() CheckResult {
-	// Create missing directories
-	dirs := []string{
-		filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.BareDir),
-		filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir),
-	}
-
-	for _, dir := range dirs {
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			return CheckResult{
-				Name:        "Workspace structure",
-				Status:      StatusFail,
-				Message:     fmt.Sprintf("Failed to create directory: %s", dir),
-				Remediation: "Check file permissions",
-				Fixable:     false,
-			}
+	// Create repos directory
+	// Note: Individual repo directories (repos/<repo-name>/.bare/ and repos/<repo-name>/worktrees/)
+	// are created when repos are added
+	reposPath := filepath.Join(f.Workspace.Path, workspace.ReposDir)
+	if err := os.MkdirAll(reposPath, 0755); err != nil {
+		return CheckResult{
+			Name:        "Workspace structure",
+			Status:      StatusFail,
+			Message:     fmt.Sprintf("Failed to create directory: %s", reposPath),
+			Remediation: "Check file permissions",
+			Fixable:     false,
 		}
 	}
 
@@ -153,21 +142,21 @@ func (f *Fixer) fixOrphanedRepos() CheckResult {
 		}
 	}
 
-	bareDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.BareDir)
+	reposDir := filepath.Join(f.Workspace.Path, workspace.ReposDir)
 
 	// Build map of known repos
 	knownRepos := make(map[string]bool)
 	for _, repo := range state.Repositories {
-		knownRepos[repo.Name+".git"] = true
+		knownRepos[repo.Name] = true
 	}
 
-	// Remove orphaned directories
-	entries, err := os.ReadDir(bareDir)
+	// Remove orphaned repo directories
+	entries, err := os.ReadDir(reposDir)
 	if err != nil {
 		return CheckResult{
 			Name:        "Orphaned repositories",
 			Status:      StatusFail,
-			Message:     "Cannot read bare directory",
+			Message:     "Cannot read repos directory",
 			Remediation: "Check directory exists and permissions",
 			Fixable:     false,
 		}
@@ -179,9 +168,9 @@ func (f *Fixer) fixOrphanedRepos() CheckResult {
 			continue
 		}
 
-		name := entry.Name()
-		if !knownRepos[name] {
-			path := filepath.Join(bareDir, name)
+		repoName := entry.Name()
+		if !knownRepos[repoName] {
+			path := filepath.Join(reposDir, repoName)
 			if err := os.RemoveAll(path); err == nil {
 				removed++
 			}
@@ -208,39 +197,35 @@ func (f *Fixer) fixOrphanedWorktrees() CheckResult {
 		}
 	}
 
-	worktreesDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir)
-
-	// Build map of known worktrees
-	knownWorktrees := make(map[string]bool)
-	for _, repo := range state.Repositories {
+	// Build map of known worktrees per repo
+	knownRepoWorktrees := make(map[string]map[string]bool)
+	for repoName, repo := range state.Repositories {
+		knownRepoWorktrees[repoName] = make(map[string]bool)
 		for _, wt := range repo.Worktrees {
-			knownWorktrees[wt] = true
+			knownRepoWorktrees[repoName][wt] = true
 		}
 	}
 
-	// Remove orphaned directories
-	entries, err := os.ReadDir(worktreesDir)
-	if err != nil {
-		return CheckResult{
-			Name:        "Orphaned worktrees",
-			Status:      StatusFail,
-			Message:     "Cannot read worktrees directory",
-			Remediation: "Check directory exists and permissions",
-			Fixable:     false,
-		}
-	}
-
+	// Remove orphaned worktrees for each repo
 	removed := 0
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
+	for repoName := range state.Repositories {
+		worktreesDir := f.Workspace.WorktreeBasePath(repoName)
+		entries, err := os.ReadDir(worktreesDir)
+		if err != nil {
+			continue // Skip if worktrees directory doesn't exist
 		}
 
-		name := entry.Name()
-		if !knownWorktrees[name] {
-			path := filepath.Join(worktreesDir, name)
-			if err := os.RemoveAll(path); err == nil {
-				removed++
+		for _, entry := range entries {
+			if !entry.IsDir() {
+				continue
+			}
+
+			wtName := entry.Name()
+			if !knownRepoWorktrees[repoName][wtName] {
+				path := filepath.Join(worktreesDir, wtName)
+				if err := os.RemoveAll(path); err == nil {
+					removed++
+				}
 			}
 		}
 	}
@@ -326,11 +311,10 @@ func (f *Fixer) fixWorkspaceFileConsistency() CheckResult {
 	// Rebuild workspace file from state
 	folders := make([]workspace.VSCodeFolder, 0)
 
-	for _, repo := range state.Repositories {
+	for repoName, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
 			folders = append(folders, workspace.VSCodeFolder{
-
-				Path: filepath.Join(workspace.ReposDir, workspace.WorktreesDir, wt),
+				Path: filepath.Join(workspace.ReposDir, repoName, workspace.WorktreesDir, wt),
 			})
 		}
 	}
