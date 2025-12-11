@@ -96,6 +96,14 @@ func TestCompletionCommand(t *testing.T) {
 			}
 			rootCmd.AddCommand(testCompletionCmd)
 
+			// Read output in goroutine to prevent pipe deadlock on Windows
+			var buf bytes.Buffer
+			done := make(chan struct{})
+			go func() {
+				buf.ReadFrom(r)
+				close(done)
+			}()
+
 			// Execute completion command
 			rootCmd.SetArgs([]string{"completion", tt.shell})
 			err := rootCmd.Execute()
@@ -104,9 +112,8 @@ func TestCompletionCommand(t *testing.T) {
 			w.Close()
 			os.Stdout = oldStdout
 
-			// Read captured output
-			var buf bytes.Buffer
-			buf.ReadFrom(r)
+			// Wait for reader to finish
+			<-done
 			output := buf.String()
 
 			if tt.expectError {
@@ -170,6 +177,14 @@ func TestCompletionShellValidation(t *testing.T) {
 			}
 			rootCmd.AddCommand(testCompletionCmd)
 
+			// Read output in goroutine to prevent pipe deadlock on Windows
+			var buf bytes.Buffer
+			done := make(chan struct{})
+			go func() {
+				buf.ReadFrom(r)
+				close(done)
+			}()
+
 			rootCmd.SetArgs([]string{"completion", shell})
 			err := rootCmd.Execute()
 
@@ -177,9 +192,8 @@ func TestCompletionShellValidation(t *testing.T) {
 			w.Close()
 			os.Stdout = oldStdout
 
-			// Read captured output
-			var buf bytes.Buffer
-			buf.ReadFrom(r)
+			// Wait for reader to finish
+			<-done
 			output := buf.String()
 
 			assert.NoError(t, err)
@@ -211,6 +225,14 @@ func TestCompletionAliasSupport(t *testing.T) {
 	}
 	rootCmd.AddCommand(testCompletionCmd)
 
+	// Read output in goroutine to prevent pipe deadlock on Windows
+	var buf bytes.Buffer
+	done := make(chan struct{})
+	go func() {
+		buf.ReadFrom(r)
+		close(done)
+	}()
+
 	// Test bash completion for mention of alias support
 	rootCmd.SetArgs([]string{"completion", "bash"})
 	err := rootCmd.Execute()
@@ -219,9 +241,8 @@ func TestCompletionAliasSupport(t *testing.T) {
 	w.Close()
 	os.Stdout = oldStdout
 
-	// Read captured output
-	var buf bytes.Buffer
-	buf.ReadFrom(r)
+	// Wait for reader to finish
+	<-done
 	output := buf.String()
 
 	assert.NoError(t, err)

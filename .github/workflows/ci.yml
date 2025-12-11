@@ -40,18 +40,9 @@ jobs:
         git config --global credential.helper ""
         git config --global init.defaultBranch main
 
-    - name: List test packages (Windows debug)
-      if: runner.os == 'Windows'
-      shell: bash
-      run: |
-        echo "Test packages:"
-        go list ./...
-        echo "---"
-        echo "Starting tests with verbose output..."
-
     - name: Run tests (Unix)
       if: runner.os != 'Windows'
-      run: go test -v -race -timeout=2m -coverprofile=coverage.txt -covermode=atomic ./...
+      run: go test -v -race -timeout=5m -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Display coverage (Unix)
       if: runner.os != 'Windows'
@@ -70,14 +61,7 @@ jobs:
       shell: bash
       env:
         GIT_TERMINAL_PROMPT: 0
-      run: |
-        # Run tests package by package to identify which one hangs
-        for pkg in $(go list ./...); do
-          echo "Testing: $pkg"
-          go test -v -timeout=2m "$pkg" || true
-        done
-        # Now run all with coverage
-        go test -v -timeout=2m -coverprofile=coverage.txt -covermode=atomic ./...
+      run: go test -v -timeout=5m -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Display coverage (Windows)
       if: runner.os == 'Windows'
