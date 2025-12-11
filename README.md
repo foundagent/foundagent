@@ -118,9 +118,6 @@ fa init my-project --json
 
 # Force reinitialize existing workspace
 fa init my-project --force
-
-# View help
-fa init --help
 ```
 
 ### Add Repositories
@@ -140,9 +137,133 @@ fa add git@github.com:org/my-repo.git --json
 
 # Force re-clone existing repository
 fa add git@github.com:org/my-repo.git --force
+```
 
-# View help
-fa add --help
+### Manage Worktrees
+
+```bash
+# Create worktrees across all repos
+fa wt create feature-123
+
+# Create from specific branch
+fa wt create hotfix-1 --from release-2.0
+
+# List all worktrees
+fa wt list
+
+# List worktrees for specific branch
+fa wt list feature-123
+
+# Switch to different branch's worktrees
+fa wt switch feature-123
+
+# Switch and create if doesn't exist
+fa wt switch new-feature --create
+
+# Remove worktrees
+fa wt remove feature-123
+
+# Force removal with uncommitted changes
+fa wt remove feature-123 --force
+```
+
+### Remove Repositories
+
+```bash
+# Remove a repository
+fa remove api
+
+# Remove multiple repositories
+fa remove api web
+
+# Force removal with uncommitted changes
+fa remove api --force
+
+# Remove from config but keep files
+fa remove api --config-only
+```
+
+### Check Workspace Status
+
+```bash
+# Show workspace status overview
+fa status
+
+# Show detailed status with file changes
+fa status -v
+
+# Get JSON output
+fa status --json
+
+# Use short alias
+fa st
+```
+
+### Sync with Remotes
+
+```bash
+# Fetch all repos
+fa sync
+
+# Fetch and pull current branch
+fa sync --pull
+
+# Fetch and pull specific branch
+fa sync feature-123 --pull
+
+# Push all repos with unpushed commits
+fa sync --push
+
+# Stash uncommitted changes before pull
+fa sync --pull --stash
+```
+
+### Health Checks
+
+```bash
+# Run diagnostic checks
+fa doctor
+
+# Get detailed output
+fa doctor --verbose
+
+# Auto-fix fixable issues
+fa doctor --fix
+
+# JSON output
+fa doctor --json
+```
+
+### Version Information
+
+```bash
+# Show version
+fa version
+
+# Show detailed build information
+fa version --full
+
+# Check for updates
+fa version --check
+
+# JSON output
+fa version --json
+```
+
+### Shell Completion
+
+```bash
+# Generate Bash completion
+source <(fa completion bash)
+
+# Generate Zsh completion
+fa completion zsh > ~/.zsh/completion/_fa
+
+# Generate Fish completion
+fa completion fish > ~/.config/fish/completions/fa.fish
+
+# Generate PowerShell completion
+fa completion powershell > fa_completion.ps1
 ```
 
 ### Workspace Structure
@@ -161,6 +282,32 @@ fa add --help
 4. **Multi-Repository Aware**: Designed from the ground up for multiple repositories
 5. **Agent-Friendly**: JSON output mode for AI tools and automation
 
+## Commands Reference
+
+### Workspace Commands
+- `fa init <name>` - Initialize a new workspace
+- `fa add <url> [name]` - Add repository to workspace
+- `fa remove <repo>...` - Remove repositories from workspace
+- `fa status` (alias: `fa st`) - Show workspace status
+- `fa sync [branch]` - Sync workspace with remotes
+
+### Worktree Commands
+- `fa wt create <branch>` - Create worktrees across all repos
+- `fa wt list [branch]` (alias: `fa wt ls`) - List all worktrees
+- `fa wt switch [branch]` - Switch to different branch's worktrees
+- `fa wt remove <branch>` (alias: `fa wt rm`) - Remove worktrees
+
+### Utility Commands
+- `fa doctor` - Run workspace health checks
+- `fa version` - Show version information
+- `fa completion <shell>` - Generate shell completion script
+
+### Global Flags
+- `--json` - Output in JSON format (available on most commands)
+- `--force` - Force operation (skip safety checks)
+- `--verbose` / `-v` - Show detailed output
+- `--help` / `-h` - Show help information
+
 ## Testing
 
 Run the test suite:
@@ -175,29 +322,44 @@ Run tests with verbose output:
 go test ./... -v
 ```
 
+Run tests with coverage:
+
+```bash
+go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+go tool cover -html=coverage.txt
+```
+
 ## Project Status
 
-### Implemented Features (Specs 001-002)
+### Implemented Features
 
+All core features are fully implemented and tested (Specs 001-013):
+
+#### Workspace Management
 - ✅ Workspace initialization (`fa init`)
-- ✅ JSON output mode (`--json`)
-- ✅ Force reinitialize (`--force`)
 - ✅ Add repositories (`fa add`)
-- ✅ Parallel repository cloning
-- ✅ Custom repository names
-- ✅ Automatic worktree creation for default branch
+- ✅ Remove repositories (`fa remove`)
+- ✅ Workspace status overview (`fa status`)
+- ✅ Sync with remotes (`fa sync`)
+
+#### Worktree Operations
+- ✅ Create worktrees across all repos (`fa wt create`)
+- ✅ List worktrees (`fa wt list`)
+- ✅ Switch between worktrees (`fa wt switch`)
+- ✅ Remove worktrees (`fa wt remove`)
+
+#### Developer Tools
+- ✅ Health checks and diagnostics (`fa doctor`)
+- ✅ Version information and update checking (`fa version`)
+- ✅ Shell completion for bash, zsh, fish, and PowerShell (`fa completion`)
+
+#### Features
+- ✅ JSON output mode for all commands (`--json`)
+- ✅ Parallel operations for performance
 - ✅ VS Code workspace integration
 - ✅ Comprehensive error handling with remediation hints
-- ✅ Cross-platform filesystem validation
-
-### Planned Features
-
-- Worktree management (`fa worktree create`, `fa worktree list`, `fa worktree remove`, `fa worktree switch`)
-- Repository removal (`fa repo remove`)
-- Workspace operations (`fa workspace status`, `fa workspace sync`, `fa workspace config`)
-- Shell completion support
-- Doctor command for workspace health checks
-- Version command
+- ✅ Cross-platform support (macOS, Linux, Windows)
+- ✅ Git worktree-native operations
 
 ## Development
 
@@ -210,28 +372,119 @@ foundagent/
 │       └── main.go
 ├── internal/
 │   ├── cli/                 # CLI commands
-│   │   ├── root.go          # Root command
-│   │   ├── init.go          # Init command
-│   │   └── init_test.go     # Init command tests
+│   │   ├── root.go          # Root command setup
+│   │   ├── init.go          # Workspace initialization
+│   │   ├── add.go           # Add repositories
+│   │   ├── remove.go        # Remove repositories
+│   │   ├── status.go        # Workspace status
+│   │   ├── sync.go          # Sync operations
+│   │   ├── worktree.go      # Worktree parent command
+│   │   ├── wt_create.go     # Create worktrees
+│   │   ├── wt_list.go       # List worktrees
+│   │   ├── wt_switch.go     # Switch worktrees
+│   │   ├── wt_remove.go     # Remove worktrees
+│   │   ├── doctor.go        # Health checks
+│   │   ├── version.go       # Version information
+│   │   ├── completion.go    # Shell completion
+│   │   └── *_test.go        # Comprehensive tests
 │   ├── workspace/           # Workspace management
-│   │   ├── workspace.go     # Core workspace operations
+│   │   ├── workspace.go     # Core operations
 │   │   ├── config.go        # Configuration handling
 │   │   ├── state.go         # State management
+│   │   ├── status.go        # Status collection
+│   │   ├── sync.go          # Sync operations
+│   │   ├── worktree.go      # Worktree operations
+│   │   ├── repository.go    # Repository management
+│   │   ├── removal.go       # Removal operations
 │   │   ├── vscode.go        # VS Code integration
 │   │   ├── validation.go    # Name/path validation
-│   │   └── workspace_test.go # Workspace tests
+│   │   └── *_test.go        # Tests
+│   ├── git/                 # Git operations
+│   │   ├── clone.go         # Clone operations
+│   │   ├── worktree.go      # Worktree operations
+│   │   ├── branch.go        # Branch operations
+│   │   ├── status.go        # Status operations
+│   │   ├── remote.go        # Remote operations
+│   │   ├── stash.go         # Stash operations
+│   │   ├── url.go           # URL parsing
+│   │   └── validation.go    # Git validation
+│   ├── config/              # Configuration management
+│   │   ├── schema.go        # Config schema
+│   │   ├── loader.go        # Config loading
+│   │   ├── yaml.go          # YAML format
+│   │   ├── json.go          # JSON format
+│   │   ├── toml.go          # TOML format
+│   │   ├── template.go      # Config templates
+│   │   └── validate.go      # Config validation
+│   ├── doctor/              # Health checks
+│   │   ├── check.go         # Check interface
+│   │   ├── runner.go        # Check runner
+│   │   ├── fix.go           # Auto-fix operations
+│   │   ├── git.go           # Git checks
+│   │   ├── structure.go     # Structure checks
+│   │   ├── repos.go         # Repository checks
+│   │   ├── worktrees.go     # Worktree checks
+│   │   └── consistency.go   # Consistency checks
+│   ├── version/             # Version management
+│   │   ├── version.go       # Version info
+│   │   └── update.go        # Update checking
 │   ├── errors/              # Error handling
-│   │   ├── codes.go         # Error code constants
-│   │   └── error.go         # Structured error type
+│   │   ├── codes.go         # Error codes
+│   │   └── error.go         # Error types
 │   └── output/              # Output formatting
-│       └── json.go          # JSON output utilities
-└── specs/                   # Feature specifications
-    └── 001-workspace-init/  # Workspace initialization spec
-        ├── spec.md
-        ├── plan.md
-        ├── tasks.md
-        └── checklists/
+│       └── json.go          # JSON utilities
+└── specs/                   # Feature specifications (001-013)
+    ├── 001-workspace-init/
+    ├── 002-repo-add/
+    ├── 003-workspace-config/
+    ├── 004-worktree-create/
+    ├── 005-worktree-list/
+    ├── 006-worktree-remove/
+    ├── 007-workspace-status/
+    ├── 008-workspace-sync/
+    ├── 009-worktree-switch/
+    ├── 010-repo-remove/
+    ├── 011-version/
+    ├── 012-doctor/
+    └── 013-completion/
 ```
+
+### Development Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/foundagent/foundagent.git
+cd foundagent
+
+# Build the project
+make build
+
+# Run tests
+make test
+
+# Run tests with coverage
+make coverage
+
+# Format code and run all checks
+make check
+
+# Build for all platforms
+make release
+```
+
+Available make targets:
+- `make build` - Build the binary
+- `make test` - Run tests
+- `make test-v` - Run tests with verbose output
+- `make coverage` - Generate test coverage report
+- `make lint` - Run linters (requires golangci-lint)
+- `make fmt` - Format code
+- `make vet` - Run go vet
+- `make install` - Install to $GOPATH/bin
+- `make clean` - Remove build artifacts
+- `make check` - Run format, vet, lint, and test
+- `make dev` - Quick development build and test
+- `make release` - Build binaries for all platforms
 
 ### Contributing
 
@@ -242,12 +495,35 @@ foundagent/
    - Quality checklist (`checklists/`)
 
 2. All features must include:
-   - Comprehensive tests
+   - Comprehensive tests with table-driven test cases
    - Error handling with remediation hints
    - JSON output support where applicable
    - Documentation updates
+   - Shell completion support where relevant
 
-3. Follow Go best practices and maintain test coverage
+3. Development guidelines:
+   - Follow Go best practices and idioms
+   - Maintain test coverage above 80%
+   - Write clear commit messages
+   - Add tests before fixing bugs
+   - Keep functions small and focused
+   - Document exported functions and types
+
+## CI/CD
+
+Foundagent uses GitHub Actions for continuous integration:
+
+- **Test Job**: Runs tests on Ubuntu, macOS, and Windows with Go 1.25
+  - Executes full test suite with race detection
+  - Generates coverage reports
+  - Displays coverage summary in GitHub UI
+- **Lint Job**: Runs golangci-lint for code quality checks
+- **Build Job**: Verifies builds for all supported platforms
+  - Linux (amd64)
+  - macOS (amd64, arm64)
+  - Windows (amd64)
+
+All checks must pass before code can be merged to main.
 
 ## License
 

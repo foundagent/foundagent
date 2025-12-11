@@ -1,4 +1,4 @@
-.PHONY: help build test clean install lint fmt vet coverage run docker-build docker-run release
+.PHONY: help build test clean install lint fmt vet coverage run release
 
 # Default target
 help:
@@ -13,8 +13,6 @@ help:
 	@echo "  make install       - Install binary to GOPATH/bin"
 	@echo "  make clean         - Remove build artifacts"
 	@echo "  make run           - Build and run with arguments (make run ARGS='init myworkspace')"
-	@echo "  make docker-build  - Build Docker image"
-	@echo "  make docker-run    - Run Docker container"
 	@echo "  make release       - Build release binaries for all platforms"
 
 # Variables
@@ -91,17 +89,6 @@ clean:
 # Run the binary with arguments
 run: build
 	./$(BINARY_NAME) $(ARGS)
-
-# Build Docker image
-docker-build:
-	@echo "Building Docker image..."
-	docker build -t foundagent:$(VERSION) -t foundagent:latest .
-	@echo "Docker image built: foundagent:$(VERSION)"
-
-# Run Docker container
-docker-run:
-	@echo "Running Docker container..."
-	docker run --rm -it foundagent:latest $(ARGS)
 
 # Build release binaries for all platforms
 release:
