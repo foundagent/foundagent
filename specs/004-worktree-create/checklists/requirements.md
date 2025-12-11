@@ -31,6 +31,6 @@
 
 ## Notes
 
-- Worktree location resolved: `repos/worktrees/<repo>/<branch>/` (repo → branch hierarchy)
-- Bare clones at `repos/.bare/<repo>.git/` (hidden with dot prefix)
+- Worktree location resolved: `repos/<repo>/worktrees/<branch>/` (repo → branch hierarchy)
+- Bare clones at `repos/<repo>/.bare/` (hidden with dot prefix)
 - All items pass validation - spec is ready for `/speckit.clarify` or `/speckit.plan`

@@ -230,6 +230,6 @@ After Foundational (Phase 2) completes:
 - Config schema: `workspace.name`, `repos[]` with `url`/`name`/`default_branch`, `settings.auto_create_worktree`
 - State file (`.foundagent/state.json`) stores runtime state, config is source of truth
 - Comment preservation requires careful YAML handling - use yaml.v3 node API
-- Worktrees at fixed location: `repos/worktrees/<repo>/<branch>/`
+- Worktrees at fixed location: `repos/<repo>/worktrees/<branch>/`
 - All error messages must include actionable remediation per constitution
 - Commit after each task or logical group

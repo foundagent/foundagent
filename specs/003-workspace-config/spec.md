@@ -118,7 +118,7 @@ A developer makes a typo in the config file. When they run any `fa` command, Fou
 - **FR-009**: Each repo entry MAY support `default_branch` (optional, detected from remote)
 - **FR-010**: Config MUST include `settings` section for workspace-wide preferences
 - **FR-011**: Settings MUST support `auto_create_worktree` (create default branch worktree on add, default: `true`)
-- **FR-012**: Worktrees MUST be created at fixed location `repos/worktrees/<repo>/<branch>/`
+- **FR-012**: Worktrees MUST be created at fixed location `repos/<repo>/worktrees/<branch>/`
 
 #### Command-Config Sync
 - **FR-013**: `fa add <url>` MUST update config file to include the new repo

@@ -13,12 +13,12 @@ A developer has initialized a Foundagent workspace and wants to add their first 
 
 **Why this priority**: This is the core functionality — adding repos is the primary purpose of the command. Without this, the workspace is empty and unusable.
 
-**Independent Test**: Run `fa add <public-repo-url>` in an initialized workspace, verify the bare clone exists in `repos/.bare/`, verify a worktree for the default branch is created at `repos/worktrees/<name>/main/`, and confirm the repo appears in both `.foundagent.yaml` and `.foundagent/state.json`.
+**Independent Test**: Run `fa add <public-repo-url>` in an initialized workspace, verify the bare clone exists in `repos/<repo-name>/.bare/`, verify a worktree for the default branch is created at `repos/worktrees/<name>/main/`, and confirm the repo appears in both `.foundagent.yaml` and `.foundagent/state.json`.
 
 **Acceptance Scenarios**:
 
 1. **Given** I am in a Foundagent workspace, **When** I run `fa add git@github.com:org/my-repo.git`, **Then** the repo is cloned as a bare clone to `repos/.bare/my-repo.git/`
-2. **Given** I run `fa add <url>`, **When** the clone completes, **Then** a worktree for the default branch is created at `repos/worktrees/my-repo/main/`
+2. **Given** I run `fa add <url>`, **When** the clone completes, **Then** a worktree for the default branch is created at `repos/my-repo/worktrees/main/`
 3. **Given** I run `fa add <url>`, **When** the command succeeds, **Then** the repo is registered in `.foundagent/state.json` and `.foundagent.yaml`
 4. **Given** I run `fa add <url>`, **When** the command completes, **Then** the `.code-workspace` file is updated to include the new worktree folder
 
@@ -103,11 +103,11 @@ A developer using AI agents or automation scripts needs machine-readable output 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST clone repositories as bare clones into `repos/.bare/<name>.git/`
+- **FR-001**: System MUST clone repositories as bare clones into `repos/<name>/.bare/`
 - **FR-002**: System MUST infer repository name from URL if not provided (e.g., `github.com/org/my-repo.git` → `my-repo`)
 - **FR-003**: System MUST support optional name argument to override inferred name: `fa add <url> [name]`
 - **FR-004**: System MUST automatically create a worktree for the repository's default branch after cloning
-- **FR-005**: System MUST create the default branch worktree at `repos/worktrees/<name>/<default-branch>/`
+- **FR-005**: System MUST create the default branch worktree at `repos/<name>/worktrees/<default-branch>/`
 - **FR-006**: System MUST support adding multiple repositories in a single command: `fa add <url1> <url2> ...`
 - **FR-007**: System MUST clone multiple repositories in parallel for performance
 - **FR-008**: System MUST update `.foundagent/state.json` with the new repository metadata
@@ -126,14 +126,14 @@ A developer using AI agents or automation scripts needs machine-readable output 
 
 ### Key Entities
 
-- **Repository**: A Git repository added to the workspace. Stored as a bare clone in `repos/.bare/<name>.git/`. Key attributes: name, remote URL, default branch, clone status.
-- **Worktree**: A checked-out working copy of a repository at a specific branch. Located at `repos/worktrees/<repo-name>/<branch-name>/`. Created automatically for the default branch when a repo is added.
+- **Repository**: A Git repository added to the workspace. Stored as a bare clone in `repos/<name>/.bare/`. Key attributes: name, remote URL, default branch, clone status.
+- **Worktree**: A checked-out working copy of a repository at a specific branch. Located at `repos/<repo-name>/worktrees/<branch-name>/`. Created automatically for the default branch when a repo is added.
 - **Workspace State**: Machine-managed `.foundagent/state.json` tracking clone status, worktree paths, and sync timestamps.
 - **Workspace Config**: User-editable `.foundagent.yaml` updated to include added repositories.
 
 ## Assumptions
 
-- Worktrees follow the repo → branch hierarchy: `repos/worktrees/<repo>/<branch>/`
+- Worktrees follow the repo → branch hierarchy: `repos/<repo>/worktrees/<branch>/`
 - Submodule handling during worktree creation follows standard Git behavior
 
 ## Success Criteria *(mandatory)*

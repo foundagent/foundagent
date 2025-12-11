@@ -18,7 +18,7 @@ A developer wants to see what worktrees exist across all repos in their workspac
 **Acceptance Scenarios**:
 
 1. **Given** a workspace with repos (api, web, lib) each having worktrees for `main` and `feature-x`, **When** I run `fa wt list`, **Then** I see a list showing both branches with all repos under each
-2. **Given** worktrees exist, **When** I run `fa wt list`, **Then** each worktree shows its path (e.g., `repos/worktrees/api/main/`)
+2. **Given** worktrees exist, **When** I run `fa wt list`, **Then** each worktree shows its path (e.g., `repos/api/worktrees/main/`)
 3. **Given** I run `fa wt list`, **When** the output is displayed, **Then** the current/active worktree is visually indicated (e.g., with `*` or highlighting)
 
 ---
@@ -119,13 +119,13 @@ A developer wants to see worktrees for a specific branch only. They run `fa wt l
 
 ### Key Entities
 
-- **Worktree**: A working directory at `repos/worktrees/<repo>/<branch>/`. Has associated repo, branch, filesystem path, and status (clean/modified/untracked/conflict).
+- **Worktree**: A working directory at `repos/<repo>/worktrees/<branch>/`. Has associated repo, branch, filesystem path, and status (clean/modified/untracked/conflict).
 - **Branch Group**: A logical grouping of worktrees that share the same branch name across repos. Used for display organization.
 - **Worktree Status**: The git working tree status — clean (no changes), modified (uncommitted changes), untracked (new files), or conflict (merge conflicts).
 
 ### Assumptions
 
-- Worktrees exist at `repos/worktrees/<repo>/<branch>/` following the canonical structure
+- Worktrees exist at `repos/<repo>/worktrees/<branch>/` following the canonical structure
 - Git status can be determined efficiently via git commands
 - The current directory determines which worktree (if any) is "active"
 

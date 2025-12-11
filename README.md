@@ -70,8 +70,12 @@ my-project/
 │   └── state.json            # Runtime state (JSON)
 ├── .foundagent.yaml          # User-editable configuration
 ├── repos/                    # Repository storage
-│   ├── .bare/                # Bare repository clones
-│   └── worktrees/            # Working directories by repo/branch
+│   ├── <repo-name>/          # Per-repository directory
+│   │   ├── .bare/            # Bare repository clone
+│   │   └── worktrees/        # Working directories by branch
+│   │       ├── main/         # main branch worktree
+│   │       └── feature-123/  # feature branch worktree
+│   └── ...
 └── my-project.code-workspace # VS Code workspace file
 ```
 
@@ -271,7 +275,7 @@ fa completion powershell > fa_completion.ps1
 - **`.foundagent.yaml`**: User-editable YAML configuration containing workspace name and repository list
 - **`.foundagent/state.json`**: Machine-managed JSON state for runtime tracking
 - **`repos/.bare/`**: Hidden directory for bare repository clones
-- **`repos/worktrees/`**: Visible working directories organized by repository and branch
+- **`repos/<repo-name>/worktrees/`**: Visible working directories organized by branch for each repository
 - **`<name>.code-workspace`**: VS Code workspace file for multi-root workspace support
 
 ## Design Principles

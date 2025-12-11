@@ -242,8 +242,8 @@ After Foundational (Phase 2) completes:
 ## Notes
 
 - Uses standard `origin` remote (future: support multiple remotes)
-- Bare clones at `repos/.bare/<repo>.git/` store fetched refs
-- Worktrees at `repos/worktrees/<repo>/<branch>/` are updated by pull
+- Bare clones at `repos/<repo>/.bare/` store fetched refs
+- Worktrees at `repos/<repo>/worktrees/<branch>/` are updated by pull
 - Fast-forward only for `--pull` - no auto-merge
 - Auth handled by system Git credentials
 - Parallel operations with error collection

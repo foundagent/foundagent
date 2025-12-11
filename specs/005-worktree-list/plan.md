@@ -12,7 +12,7 @@ Implement `fa wt list` command that displays all worktrees across all repos, gro
 
 **Language/Version**: Go 1.21+  
 **Primary Dependencies**: Cobra (CLI), go-git/os/exec (git status)  
-**Storage**: Reads `.foundagent/state.json`, filesystem at `repos/worktrees/`  
+**Storage**: Reads `.foundagent/state.json`, filesystem at `repos/<repo-name>/worktrees/`  
 **Testing**: `go test` with `testify/assert`, table-driven tests  
 **Target Platform**: macOS, Linux, Windows  
 **Project Type**: Single Go CLI application  

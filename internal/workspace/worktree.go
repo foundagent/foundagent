@@ -51,7 +51,7 @@ func (w *Workspace) GetWorktreesForRepo(repoName string) ([]string, error) {
 
 // GetAllWorktrees returns a map of repo -> []branch for all worktrees in workspace
 func (w *Workspace) GetAllWorktrees() (map[string][]string, error) {
-	reposDir := filepath.Join(w.Path, ReposDir, WorktreesDir)
+	reposDir := filepath.Join(w.Path, ReposDir)
 
 	if _, err := os.Stat(reposDir); os.IsNotExist(err) {
 		return make(map[string][]string), nil
@@ -85,14 +85,14 @@ func (w *Workspace) FindWorktree(branch string) (string, error) {
 		return "", err
 	}
 
-	// Check if we're in a worktree
-	worktreesBase := filepath.Join(w.Path, ReposDir, WorktreesDir)
-	if !strings.HasPrefix(cwd, worktreesBase) {
+	// Check if we're in a repo directory
+	reposBase := filepath.Join(w.Path, ReposDir)
+	if !strings.HasPrefix(cwd, reposBase) {
 		return "", nil
 	}
 
-	// Extract repo name from path
-	rel, err := filepath.Rel(worktreesBase, cwd)
+	// Extract repo name from path (format: repos/<repo-name>/worktrees/<branch>/...)
+	rel, err := filepath.Rel(reposBase, cwd)
 	if err != nil {
 		return "", err
 	}
@@ -108,7 +108,7 @@ func (w *Workspace) FindWorktree(branch string) (string, error) {
 
 // GetWorktreesForRepo returns all worktrees for a repository
 func GetWorktreesForRepo(workspaceRoot, repoName string) ([]WorktreeDetail, error) {
-	worktreeBase := filepath.Join(workspaceRoot, ReposDir, WorktreesDir, repoName)
+	worktreeBase := filepath.Join(workspaceRoot, ReposDir, repoName, WorktreesDir)
 
 	// Check if directory exists
 	if _, err := os.Stat(worktreeBase); os.IsNotExist(err) {

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implement `fa init <name>` command that creates a new Foundagent workspace with the canonical directory structure: `.foundagent.yaml` (config), `.foundagent/state.json` (machine state), `repos/.bare/` (bare clones), `repos/worktrees/` (working directories), and a VS Code `.code-workspace` file.
+Implement `fa init <name>` command that creates a new Foundagent workspace with the canonical directory structure: `.foundagent.yaml` (config), `.foundagent/state.json` (machine state), `repos/<repo-name>/.bare/` (bare clones), `repos/<repo-name>/worktrees/` (working directories), and a VS Code `.code-workspace` file.
 
 ## Technical Context
 

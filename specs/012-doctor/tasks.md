@@ -64,8 +64,8 @@
 - [X] T011 [US1] Implement `.foundagent/` directory exists check in internal/doctor/checks/structure.go
 - [X] T012 [US1] Implement `.foundagent/state.json` exists and valid check in internal/doctor/checks/state.go
 - [X] T013 [US1] Implement `repos/` directory exists check in internal/doctor/checks/structure.go
-- [X] T014 [US1] Implement `repos/.bare/` directory exists check in internal/doctor/checks/structure.go
-- [X] T015 [US1] Implement `repos/worktrees/` directory exists check in internal/doctor/checks/structure.go
+- [X] T014 [US1] Implement `repos/<repo-name>/.bare/` directory exists check in internal/doctor/checks/structure.go
+- [X] T015 [US1] Implement `repos/<repo-name>/worktrees/` directory exists check in internal/doctor/checks/structure.go
 
 ### Output
 
@@ -85,7 +85,7 @@
 
 ### Repository Checks
 
-- [X] T019 [US2] Implement check: each repo in config has bare clone in `repos/.bare/` in internal/doctor/checks/repos.go
+- [X] T019 [US2] Implement check: each repo in config has bare clone in `repos/<repo-name>/.bare/` in internal/doctor/checks/repos.go
 - [X] T020 [US2] Implement check: each bare clone is valid Git repository in internal/doctor/checks/repos.go
 - [X] T021 [US2] Implement check: detect orphaned bare clones (not in config) in internal/doctor/checks/repos.go
 

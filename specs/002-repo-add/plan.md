@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implement `fa add <url> [name]` command that clones repositories as bare clones to `repos/.bare/<name>.git/`, creates a worktree for the default branch at `repos/worktrees/<name>/<branch>/`, updates workspace config and state, and refreshes the VS Code workspace file. Supports adding multiple repos in parallel.
+Implement `fa add <url> [name]` command that clones repositories as bare clones to `repos/<name>/.bare/`, creates a worktree for the default branch at `repos/<name>/worktrees/<branch>/`, updates workspace config and state, and refreshes the VS Code workspace file. Supports adding multiple repos in parallel.
 
 ## Technical Context
 

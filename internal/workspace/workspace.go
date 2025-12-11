@@ -133,32 +133,12 @@ func (w *Workspace) createReposStructure(force bool) error {
 	}
 
 	// Create repos directory
+	// Note: Individual repo directories (repos/<repo-name>/) are created when repos are added
+	// Each repo will have its own .bare/ and worktrees/ subdirectories
 	if err := os.MkdirAll(reposPath, 0755); err != nil {
 		return errors.Wrap(
 			errors.ErrCodePermissionDenied,
 			fmt.Sprintf("Failed to create repos directory: %s", reposPath),
-			"Check filesystem permissions",
-			err,
-		)
-	}
-
-	// Create .bare subdirectory
-	barePath := filepath.Join(reposPath, BareDir)
-	if err := os.MkdirAll(barePath, 0755); err != nil {
-		return errors.Wrap(
-			errors.ErrCodePermissionDenied,
-			fmt.Sprintf("Failed to create .bare directory: %s", barePath),
-			"Check filesystem permissions",
-			err,
-		)
-	}
-
-	// Create worktrees subdirectory
-	worktreesPath := filepath.Join(reposPath, WorktreesDir)
-	if err := os.MkdirAll(worktreesPath, 0755); err != nil {
-		return errors.Wrap(
-			errors.ErrCodePermissionDenied,
-			fmt.Sprintf("Failed to create worktrees directory: %s", worktreesPath),
 			"Check filesystem permissions",
 			err,
 		)

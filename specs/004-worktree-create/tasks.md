@@ -60,7 +60,7 @@
 - [X] T010 [US1] Get list of all repos from workspace config in internal/cli/wt_create.go
 - [X] T011 [US1] Detect default branch for each repo in internal/git/branch.go
 - [X] T012 [US1] Create new branch from default branch in each repo in internal/git/branch.go
-- [X] T013 [US1] Create worktree at `repos/worktrees/<repo>/<branch>/` for each repo in internal/git/worktree.go
+- [X] T013 [US1] Create worktree at `repos/<repo>/worktrees/<branch>/` for each repo in internal/git/worktree.go
 - [X] T014 [US1] Execute worktree creation in parallel across repos in internal/cli/wt_create.go
 - [X] T015 [US1] Update `.code-workspace` to include all new worktree folders in internal/cli/wt_create.go
 - [X] T016 [US1] Update `.foundagent/state.json` with worktree info in internal/workspace/state.go
@@ -220,8 +220,8 @@ After Foundational (Phase 2) completes:
 
 ## Notes
 
-- Worktrees created at `repos/worktrees/<repo>/<branch>/`
-- Bare clones at `repos/.bare/<repo>.git/`
+- Worktrees created at `repos/<repo>/worktrees/<branch>/`
+- Bare clones at `repos/<repo>/.bare/`
 - Parallel creation uses goroutines with error collection
 - Pre-validation ensures atomic all-or-nothing behavior
 - VS Code workspace file updated to include all new worktree folders

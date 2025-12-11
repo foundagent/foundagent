@@ -59,7 +59,7 @@
 - [X] T010 [US1] Create `.foundagent/` subdirectory for machine-managed state in internal/workspace/workspace.go
 - [X] T011 [US1] Generate `.foundagent.yaml` with default config (workspace name, empty repos) in internal/workspace/config.go
 - [X] T012 [US1] Generate `.foundagent/state.json` initialized as empty object in internal/workspace/state.go
-- [X] T013 [US1] Create `repos/` directory structure (`repos/.bare/`, `repos/worktrees/`) in internal/workspace/workspace.go
+- [X] T013 [US1] Create `repos/` directory structure (`repos/<repo-name>/.bare/`, `repos/<repo-name>/worktrees/`) in internal/workspace/workspace.go
 - [X] T014 [US1] Generate `<name>.code-workspace` file with folders array in internal/workspace/vscode.go
 - [X] T015 [US1] Display success message with absolute path to created workspace in internal/cli/init.go
 - [X] T016 [US1] Implement exit code 0 on success, non-zero on failure in internal/cli/init.go
@@ -180,7 +180,7 @@ After Foundational (Phase 2) completes:
 
 ## Notes
 
-- Workspace structure: `.foundagent.yaml` (config), `.foundagent/state.json` (state), `repos/.bare/` (bare clones), `repos/worktrees/` (working directories)
+- Workspace structure: `.foundagent.yaml` (config), `.foundagent/state.json` (state), `repos/<repo-name>/.bare/` (bare clones), `repos/<repo-name>/worktrees/` (working directories)
 - VS Code workspace file uses JSON format with `folders` array
 - All error messages must include actionable remediation per constitution
 - Commit after each task or logical group

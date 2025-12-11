@@ -217,7 +217,7 @@ After Foundational (Phase 2) completes:
 ## Notes
 
 - Switching only updates workspace file - actual worktrees unchanged
-- Worktrees at `repos/worktrees/<repo>/<branch>/`
+- Worktrees at `repos/<repo>/worktrees/<branch>/`
 - Users reload VS Code after switch (or VS Code auto-detects)
 - Non-destructive - uncommitted changes remain in original worktrees
 - Current branch tracked in `.foundagent/state.json`

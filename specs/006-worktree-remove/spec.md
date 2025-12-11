@@ -18,7 +18,7 @@ A developer has finished working on a feature and wants to clean up the worktree
 **Acceptance Scenarios**:
 
 1. **Given** worktrees exist for `feature-123` in repos (api, web, lib), **When** I run `fa wt remove feature-123`, **Then** all 3 worktrees are removed
-2. **Given** worktrees are removed, **When** I check the filesystem, **Then** directories `repos/worktrees/api/feature-123/`, `repos/worktrees/web/feature-123/`, and `repos/worktrees/lib/feature-123/` no longer exist
+2. **Given** worktrees are removed, **When** I check the filesystem, **Then** directories `repos/api/worktrees/feature-123/`, `repos/web/worktrees/feature-123/`, and `repos/lib/worktrees/feature-123/` no longer exist
 3. **Given** worktrees are removed, **When** I check the `.code-workspace` file, **Then** those folders are no longer listed
 
 ---
@@ -126,14 +126,14 @@ A developer using AI agents or automation scripts needs machine-readable output 
 
 ### Key Entities
 
-- **Worktree**: A working directory at `repos/worktrees/<repo>/<branch>/` to be removed.
+- **Worktree**: A working directory at `repos/<repo>/worktrees/<branch>/` to be removed.
 - **Dirty Worktree**: A worktree with uncommitted changes or untracked files that blocks removal.
 - **Branch**: The git branch associated with worktrees; optionally deleted with `--delete-branch`.
 
 ### Assumptions
 
-- Worktrees exist at `repos/worktrees/<repo>/<branch>/` following canonical structure
-- Bare clones at `repos/.bare/<repo>.git/` are NOT affected by worktree removal
+- Worktrees exist at `repos/<repo>/worktrees/<branch>/` following canonical structure
+- Bare clones at `repos/<repo>/.bare/` are NOT affected by worktree removal
 - Branch deletion only affects local branches, not remote branches
 
 ## Success Criteria *(mandatory)*

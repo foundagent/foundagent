@@ -80,8 +80,8 @@ func TestWorkspaceCreate(t *testing.T) {
 		assert.FileExists(t, ws.ConfigPath())
 		assert.FileExists(t, ws.StatePath())
 		assert.DirExists(t, filepath.Join(ws.Path, ReposDir))
-		assert.DirExists(t, filepath.Join(ws.Path, ReposDir, BareDir))
-		assert.DirExists(t, filepath.Join(ws.Path, ReposDir, WorktreesDir))
+		// Note: Individual repo directories (repos/<repo-name>/.bare/ and worktrees/)
+		// are created when repos are added, not during workspace creation
 		assert.FileExists(t, ws.VSCodeWorkspacePath())
 	})
 

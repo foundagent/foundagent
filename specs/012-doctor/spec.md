@@ -100,11 +100,11 @@ A developer has minor fixable issues (e.g., state.json out of sync). They run `f
 - **FR-009**: System MUST verify `.foundagent/` directory exists
 - **FR-010**: System MUST verify `.foundagent/state.json` exists and is valid JSON
 - **FR-011**: System MUST verify `repos/` directory exists
-- **FR-012**: System MUST verify `repos/.bare/` directory exists
-- **FR-013**: System MUST verify `repos/worktrees/` directory exists
+- **FR-012**: System MUST verify `repos/<repo-name>/.bare/` directory exists
+- **FR-013**: System MUST verify `repos/<repo-name>/worktrees/` directory exists
 
 #### Repository Checks
-- **FR-014**: System MUST verify each repo in config has a bare clone in `repos/.bare/<name>.git/`
+- **FR-014**: System MUST verify each repo in config has a bare clone in `repos/<name>/.bare/`
 - **FR-015**: System MUST verify each bare clone is a valid Git repository
 - **FR-016**: System MUST detect bare clones not listed in config (orphaned)
 - **FR-017**: System MUST verify remotes are configured correctly in bare clones
@@ -113,7 +113,7 @@ A developer has minor fixable issues (e.g., state.json out of sync). They run `f
 - **FR-018**: System MUST verify worktrees listed in state.json exist on disk
 - **FR-019**: System MUST verify worktrees on disk are tracked by Git (`git worktree list`)
 - **FR-020**: System MUST detect orphaned worktree directories (not tracked by Git)
-- **FR-021**: System MUST verify worktree paths match expected structure (`repos/worktrees/<repo>/<branch>/`)
+- **FR-021**: System MUST verify worktree paths match expected structure (`repos/<repo>/worktrees/<branch>/`)
 
 #### State Consistency Checks
 - **FR-022**: System MUST verify config and state.json are in sync

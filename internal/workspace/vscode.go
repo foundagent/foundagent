@@ -303,7 +303,8 @@ func (w *Workspace) ReplaceWorktreeFolders(targetBranch string) error {
 	newFolders := make([]VSCodeFolder, 0)
 
 	// Keep non-worktree folders (like workspace root ".")
-	worktreePrefix := filepath.Join(ReposDir, WorktreesDir) + string(filepath.Separator)
+	// Worktrees are now at repos/<repo-name>/worktrees/<branch>/
+	reposPrefix := ReposDir + string(filepath.Separator)
 	for _, folder := range workspace.Folders {
 		relPath, err := filepath.Rel(w.Path, folder.Path)
 		if err != nil {
@@ -311,8 +312,8 @@ func (w *Workspace) ReplaceWorktreeFolders(targetBranch string) error {
 			relPath = folder.Path
 		}
 
-		// Keep folders that aren't worktrees
-		if !strings.HasPrefix(relPath, worktreePrefix) && relPath != filepath.Join(ReposDir, WorktreesDir) {
+		// Keep folders that aren't under repos/ directory
+		if !strings.HasPrefix(relPath, reposPrefix) {
 			newFolders = append(newFolders, folder)
 		}
 	}

@@ -35,5 +35,5 @@
 - Local-only status (no network/remote checks) for speed
 - Config vs state sync detection built-in
 - JSON output designed specifically for AI agent consumption
-- Paths follow canonical structure: `repos/worktrees/<repo>/<branch>/`, `repos/.bare/<repo>.git/`
+- Paths follow canonical structure: `repos/<repo>/worktrees/<branch>/`, `repos/<repo>/.bare/`
 - All items pass validation - spec is ready for `/speckit.clarify` or `/speckit.plan`
