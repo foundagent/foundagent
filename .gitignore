@@ -20,7 +20,7 @@ vendor/
 # Build output
 dist/
 build/
-foundagent
+/foundagent
 
 # IDE
 .idea/
