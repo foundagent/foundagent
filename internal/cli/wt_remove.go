@@ -23,9 +23,9 @@ var (
 )
 
 var removeCmd = &cobra.Command{
-	Use:     "remove <branch>",
-	Aliases: []string{"rm"},
-	Short:   "Remove worktrees across all repositories",
+	Use:               "remove <branch>",
+	Aliases:           []string{"rm"},
+	Short:             "Remove worktrees across all repositories",
 	ValidArgsFunction: getWorktreeCompletions,
 	Long: `Remove worktrees for a branch across ALL repositories in the workspace.
 
@@ -61,12 +61,12 @@ type removeResult struct {
 }
 
 type removeOutput struct {
-	Branch         string         `json:"branch"`
-	TotalRemoved   int            `json:"total_removed"`
-	TotalSkipped   int            `json:"total_skipped"`
-	TotalFailed    int            `json:"total_failed"`
-	BranchesDeleted bool          `json:"branches_deleted"`
-	Results        []removeResult `json:"results"`
+	Branch          string         `json:"branch"`
+	TotalRemoved    int            `json:"total_removed"`
+	TotalSkipped    int            `json:"total_skipped"`
+	TotalFailed     int            `json:"total_failed"`
+	BranchesDeleted bool           `json:"branches_deleted"`
+	Results         []removeResult `json:"results"`
 }
 
 func init() {
@@ -83,7 +83,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	ws, err := workspace.Discover("")
 	if err != nil {
 		if removeJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -94,7 +94,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	cfg, err := config.Load(ws.Path)
 	if err != nil {
 		if removeJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -109,7 +109,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 			"Add repositories with 'fa add <url>'",
 		)
 		if removeJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -120,7 +120,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	worktreesToRemove, err := findWorktreesForBranch(ws, cfg, targetBranch)
 	if err != nil {
 		if removeJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -134,7 +134,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 			"Run 'fa wt list' to see available worktrees",
 		)
 		if removeJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -144,7 +144,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	// Pre-validation: safety checks
 	if err := preValidateRemoval(ws, cfg, worktreesToRemove, targetBranch); err != nil {
 		if removeJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -174,7 +174,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	if removeDeleteBranch && failed == 0 {
 		if err := deleteBranchesForRepos(ws, cfg, targetBranch, worktreesToRemove); err != nil {
 			if removeJSON {
-				output.PrintError(err)
+				_ = output.PrintError(err)
 			} else {
 				output.PrintErrorMessage("Warning: Failed to delete branches: %v", err)
 			}
@@ -255,7 +255,7 @@ func findWorktreesForBranch(ws *workspace.Workspace, cfg *config.Config, branch 
 
 	for _, repo := range cfg.Repos {
 		worktreePath := ws.WorktreePath(repo.Name, branch)
-		
+
 		// Check if worktree exists
 		if _, err := os.Stat(worktreePath); os.IsNotExist(err) {
 			continue
@@ -306,12 +306,12 @@ func preValidateRemoval(ws *workspace.Workspace, cfg *config.Config, worktrees [
 		for _, wt := range worktrees {
 			hasChanges, _ := git.HasUncommittedChanges(wt.WorktreePath)
 			hasUntracked, _ := git.HasUntrackedFiles(wt.WorktreePath)
-			
+
 			if hasChanges || hasUntracked {
 				dirtyWorktrees = append(dirtyWorktrees, fmt.Sprintf("%s: %s", wt.RepoName, wt.WorktreePath))
 			}
 		}
-		
+
 		if len(dirtyWorktrees) > 0 {
 			validationErrors = append(validationErrors, "Worktrees with uncommitted changes:")
 			validationErrors = append(validationErrors, dirtyWorktrees...)
@@ -324,7 +324,7 @@ func preValidateRemoval(ws *workspace.Workspace, cfg *config.Config, worktrees [
 		if removeForce {
 			remediation = "Cannot remove default branch or worktree you're inside"
 		}
-		
+
 		return errors.New(
 			errors.ErrCodeInvalidOperation,
 			errorMsg,
@@ -343,7 +343,7 @@ func removeWorktreesParallel(ws *workspace.Workspace, cfg *config.Config, worktr
 		wg.Add(1)
 		go func(idx int, w worktreeToRemove) {
 			defer wg.Done()
-			
+
 			result := removeResult{
 				RepoName:     w.RepoName,
 				Branch:       w.Branch,

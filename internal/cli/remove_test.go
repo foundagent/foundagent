@@ -10,7 +10,7 @@ func TestRemoveCommandExists(t *testing.T) {
 	// Verify remove command is registered
 	assert.NotNil(t, repoRemoveCmd)
 	assert.Equal(t, "remove <repo>...", repoRemoveCmd.Use)
-	
+
 	// Verify alias
 	assert.Contains(t, repoRemoveCmd.Aliases, "rm")
 }

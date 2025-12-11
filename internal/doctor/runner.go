@@ -19,12 +19,12 @@ func NewRunner(checks []Check) *Runner {
 // Run executes all checks and returns results
 func (r *Runner) Run() []CheckResult {
 	results := make([]CheckResult, 0, len(r.checks))
-	
+
 	for _, check := range r.checks {
 		result := check.Run()
 		results = append(results, result)
 	}
-	
+
 	return results
 }
 
@@ -41,7 +41,7 @@ func CalculateSummary(results []CheckResult) Summary {
 	summary := Summary{
 		Total: len(results),
 	}
-	
+
 	for _, result := range results {
 		switch result.Status {
 		case StatusPass:
@@ -52,14 +52,14 @@ func CalculateSummary(results []CheckResult) Summary {
 			summary.Failed++
 		}
 	}
-	
+
 	return summary
 }
 
 // FormatResults formats check results for human output
 func FormatResults(results []CheckResult) string {
 	output := ""
-	
+
 	for _, result := range results {
 		icon := "✗"
 		if result.Status == StatusPass {
@@ -67,13 +67,13 @@ func FormatResults(results []CheckResult) string {
 		} else if result.Status == StatusWarn {
 			icon = "⚠"
 		}
-		
+
 		output += fmt.Sprintf("%s %s: %s\n", icon, result.Name, result.Message)
-		
+
 		if result.Remediation != "" && result.Status != StatusPass {
 			output += fmt.Sprintf("  → %s\n", result.Remediation)
 		}
 	}
-	
+
 	return output
 }

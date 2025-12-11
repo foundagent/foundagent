@@ -20,7 +20,7 @@ var (
 // ParseURL parses a Git URL and extracts the repository path
 func ParseURL(url string) (string, error) {
 	url = strings.TrimSpace(url)
-	
+
 	if url == "" {
 		return "", errors.New(
 			errors.ErrCodeInvalidRepository,

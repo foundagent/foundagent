@@ -35,7 +35,7 @@ func (w *Workspace) createConfig() error {
 // LoadConfig loads the workspace configuration (deprecated, use config.Load)
 func (w *Workspace) LoadConfig() (*Config, error) {
 	configPath := w.ConfigPath()
-	
+
 	_, err := os.ReadFile(configPath)
 	if err != nil {
 		if os.IsNotExist(err) {

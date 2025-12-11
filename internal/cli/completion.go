@@ -31,7 +31,7 @@ Examples:
   # Generate PowerShell completion
   fa completion powershell > fa_completion.ps1`,
 	ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
-	Args:      cobra.ExactValidArgs(1),
+	Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 	RunE:      runCompletion,
 }
 
@@ -41,7 +41,7 @@ func init() {
 
 func runCompletion(cmd *cobra.Command, args []string) error {
 	shell := strings.ToLower(args[0])
-	
+
 	// Validate shell
 	validShells := []string{"bash", "zsh", "fish", "powershell"}
 	isValid := false
@@ -51,7 +51,7 @@ func runCompletion(cmd *cobra.Command, args []string) error {
 			break
 		}
 	}
-	
+
 	if !isValid {
 		return fmt.Errorf("unsupported shell: %s. Supported shells: %s", shell, strings.Join(validShells, ", "))
 	}

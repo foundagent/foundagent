@@ -10,9 +10,9 @@ import (
 )
 
 var repoRemoveCmd = &cobra.Command{
-	Use:     "remove <repo>...",
-	Aliases: []string{"rm"},
-	Short:   "Remove repositories from workspace",
+	Use:               "remove <repo>...",
+	Aliases:           []string{"rm"},
+	Short:             "Remove repositories from workspace",
 	ValidArgsFunction: getRepoCompletions,
 	Long: `Remove one or more repositories from the workspace.
 

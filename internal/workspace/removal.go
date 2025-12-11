@@ -144,7 +144,7 @@ func (w *Workspace) findDirtyWorktrees(repoName string) ([]string, error) {
 		}
 
 		worktreePath := filepath.Join(worktreeBase, entry.Name())
-		
+
 		// Check for uncommitted changes
 		hasChanges, err := git.HasUncommittedChanges(worktreePath)
 		if err != nil {
@@ -184,7 +184,7 @@ func (w *Workspace) removeAllWorktrees(repoName string) (int, error) {
 		}
 
 		worktreePath := filepath.Join(worktreeBase, entry.Name())
-		
+
 		// Use git worktree remove
 		cmd := exec.Command("git", "--git-dir="+bareRepoPath, "worktree", "remove", "--force", worktreePath)
 		err := cmd.Run()
@@ -245,7 +245,7 @@ func (w *Workspace) removeRepoFromState(repoName string) error {
 func (w *Workspace) removeRepoFromWorkspaceFile(repoName string) error {
 	// Get all worktree paths for this repo
 	worktreeBase := w.WorktreeBasePath(repoName)
-	
+
 	// Read workspace file
 	workspaceData, err := w.LoadVSCodeWorkspace()
 	if err != nil {
@@ -260,7 +260,7 @@ func (w *Workspace) removeRepoFromWorkspaceFile(repoName string) error {
 		if !filepath.IsAbs(folderPath) {
 			folderPath = filepath.Join(w.Path, folderPath)
 		}
-		
+
 		if !strings.HasPrefix(folderPath, worktreeBase) {
 			newFolders = append(newFolders, folder)
 		}

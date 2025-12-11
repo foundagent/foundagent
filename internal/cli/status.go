@@ -79,14 +79,14 @@ func outputStatusJSON(status *workspace.WorkspaceStatus) error {
 		"repos":     status.Repos,
 		"worktrees": status.Worktrees,
 		"summary": map[string]interface{}{
-			"total_repos":              status.Summary.TotalRepos,
-			"total_worktrees":          status.Summary.TotalWorktrees,
-			"total_branches":           status.Summary.TotalBranches,
-			"dirty_worktrees":          status.Summary.DirtyWorktrees,
-			"has_uncommitted_changes":  status.Summary.HasUncommittedChanges,
-			"config_in_sync":           status.Summary.ConfigInSync,
-			"repos_not_cloned":         status.Summary.ReposNotCloned,
-			"repos_not_in_config":      status.Summary.ReposNotInConfig,
+			"total_repos":             status.Summary.TotalRepos,
+			"total_worktrees":         status.Summary.TotalWorktrees,
+			"total_branches":          status.Summary.TotalBranches,
+			"dirty_worktrees":         status.Summary.DirtyWorktrees,
+			"has_uncommitted_changes": status.Summary.HasUncommittedChanges,
+			"config_in_sync":          status.Summary.ConfigInSync,
+			"repos_not_cloned":        status.Summary.ReposNotCloned,
+			"repos_not_in_config":     status.Summary.ReposNotInConfig,
 		},
 	}
 
@@ -150,7 +150,7 @@ func outputStatusHuman(status *workspace.WorkspaceStatus, verbose bool) error {
 	// Worktrees section (US1, US2, US5)
 	if len(status.Worktrees) > 0 {
 		fmt.Println("Worktrees:")
-		
+
 		// Group by branch
 		branchMap := make(map[string][]workspace.WorktreeStatus)
 		for _, wt := range status.Worktrees {

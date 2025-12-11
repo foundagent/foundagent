@@ -23,7 +23,7 @@ func (c GitCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,
@@ -51,9 +51,9 @@ func (c GitVersionCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	version := strings.TrimSpace(string(output))
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,

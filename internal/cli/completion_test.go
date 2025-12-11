@@ -76,39 +76,39 @@ func TestCompletionCommand(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Save original stdout
 			oldStdout := os.Stdout
-			
+
 			// Create pipe to capture output
 			r, w, _ := os.Pipe()
 			os.Stdout = w
-			
+
 			// Create root command
 			rootCmd := &cobra.Command{
 				Use: "fa",
 			}
-			
+
 			// Clone completion command to avoid state issues
 			testCompletionCmd := &cobra.Command{
 				Use:       "completion",
 				Short:     "Generate shell completion scripts",
 				ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
-				Args:      cobra.ExactValidArgs(1),
+				Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 				RunE:      runCompletion,
 			}
 			rootCmd.AddCommand(testCompletionCmd)
-			
+
 			// Execute completion command
 			rootCmd.SetArgs([]string{"completion", tt.shell})
 			err := rootCmd.Execute()
-			
+
 			// Close writer and restore stdout
 			w.Close()
 			os.Stdout = oldStdout
-			
+
 			// Read captured output
 			var buf bytes.Buffer
 			buf.ReadFrom(r)
 			output := buf.String()
-			
+
 			if tt.expectError {
 				assert.Error(t, err)
 			} else {
@@ -124,64 +124,64 @@ func TestCompletionCommandNoArgs(t *testing.T) {
 	rootCmd := &cobra.Command{
 		Use: "fa",
 	}
-	
+
 	// Clone completion command to avoid state issues
 	testCompletionCmd := &cobra.Command{
 		Use:       "completion",
 		Short:     "Generate shell completion scripts",
 		ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
-		Args:      cobra.ExactValidArgs(1),
+		Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 		RunE:      runCompletion,
 	}
 	rootCmd.AddCommand(testCompletionCmd)
-	
+
 	// Execute without arguments should show error
 	rootCmd.SetArgs([]string{"completion"})
 	err := rootCmd.Execute()
-	
+
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "accepts 1 arg(s)")
 }
 
 func TestCompletionShellValidation(t *testing.T) {
 	validShells := []string{"bash", "zsh", "fish", "powershell"}
-	
+
 	for _, shell := range validShells {
 		t.Run("valid_"+shell, func(t *testing.T) {
 			// Save original stdout
 			oldStdout := os.Stdout
-			
+
 			// Create pipe to capture output
 			r, w, _ := os.Pipe()
 			os.Stdout = w
-			
+
 			// Create root command
 			rootCmd := &cobra.Command{
 				Use: "fa",
 			}
-			
+
 			// Clone completion command to avoid state issues
 			testCompletionCmd := &cobra.Command{
 				Use:       "completion",
 				Short:     "Generate shell completion scripts",
 				ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
-				Args:      cobra.ExactValidArgs(1),
+				Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 				RunE:      runCompletion,
 			}
 			rootCmd.AddCommand(testCompletionCmd)
-			
+
 			rootCmd.SetArgs([]string{"completion", shell})
 			err := rootCmd.Execute()
-			
+
 			// Close writer and restore stdout
 			w.Close()
 			os.Stdout = oldStdout
-			
+
 			// Read captured output
 			var buf bytes.Buffer
 			buf.ReadFrom(r)
 			output := buf.String()
-			
+
 			assert.NoError(t, err)
 			assert.NotEmpty(t, output, "Output should not be empty for shell: "+shell)
 		})
@@ -191,43 +191,43 @@ func TestCompletionShellValidation(t *testing.T) {
 func TestCompletionAliasSupport(t *testing.T) {
 	// Save original stdout
 	oldStdout := os.Stdout
-	
+
 	// Create pipe to capture output
 	r, w, _ := os.Pipe()
 	os.Stdout = w
-	
+
 	// Create root command
 	rootCmd := &cobra.Command{
 		Use: "fa",
 	}
-	
+
 	// Clone completion command to avoid state issues
 	testCompletionCmd := &cobra.Command{
 		Use:       "completion",
 		Short:     "Generate shell completion scripts",
 		ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
-		Args:      cobra.ExactValidArgs(1),
+		Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 		RunE:      runCompletion,
 	}
 	rootCmd.AddCommand(testCompletionCmd)
-	
+
 	// Test bash completion for mention of alias support
 	rootCmd.SetArgs([]string{"completion", "bash"})
 	err := rootCmd.Execute()
-	
+
 	// Close writer and restore stdout
 	w.Close()
 	os.Stdout = oldStdout
-	
+
 	// Read captured output
 	var buf bytes.Buffer
 	buf.ReadFrom(r)
 	output := buf.String()
-	
+
 	assert.NoError(t, err)
-	
+
 	// Check that header mentions alias/foundagent support
-	assert.True(t, 
+	assert.True(t,
 		strings.Contains(output, "foundagent") || strings.Contains(output, "alias"),
 		"Completion script should mention alias support")
 }

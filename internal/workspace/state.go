@@ -9,8 +9,8 @@ import (
 
 // State represents the workspace runtime state
 type State struct {
-	CurrentBranch string                    `json:"current_branch,omitempty"`
-	Repositories  map[string]*Repository    `json:"repositories,omitempty"`
+	CurrentBranch string                 `json:"current_branch,omitempty"`
+	Repositories  map[string]*Repository `json:"repositories,omitempty"`
 }
 
 // createState creates the state.json file with initial empty state
@@ -44,7 +44,7 @@ func (w *Workspace) createState() error {
 // LoadState loads the workspace state
 func (w *Workspace) LoadState() (*State, error) {
 	statePath := w.StatePath()
-	
+
 	data, err := os.ReadFile(statePath)
 	if err != nil {
 		if os.IsNotExist(err) {

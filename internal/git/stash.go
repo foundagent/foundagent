@@ -35,7 +35,7 @@ func StashPop(worktreePath string) error {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		outputStr := string(output)
-		
+
 		// Check for conflicts during pop
 		if strings.Contains(outputStr, "CONFLICT") {
 			return errors.New(

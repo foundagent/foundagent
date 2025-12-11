@@ -28,7 +28,7 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Check .foundagent/ directory
 	foundagentDir := filepath.Join(c.Workspace.Path, workspace.FoundagentDir)
 	if _, err := os.Stat(foundagentDir); os.IsNotExist(err) {
@@ -40,7 +40,7 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Check state.json
 	statePath := c.Workspace.StatePath()
 	if _, err := os.Stat(statePath); os.IsNotExist(err) {
@@ -52,7 +52,7 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	// Check repos/ directory
 	reposDir := filepath.Join(c.Workspace.Path, workspace.ReposDir)
 	if _, err := os.Stat(reposDir); os.IsNotExist(err) {
@@ -64,7 +64,7 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Check repos/.bare/
 	bareDir := filepath.Join(reposDir, workspace.BareDir)
 	if _, err := os.Stat(bareDir); os.IsNotExist(err) {
@@ -76,7 +76,7 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	// Check repos/worktrees/
 	worktreesDir := filepath.Join(reposDir, workspace.WorktreesDir)
 	if _, err := os.Stat(worktreesDir); os.IsNotExist(err) {
@@ -88,7 +88,7 @@ func (c WorkspaceStructureCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,
@@ -117,7 +117,7 @@ func (c ConfigValidCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,
@@ -127,7 +127,7 @@ func (c ConfigValidCheck) Run() CheckResult {
 }
 
 // StateValidCheck checks if state file is valid
-type StateValidCheck struct{
+type StateValidCheck struct {
 	Workspace *workspace.Workspace
 }
 
@@ -146,7 +146,7 @@ func (c StateValidCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,

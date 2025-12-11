@@ -8,7 +8,7 @@ import (
 
 func TestGet(t *testing.T) {
 	info := Get()
-	
+
 	// Version fields should be populated (even if "dev"/"unknown")
 	assert.NotEmpty(t, info.Version)
 	assert.NotEmpty(t, info.Commit)
@@ -21,14 +21,14 @@ func TestGet(t *testing.T) {
 func TestString(t *testing.T) {
 	str := String()
 	assert.Contains(t, str, "foundagent")
-	
+
 	// Should contain either version number or "dev"
 	assert.True(t, len(str) > 0)
 }
 
 func TestFull(t *testing.T) {
 	full := Full()
-	
+
 	// Should contain all expected fields
 	assert.Contains(t, full, "foundagent")
 	assert.Contains(t, full, "Commit:")

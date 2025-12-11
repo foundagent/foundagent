@@ -80,7 +80,7 @@ func checkForUpdates() error {
 	// Show current version first
 	fmt.Println(version.String())
 	fmt.Println()
-	
+
 	// Check for updates with context timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*1000*1000*1000) // 5 seconds
 	defer cancel()

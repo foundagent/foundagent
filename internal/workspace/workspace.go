@@ -11,19 +11,19 @@ import (
 const (
 	// FoundagentDir is the directory for machine-managed state
 	FoundagentDir = ".foundagent"
-	
+
 	// ConfigFileName is the name of the config file
 	ConfigFileName = ".foundagent.yaml"
-	
+
 	// StateFileName is the name of the state file
 	StateFileName = "state.json"
-	
+
 	// ReposDir is the directory for repository storage
 	ReposDir = "repos"
-	
+
 	// BareDir is the subdirectory for bare clones
 	BareDir = ".bare"
-	
+
 	// WorktreesDir is the subdirectory for worktrees
 	WorktreesDir = "worktrees"
 )
@@ -123,7 +123,7 @@ func (w *Workspace) Create(force bool) error {
 // createReposStructure creates the repos directory structure
 func (w *Workspace) createReposStructure(force bool) error {
 	reposPath := filepath.Join(w.Path, ReposDir)
-	
+
 	// If force mode, preserve existing repos directory
 	if force {
 		if info, err := os.Stat(reposPath); err == nil && info.IsDir() {
