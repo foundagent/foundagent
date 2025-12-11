@@ -19,7 +19,9 @@ help:
 BINARY_NAME=foundagent
 BINARY_ALIAS=fa
 VERSION?=$(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
-LDFLAGS=-ldflags "-s -w -X github.com/foundagent/foundagent/internal/version.Version=$(VERSION)"
+# Strip 'v' prefix if present (version.go adds it back in output)
+VERSION_NO_V=$(shell echo $(VERSION) | sed 's/^v//')
+LDFLAGS=-ldflags "-s -w -X github.com/foundagent/foundagent/internal/version.Version=$(VERSION_NO_V)"
 BUILD_DIR=dist
 CMD_DIR=./cmd/foundagent
 COVERAGE_FILE=coverage.out

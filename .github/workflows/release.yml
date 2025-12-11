@@ -57,24 +57,26 @@ jobs:
       run: |
         mkdir -p dist
         VERSION="${{ steps.version.outputs.version }}"
+        # Strip 'v' prefix for ldflags (version.go adds it back in output)
+        VERSION_NO_V="${VERSION#v}"
         
         # Linux AMD64
-        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-linux-amd64 ./cmd/foundagent
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION_NO_V" -o dist/foundagent-linux-amd64 ./cmd/foundagent
         
         # Linux ARM64
-        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-linux-arm64 ./cmd/foundagent
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION_NO_V" -o dist/foundagent-linux-arm64 ./cmd/foundagent
         
         # macOS AMD64
-        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-darwin-amd64 ./cmd/foundagent
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION_NO_V" -o dist/foundagent-darwin-amd64 ./cmd/foundagent
         
         # macOS ARM64 (Apple Silicon)
-        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-darwin-arm64 ./cmd/foundagent
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION_NO_V" -o dist/foundagent-darwin-arm64 ./cmd/foundagent
         
         # Windows AMD64
-        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-windows-amd64.exe ./cmd/foundagent
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION_NO_V" -o dist/foundagent-windows-amd64.exe ./cmd/foundagent
         
         # Windows ARM64
-        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-windows-arm64.exe ./cmd/foundagent
+        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION_NO_V" -o dist/foundagent-windows-arm64.exe ./cmd/foundagent
 
     - name: Create checksums
       run: |
