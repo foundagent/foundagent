@@ -128,7 +128,7 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 		}
 
 		repoName := entry.Name()
-		
+
 		// Check if this repo exists in state
 		worktreesForRepo, repoExists := knownRepoWorktrees[repoName]
 		if !repoExists {
@@ -136,19 +136,19 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 			orphaned = append(orphaned, repoName)
 			continue
 		}
-		
+
 		// Check worktrees within this repo
 		repoPath := filepath.Join(worktreesDir, repoName)
 		wtEntries, err := os.ReadDir(repoPath)
 		if err != nil {
 			continue
 		}
-		
+
 		for _, wtEntry := range wtEntries {
 			if !wtEntry.IsDir() {
 				continue
 			}
-			
+
 			wtName := wtEntry.Name()
 			if !worktreesForRepo[wtName] {
 				orphaned = append(orphaned, repoName+"/"+wtName)
