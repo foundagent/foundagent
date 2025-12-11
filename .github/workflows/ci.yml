@@ -35,17 +35,27 @@ jobs:
       if: runner.os != 'Windows'
       run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
+    - name: Display coverage (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        go tool cover -func=coverage.txt
+        echo "---"
+        echo "Total Coverage:"
+        go tool cover -func=coverage.txt | grep total:
+
     - name: Run tests (Windows)
       if: runner.os == 'Windows'
       shell: bash
       run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
 
-    - name: Upload coverage to Codecov
-      if: matrix.os == 'ubuntu-latest' && matrix.go == '1.25'
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./coverage.txt
-        fail_ci_if_error: false
+    - name: Display coverage (Windows)
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        go tool cover -func=coverage.txt
+        echo "---"
+        echo "Total Coverage:"
+        go tool cover -func=coverage.txt | grep total:
 
   lint:
     name: Lint
