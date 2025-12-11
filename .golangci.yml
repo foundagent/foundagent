@@ -1,13 +1,12 @@
+version: "2"
+
 linters:
   enable:
     - errcheck
-    - gosimple
     - govet
     - ineffassign
     - staticcheck
     - unused
-    - gofmt
-    - goimports
     - misspell
     - unconvert
     - unparam
@@ -15,35 +14,41 @@ linters:
     - gocyclo
     - dupl
     - gosec
-    - exportloopref
 
-linters-settings:
-  gocyclo:
-    min-complexity: 15
-  dupl:
-    threshold: 100
-  goconst:
-    min-len: 3
-    min-occurrences: 3
+  settings:
+    gocyclo:
+      min-complexity: 15
+    dupl:
+      threshold: 100
+    goconst:
+      min-len: 3
+      min-occurrences: 3
 
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gocyclo
-        - errcheck
-        - dupl
-        - gosec
-    - path: internal/version/version.go
-      linters:
-        - gochecknoglobals
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - gocyclo
+          - errcheck
+          - dupl
+          - gosec
+      - path: internal/version/version.go
+        linters:
+          - gochecknoglobals
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
 
 run:
-  timeout: 5m
   tests: true
   modules-download-mode: readonly
 
 output:
-  format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
+  formats:
+    - text:
+        path: stdout
+        colors: true
+        print-linter-name: true
+        print-issued-lines: true
