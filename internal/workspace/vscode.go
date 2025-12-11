@@ -295,7 +295,7 @@ func (w *Workspace) ReplaceWorktreeFolders(targetBranch string) error {
 		return errors.New(
 			errors.ErrCodeInvalidConfig,
 			"No repositories configured in workspace",
-			"Add repositories with 'fa repo add'",
+			"Add repositories with 'fa add'",
 		)
 	}
 

@@ -105,7 +105,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	output.PrintMessage("")
 	output.PrintMessage("Next steps:")
 	output.PrintMessage("  1. Open workspace in VS Code: code %s", ws.VSCodeWorkspacePath())
-	output.PrintMessage("  2. Add a repository: fa repo add <url>")
+	output.PrintMessage("  2. Add a repository: fa add <url>")
 
 	return nil
 }
