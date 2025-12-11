@@ -70,7 +70,7 @@ func runList(cmd *cobra.Command, args []string) error {
 	ws, err := workspace.Discover("")
 	if err != nil {
 		if listJSONFlag {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -81,7 +81,7 @@ func runList(cmd *cobra.Command, args []string) error {
 	cfg, err := config.Load(ws.Path)
 	if err != nil {
 		if listJSONFlag {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}

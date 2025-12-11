@@ -69,7 +69,7 @@ func Validate(config *Config) error {
 
 		// Check for duplicate URLs (warn, not error)
 		if firstUser, exists := repoURLs[repo.URL]; exists {
-			fmt.Printf("Warning: Repository URL %s is used by both '%s' and '%s'. This may cause confusion.\n", 
+			fmt.Printf("Warning: Repository URL %s is used by both '%s' and '%s'. This may cause confusion.\n",
 				repo.URL, firstUser, name)
 		} else {
 			repoURLs[repo.URL] = name

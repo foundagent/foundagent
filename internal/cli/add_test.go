@@ -105,7 +105,7 @@ func TestReconcileFlow(t *testing.T) {
 	// Add repos to config
 	cfg, err := config.Load(ws.Path)
 	require.NoError(t, err)
-	
+
 	config.AddRepo(cfg, "https://github.com/org/repo1.git", "repo1", "main")
 	config.AddRepo(cfg, "https://github.com/org/repo2.git", "repo2", "master")
 	err = config.Save(ws.Path, cfg)

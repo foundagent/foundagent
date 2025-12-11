@@ -20,7 +20,7 @@ func TestReconcile(t *testing.T) {
 	// Load and modify config
 	cfg, err := config.Load(ws.Path)
 	require.NoError(t, err)
-	
+
 	cfg.Repos = []config.RepoConfig{
 		{URL: "https://github.com/org/repo1.git", Name: "repo1", DefaultBranch: "main"},
 		{URL: "https://github.com/org/repo2.git", Name: "repo2", DefaultBranch: "master"},
@@ -112,11 +112,11 @@ func TestReconcileInferNames(t *testing.T) {
 	// Load and modify config with repos without explicit names
 	cfg, err := config.Load(ws.Path)
 	require.NoError(t, err)
-	
+
 	cfg.Repos = []config.RepoConfig{
 		{URL: "https://github.com/org/my-repo.git"}, // Name will be inferred
 	}
-	
+
 	// Validate should infer the name
 	err = config.Validate(cfg)
 	require.NoError(t, err)

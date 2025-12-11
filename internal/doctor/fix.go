@@ -24,7 +24,7 @@ func (f *Fixer) Fix(result CheckResult) CheckResult {
 	if !result.Fixable || result.Status == StatusPass {
 		return result
 	}
-	
+
 	switch result.Name {
 	case "State file valid":
 		return f.fixStateFile()
@@ -56,26 +56,26 @@ func (f *Fixer) fixStateFile() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Build new state from config
 	state := &workspace.State{Repositories: make(map[string]*workspace.Repository)}
-	
+
 	bareDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.BareDir)
 	worktreesDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir)
-	
+
 	for _, repoConfig := range cfg.Repos {
 		// Check if bare clone exists
 		repoPath := filepath.Join(bareDir, repoConfig.Name+".git")
 		if _, err := os.Stat(repoPath); os.IsNotExist(err) {
 			continue // Skip if bare clone doesn't exist
 		}
-		
+
 		repo := &workspace.Repository{
 			Name:      repoConfig.Name,
 			URL:       repoConfig.URL,
 			Worktrees: make([]string, 0),
 		}
-		
+
 		// Find worktrees for this repo
 		entries, err := os.ReadDir(worktreesDir)
 		if err == nil {
@@ -83,7 +83,7 @@ func (f *Fixer) fixStateFile() CheckResult {
 				if !entry.IsDir() {
 					continue
 				}
-				
+
 				// Check if worktree belongs to this repo
 				// Naming convention: {repo}-{branch}
 				// We'll add worktrees that start with repo name
@@ -91,10 +91,10 @@ func (f *Fixer) fixStateFile() CheckResult {
 				repo.Worktrees = append(repo.Worktrees, entry.Name())
 			}
 		}
-		
+
 		state.Repositories[repoConfig.Name] = repo
 	}
-	
+
 	// Save state
 	if err := f.Workspace.SaveState(state); err != nil {
 		return CheckResult{
@@ -105,7 +105,7 @@ func (f *Fixer) fixStateFile() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    "State file valid",
 		Status:  StatusPass,
@@ -120,7 +120,7 @@ func (f *Fixer) fixWorkspaceStructure() CheckResult {
 		filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.BareDir),
 		filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir),
 	}
-	
+
 	for _, dir := range dirs {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return CheckResult{
@@ -132,7 +132,7 @@ func (f *Fixer) fixWorkspaceStructure() CheckResult {
 			}
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    "Workspace structure",
 		Status:  StatusPass,
@@ -152,15 +152,15 @@ func (f *Fixer) fixOrphanedRepos() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	bareDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.BareDir)
-	
+
 	// Build map of known repos
 	knownRepos := make(map[string]bool)
 	for _, repo := range state.Repositories {
 		knownRepos[repo.Name+".git"] = true
 	}
-	
+
 	// Remove orphaned directories
 	entries, err := os.ReadDir(bareDir)
 	if err != nil {
@@ -172,13 +172,13 @@ func (f *Fixer) fixOrphanedRepos() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	removed := 0
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
-		
+
 		name := entry.Name()
 		if !knownRepos[name] {
 			path := filepath.Join(bareDir, name)
@@ -187,7 +187,7 @@ func (f *Fixer) fixOrphanedRepos() CheckResult {
 			}
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    "Orphaned repositories",
 		Status:  StatusPass,
@@ -207,9 +207,9 @@ func (f *Fixer) fixOrphanedWorktrees() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	worktreesDir := filepath.Join(f.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir)
-	
+
 	// Build map of known worktrees
 	knownWorktrees := make(map[string]bool)
 	for _, repo := range state.Repositories {
@@ -217,7 +217,7 @@ func (f *Fixer) fixOrphanedWorktrees() CheckResult {
 			knownWorktrees[wt] = true
 		}
 	}
-	
+
 	// Remove orphaned directories
 	entries, err := os.ReadDir(worktreesDir)
 	if err != nil {
@@ -229,13 +229,13 @@ func (f *Fixer) fixOrphanedWorktrees() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	removed := 0
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
-		
+
 		name := entry.Name()
 		if !knownWorktrees[name] {
 			path := filepath.Join(worktreesDir, name)
@@ -244,7 +244,7 @@ func (f *Fixer) fixOrphanedWorktrees() CheckResult {
 			}
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    "Orphaned worktrees",
 		Status:  StatusPass,
@@ -265,7 +265,7 @@ func (f *Fixer) fixConfigStateConsistency() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	state, err := f.Workspace.LoadState()
 	if err != nil {
 		return CheckResult{
@@ -276,13 +276,13 @@ func (f *Fixer) fixConfigStateConsistency() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Build map of configured repositories
 	configRepos := make(map[string]bool)
 	for _, repo := range cfg.Repos {
 		configRepos[repo.URL] = true
 	}
-	
+
 	// Filter state to only include configured repos
 	newRepos := make(map[string]*workspace.Repository)
 	for name, repo := range state.Repositories {
@@ -290,9 +290,9 @@ func (f *Fixer) fixConfigStateConsistency() CheckResult {
 			newRepos[name] = repo
 		}
 	}
-	
+
 	state.Repositories = newRepos
-	
+
 	if err := f.Workspace.SaveState(state); err != nil {
 		return CheckResult{
 			Name:        "Config/state consistency",
@@ -302,7 +302,7 @@ func (f *Fixer) fixConfigStateConsistency() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    "Config/state consistency",
 		Status:  StatusPass,
@@ -322,10 +322,10 @@ func (f *Fixer) fixWorkspaceFileConsistency() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Rebuild workspace file from state
 	folders := make([]workspace.VSCodeFolder, 0)
-	
+
 	for _, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
 			folders = append(folders, workspace.VSCodeFolder{
@@ -334,11 +334,11 @@ func (f *Fixer) fixWorkspaceFileConsistency() CheckResult {
 			})
 		}
 	}
-	
+
 	wsFile := workspace.VSCodeWorkspace{
 		Folders: folders,
 	}
-	
+
 	if err := f.Workspace.SaveVSCodeWorkspace(&wsFile); err != nil {
 		return CheckResult{
 			Name:        "Workspace file consistency",
@@ -348,7 +348,7 @@ func (f *Fixer) fixWorkspaceFileConsistency() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    "Workspace file consistency",
 		Status:  StatusPass,

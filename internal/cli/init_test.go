@@ -13,48 +13,48 @@ import (
 
 func TestInitCommand(t *testing.T) {
 	tests := []struct {
-		name          string
-		args          []string
-		flags         map[string]string
-		setupFunc     func(t *testing.T, dir string)
-		expectError   bool
-		validateFunc  func(t *testing.T, dir string, output string)
+		name         string
+		args         []string
+		flags        map[string]string
+		setupFunc    func(t *testing.T, dir string)
+		expectError  bool
+		validateFunc func(t *testing.T, dir string, output string)
 	}{
 		{
 			name: "create new workspace successfully",
 			args: []string{"test-workspace"},
 			validateFunc: func(t *testing.T, dir string, output string) {
 				wsPath := filepath.Join(dir, "test-workspace")
-				
+
 				// Check directory exists
 				assert.DirExists(t, wsPath)
-				
+
 				// Check .foundagent directory
 				assert.DirExists(t, filepath.Join(wsPath, ".foundagent"))
-				
+
 				// Check config file
 				configPath := filepath.Join(wsPath, ".foundagent.yaml")
 				assert.FileExists(t, configPath)
-				
+
 				// Check state file
 				statePath := filepath.Join(wsPath, ".foundagent", "state.json")
 				assert.FileExists(t, statePath)
-				
+
 				// Verify state is valid JSON
 				stateData, err := os.ReadFile(statePath)
 				require.NoError(t, err)
 				var state map[string]interface{}
 				require.NoError(t, json.Unmarshal(stateData, &state))
-				
+
 				// Check repos structure
 				assert.DirExists(t, filepath.Join(wsPath, "repos"))
 				assert.DirExists(t, filepath.Join(wsPath, "repos", ".bare"))
 				assert.DirExists(t, filepath.Join(wsPath, "repos", "worktrees"))
-				
+
 				// Check VS Code workspace file
 				vscPath := filepath.Join(wsPath, "test-workspace.code-workspace")
 				assert.FileExists(t, vscPath)
-				
+
 				// Verify VS Code workspace is valid JSON
 				vscData, err := os.ReadFile(vscPath)
 				require.NoError(t, err)
@@ -109,11 +109,11 @@ func TestInitCommand(t *testing.T) {
 			},
 			validateFunc: func(t *testing.T, dir string, output string) {
 				wsPath := filepath.Join(dir, "existing")
-				
+
 				// Check that workspace was recreated
 				assert.DirExists(t, filepath.Join(wsPath, ".foundagent"))
 				assert.FileExists(t, filepath.Join(wsPath, ".foundagent.yaml"))
-				
+
 				// Check that repos directory and its content were preserved
 				testFile := filepath.Join(wsPath, "repos", "test.txt")
 				assert.FileExists(t, testFile)
@@ -131,10 +131,10 @@ func TestInitCommand(t *testing.T) {
 			validateFunc: func(t *testing.T, dir string, output string) {
 				var result map[string]interface{}
 				require.NoError(t, json.Unmarshal([]byte(output), &result))
-				
+
 				assert.Equal(t, "success", result["status"])
 				assert.Contains(t, result, "data")
-				
+
 				data := result["data"].(map[string]interface{})
 				assert.Equal(t, "json-test", data["name"])
 				assert.Equal(t, "created", data["action"])
@@ -147,22 +147,22 @@ func TestInitCommand(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Create temporary directory
 			tmpDir := t.TempDir()
-			
+
 			// Change to temp directory
 			oldCwd, err := os.Getwd()
 			require.NoError(t, err)
 			require.NoError(t, os.Chdir(tmpDir))
 			defer os.Chdir(oldCwd)
-			
+
 			// Run setup if provided
 			if tt.setupFunc != nil {
 				tt.setupFunc(t, tmpDir)
 			}
-			
+
 			// Reset command flags
 			initForce = false
 			initJSON = false
-			
+
 			// Set flags
 			if tt.flags != nil {
 				if tt.flags["force"] == "true" {
@@ -172,29 +172,29 @@ func TestInitCommand(t *testing.T) {
 					initJSON = true
 				}
 			}
-			
+
 			// Capture output
 			var buf bytes.Buffer
 			oldStdout := os.Stdout
 			r, w, _ := os.Pipe()
 			os.Stdout = w
-			
+
 			// Run command
 			err = runInit(initCmd, tt.args)
-			
+
 			// Restore stdout and read captured output
 			w.Close()
 			os.Stdout = oldStdout
 			buf.ReadFrom(r)
 			output := buf.String()
-			
+
 			// Check error expectation
 			if tt.expectError {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
 			}
-			
+
 			// Run validation if provided
 			if tt.validateFunc != nil {
 				tt.validateFunc(t, tmpDir, output)

@@ -63,11 +63,11 @@ func WorktreeAddNew(bareRepoPath, worktreePath, newBranch, sourceBranch string) 
 // WorktreeRemove removes a worktree
 func WorktreeRemove(bareRepoPath, worktreePath string, force bool) error {
 	args := []string{"--git-dir=" + bareRepoPath, "worktree", "remove"}
-	
+
 	if force {
 		args = append(args, "--force")
 	}
-	
+
 	args = append(args, worktreePath)
 
 	cmd := exec.Command("git", args...)

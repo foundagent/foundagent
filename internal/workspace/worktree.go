@@ -29,7 +29,7 @@ func (w *Workspace) WorktreeExists(repoName, branch string) (bool, error) {
 // GetWorktreesForRepo returns all worktree branches for a repository
 func (w *Workspace) GetWorktreesForRepo(repoName string) ([]string, error) {
 	worktreeBase := w.WorktreeBasePath(repoName)
-	
+
 	// Check if directory exists
 	if _, err := os.Stat(worktreeBase); os.IsNotExist(err) {
 		return []string{}, nil
@@ -52,7 +52,7 @@ func (w *Workspace) GetWorktreesForRepo(repoName string) ([]string, error) {
 // GetAllWorktrees returns a map of repo -> []branch for all worktrees in workspace
 func (w *Workspace) GetAllWorktrees() (map[string][]string, error) {
 	reposDir := filepath.Join(w.Path, ReposDir, WorktreesDir)
-	
+
 	if _, err := os.Stat(reposDir); os.IsNotExist(err) {
 		return make(map[string][]string), nil
 	}
@@ -109,7 +109,7 @@ func (w *Workspace) FindWorktree(branch string) (string, error) {
 // GetWorktreesForRepo returns all worktrees for a repository
 func GetWorktreesForRepo(workspaceRoot, repoName string) ([]WorktreeDetail, error) {
 	worktreeBase := filepath.Join(workspaceRoot, ReposDir, WorktreesDir, repoName)
-	
+
 	// Check if directory exists
 	if _, err := os.Stat(worktreeBase); os.IsNotExist(err) {
 		return []WorktreeDetail{}, nil

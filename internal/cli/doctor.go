@@ -56,21 +56,21 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 
 	// Build checks
 	checks := buildChecks(ws)
-	
+
 	// Run checks
 	runner := doctor.NewRunner(checks)
 	results := runner.Run()
-	
+
 	// Apply fixes if requested
 	if doctorFix {
 		results = applyFixes(ws, results)
 	}
-	
+
 	// Output results
 	if doctorJSON {
 		return outputDoctorJSON(results)
 	}
-	
+
 	return outputDoctorHuman(results)
 }
 
@@ -79,20 +79,20 @@ func buildChecks(ws *workspace.Workspace) []doctor.Check {
 		// Environment checks
 		doctor.GitCheck{},
 		doctor.GitVersionCheck{},
-		
+
 		// Structure checks
 		doctor.WorkspaceStructureCheck{Workspace: ws},
 		doctor.ConfigValidCheck{Workspace: ws},
 		doctor.StateValidCheck{Workspace: ws},
-		
+
 		// Repository checks
 		doctor.RepositoriesCheck{Workspace: ws},
 		doctor.OrphanedReposCheck{Workspace: ws},
-		
+
 		// Worktree checks
 		doctor.WorktreesCheck{Workspace: ws},
 		doctor.OrphanedWorktreesCheck{Workspace: ws},
-		
+
 		// Consistency checks
 		doctor.ConfigStateConsistencyCheck{Workspace: ws},
 		doctor.WorkspaceFileConsistencyCheck{Workspace: ws},
@@ -102,7 +102,7 @@ func buildChecks(ws *workspace.Workspace) []doctor.Check {
 func applyFixes(ws *workspace.Workspace, results []doctor.CheckResult) []doctor.CheckResult {
 	fixer := doctor.NewFixer(ws)
 	fixed := make([]doctor.CheckResult, 0)
-	
+
 	for _, result := range results {
 		if result.Fixable && result.Status != doctor.StatusPass {
 			// Attempt to fix
@@ -112,13 +112,13 @@ func applyFixes(ws *workspace.Workspace, results []doctor.CheckResult) []doctor.
 			fixed = append(fixed, result)
 		}
 	}
-	
+
 	return fixed
 }
 
 func outputDoctorJSON(results []doctor.CheckResult) error {
 	summary := doctor.CalculateSummary(results)
-	
+
 	output := struct {
 		Checks  []doctor.CheckResult `json:"checks"`
 		Summary doctor.Summary       `json:"summary"`
@@ -126,7 +126,7 @@ func outputDoctorJSON(results []doctor.CheckResult) error {
 		Checks:  results,
 		Summary: summary,
 	}
-	
+
 	encoder := json.NewEncoder(os.Stdout)
 	encoder.SetIndent("", "  ")
 	return encoder.Encode(output)
@@ -134,9 +134,9 @@ func outputDoctorJSON(results []doctor.CheckResult) error {
 
 func outputDoctorHuman(results []doctor.CheckResult) error {
 	fmt.Println(doctor.FormatResults(results))
-	
+
 	summary := doctor.CalculateSummary(results)
-	
+
 	fmt.Printf("\nSummary: ")
 	if summary.Failed > 0 {
 		fmt.Printf("%d passed, %d failed", summary.Passed, summary.Failed)
@@ -146,10 +146,10 @@ func outputDoctorHuman(results []doctor.CheckResult) error {
 		fmt.Printf("All %d checks passed", summary.Passed)
 	}
 	fmt.Println()
-	
+
 	if summary.Failed > 0 {
 		return fmt.Errorf("some checks failed")
 	}
-	
+
 	return nil
 }

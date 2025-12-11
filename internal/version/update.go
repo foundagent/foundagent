@@ -18,7 +18,7 @@ type GithubRelease struct {
 // CheckForUpdate queries GitHub releases API for the latest version
 func CheckForUpdate(ctx context.Context) (updateAvailable bool, latestVersion string, downloadURL string, err error) {
 	const releaseURL = "https://api.github.com/repos/foundagent/foundagent/releases/latest"
-	
+
 	// Create request with timeout
 	req, err := http.NewRequestWithContext(ctx, "GET", releaseURL, nil)
 	if err != nil {

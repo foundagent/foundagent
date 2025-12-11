@@ -75,7 +75,7 @@ func runAdd(cmd *cobra.Command, args []string) error {
 	ws, err := workspace.Discover("")
 	if err != nil {
 		if addJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -140,7 +140,7 @@ func runReconcile(ws *workspace.Workspace) error {
 	result, err := workspace.Reconcile(ws)
 	if err != nil {
 		if addJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -151,10 +151,10 @@ func runReconcile(ws *workspace.Workspace) error {
 	if len(result.ReposToClone) == 0 {
 		if addJSON {
 			return output.PrintSuccess(map[string]interface{}{
-				"message":        "All repositories are up-to-date",
-				"repos_to_clone": 0,
+				"message":          "All repositories are up-to-date",
+				"repos_to_clone":   0,
 				"repos_up_to_date": len(result.ReposUpToDate),
-				"repos_stale":    len(result.ReposStale),
+				"repos_stale":      len(result.ReposStale),
 			})
 		}
 		output.PrintMessage("✓ All repositories are up-to-date")

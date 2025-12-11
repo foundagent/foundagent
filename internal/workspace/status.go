@@ -20,21 +20,21 @@ type WorkspaceStatus struct {
 
 // RepoStatus represents the status of a single repository
 type RepoStatus struct {
-	Name        string
-	URL         string
-	IsCloned    bool
-	InConfig    bool
-	ClonePath   string
+	Name      string
+	URL       string
+	IsCloned  bool
+	InConfig  bool
+	ClonePath string
 }
 
 // WorktreeStatus represents the status of a single worktree
 type WorktreeStatus struct {
-	Branch       string
-	Repo         string
-	Path         string
-	Status       string // clean, modified, untracked, conflict
-	IsCurrent    bool
-	ModifiedFiles []string
+	Branch         string
+	Repo           string
+	Path           string
+	Status         string // clean, modified, untracked, conflict
+	IsCurrent      bool
+	ModifiedFiles  []string
 	UntrackedFiles []string
 }
 
@@ -109,10 +109,10 @@ func (w *Workspace) isBareCloneExists(bareRepoPath string) bool {
 	// Check for bare repo markers
 	headPath := filepath.Join(bareRepoPath, "HEAD")
 	configPath := filepath.Join(bareRepoPath, "config")
-	
+
 	_, headErr := os.Stat(headPath)
 	_, configErr := os.Stat(configPath)
-	
+
 	return headErr == nil && configErr == nil
 }
 

@@ -43,12 +43,12 @@ func Discover(startPath string) (*Workspace, error) {
 				Path: current,
 				Name: filepath.Base(current),
 			}
-			
+
 			// Try to load the actual name from config
 			if config, err := ws.LoadConfig(); err == nil {
 				ws.Name = config.Name
 			}
-			
+
 			return ws, nil
 		}
 

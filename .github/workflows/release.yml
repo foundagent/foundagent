@@ -1,0 +1,180 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Set version
+      id: version
+      run: |
+        VERSION="${{ github.ref_name }}"
+        
+        # Check if tag contains pre-release identifier
+        if [[ "$VERSION" =~ -alpha|-beta|-rc ]]; then
+          IS_PRERELEASE=true
+          echo "Creating pre-release: $VERSION"
+        else
+          IS_PRERELEASE=false
+          echo "Creating stable release: $VERSION"
+        fi
+        
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
+    - name: Validate version format
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+          echo "Error: Invalid version format: $VERSION"
+          exit 1
+        fi
+
+    - name: Set up Go
+      uses: actions/setup-go@v6
+      with:
+        go-version: '1.25'
+        cache: true
+
+    - name: Run tests
+      run: go test -v ./...
+
+    - name: Build binaries
+      run: |
+        mkdir -p dist
+        VERSION="${{ steps.version.outputs.version }}"
+        
+        # Linux AMD64
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-linux-amd64 ./cmd/foundagent
+        
+        # Linux ARM64
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-linux-arm64 ./cmd/foundagent
+        
+        # macOS AMD64
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-darwin-amd64 ./cmd/foundagent
+        
+        # macOS ARM64 (Apple Silicon)
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-darwin-arm64 ./cmd/foundagent
+        
+        # Windows AMD64
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-windows-amd64.exe ./cmd/foundagent
+        
+        # Windows ARM64
+        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w -X github.com/foundagent/foundagent/internal/version.Version=$VERSION" -o dist/foundagent-windows-arm64.exe ./cmd/foundagent
+
+    - name: Create checksums
+      run: |
+        cd dist
+        sha256sum * > checksums.txt
+        cat checksums.txt
+
+    - name: Generate release notes
+      id: release_notes
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        IS_PRERELEASE="${{ steps.version.outputs.is_prerelease }}"
+        
+        # Add prerelease warning if applicable
+        if [ "$IS_PRERELEASE" == "true" ]; then
+          cat > release_notes.md << EOF
+        ## ⚠️ Pre-release Build
+        
+        This is a **pre-release** version for testing purposes. It may contain bugs or incomplete features.
+        
+        **Tag**: \`${{ github.ref_name }}\`
+        **Commit**: \`${{ github.sha }}\`
+        **Build Date**: \`$(date -u +'%Y-%m-%d %H:%M:%S UTC')\`
+        
+        EOF
+        else
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          # Generate changelog
+          if [ -n "$PREV_TAG" ]; then
+            echo "## What's Changed" >> release_notes.md
+            echo "" >> release_notes.md
+            git log --pretty=format:"* %s (%h)" $PREV_TAG..HEAD >> release_notes.md
+            echo "" >> release_notes.md
+            echo "" >> release_notes.md
+          else
+            echo "## Initial Release" >> release_notes.md
+            echo "" >> release_notes.md
+          fi
+        fi
+        
+        # Add installation instructions
+        cat >> release_notes.md << EOF
+        ## Installation
+
+        ### Linux / macOS
+        \`\`\`bash
+        # Download the appropriate binary for your platform
+        # For Linux AMD64:
+        curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-linux-amd64
+        chmod +x foundagent-linux-amd64
+        sudo mv foundagent-linux-amd64 /usr/local/bin/fa
+        
+        # For macOS ARM64 (Apple Silicon):
+        curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-darwin-arm64
+        chmod +x foundagent-darwin-arm64
+        sudo mv foundagent-darwin-arm64 /usr/local/bin/fa
+        \`\`\`
+
+        ### Windows
+        Download the appropriate \`.exe\` file and add it to your PATH.
+
+        ### Verify Installation
+        \`\`\`bash
+        fa version
+        \`\`\`
+
+        ### Shell Completion
+        \`\`\`bash
+        # Bash
+        source <(fa completion bash)
+        
+        # Zsh
+        fa completion zsh > "\${fpath[1]}/_fa"
+        
+        # Fish
+        fa completion fish > ~/.config/fish/completions/fa.fish
+        
+        # PowerShell
+        fa completion powershell >> \$PROFILE
+        \`\`\`
+
+        ## Checksums
+        \`\`\`
+        EOF
+        cat dist/checksums.txt >> release_notes.md
+        echo '```' >> release_notes.md
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2.5.0
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: ${{ steps.version.outputs.version }}
+        files: |
+          dist/foundagent-*
+          dist/checksums.txt
+        body_path: release_notes.md
+        draft: false
+        prerelease: ${{ steps.version.outputs.is_prerelease }}
+        generate_release_notes: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

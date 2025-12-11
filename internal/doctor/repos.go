@@ -28,27 +28,27 @@ func (c RepositoriesCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	bareDir := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.BareDir)
 	issues := make([]string, 0)
-	
+
 	// Check each repository
 	for _, repo := range state.Repositories {
 		repoPath := filepath.Join(bareDir, repo.Name+".git")
-		
+
 		// Check if directory exists
 		if _, err := os.Stat(repoPath); os.IsNotExist(err) {
 			issues = append(issues, fmt.Sprintf("Missing bare clone: %s", repo.Name))
 			continue
 		}
-		
+
 		// Check if it's a valid git repository (has objects, refs, HEAD)
 		objectsPath := filepath.Join(repoPath, "objects")
 		if _, err := os.Stat(objectsPath); os.IsNotExist(err) {
 			issues = append(issues, fmt.Sprintf("Invalid git repository: %s", repo.Name))
 		}
 	}
-	
+
 	if len(issues) > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -58,7 +58,7 @@ func (c RepositoriesCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,
@@ -87,9 +87,9 @@ func (c OrphanedReposCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	bareDir := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.BareDir)
-	
+
 	// Get all .git directories in bare/
 	entries, err := os.ReadDir(bareDir)
 	if err != nil {
@@ -101,26 +101,26 @@ func (c OrphanedReposCheck) Run() CheckResult {
 			Fixable: false,
 		}
 	}
-	
+
 	// Build map of known repos
 	knownRepos := make(map[string]bool)
 	for _, repo := range state.Repositories {
 		knownRepos[repo.Name+".git"] = true
 	}
-	
+
 	// Check for orphaned directories
 	orphaned := make([]string, 0)
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
-		
+
 		name := entry.Name()
 		if !knownRepos[name] {
 			orphaned = append(orphaned, name)
 		}
 	}
-	
+
 	if len(orphaned) > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -130,7 +130,7 @@ func (c OrphanedReposCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,

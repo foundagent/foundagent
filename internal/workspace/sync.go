@@ -10,23 +10,23 @@ import (
 
 // SyncResult represents the result of syncing a single repo
 type SyncResult struct {
-	RepoName     string
-	Status       string // "success", "failed", "skipped", "up-to-date", "updated"
-	Error        error
-	RefsUpdated  []string
+	RepoName      string
+	Status        string // "success", "failed", "skipped", "up-to-date", "updated"
+	Error         error
+	RefsUpdated   []string
 	CommitsBehind int
 	CommitsAhead  int
-	Pushed       bool
+	Pushed        bool
 }
 
 // SyncSummary aggregates results across all repos
 type SyncSummary struct {
-	Total     int
-	Synced    int
-	Updated   int
-	Failed    int
-	Skipped   int
-	Pushed    int
+	Total   int
+	Synced  int
+	Updated int
+	Failed  int
+	Skipped int
+	Pushed  int
 }
 
 // SyncAllRepos fetches from all repos in parallel
@@ -92,7 +92,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 
 	// Now pull each worktree for the branch
 	results := make([]SyncResult, 0)
-	
+
 	for repoName := range state.Repositories {
 		worktreePath := filepath.Join(w.Path, ReposDir, WorktreesDir, repoName, branch)
 
@@ -110,7 +110,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 			results = append(results, result)
 			continue
 		}
-		
+
 		if isDetached {
 			result.Status = "skipped"
 			result.Error = fmt.Errorf("detached HEAD - cannot pull")
@@ -148,7 +148,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 
 		// Pull
 		pullErr := git.Pull(worktreePath)
-		
+
 		// Pop stash if we stashed
 		if stash && hasChanges {
 			if popErr := git.StashPop(worktreePath); popErr != nil {
@@ -165,7 +165,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 		} else {
 			result.Status = "updated"
 		}
-		
+
 		results = append(results, result)
 	}
 
@@ -186,7 +186,7 @@ func (w *Workspace) PushAllRepos(verbose bool) ([]SyncResult, error) {
 	// For each repo, check all worktrees for unpushed commits
 	for repoName := range state.Repositories {
 		worktreesDir := filepath.Join(w.Path, ReposDir, WorktreesDir, repoName)
-		
+
 		// List all branches (subdirectories)
 		entries, err := filepath.Glob(filepath.Join(worktreesDir, "*"))
 		if err != nil {
@@ -271,11 +271,11 @@ func FormatSyncResults(results []SyncResult, operation string) string {
 		}
 
 		output.WriteString(fmt.Sprintf("%s %s: %s", status, r.RepoName, r.Status))
-		
+
 		if r.Error != nil {
 			output.WriteString(fmt.Sprintf(" (%s)", r.Error.Error()))
 		}
-		
+
 		output.WriteString("\n")
 	}
 

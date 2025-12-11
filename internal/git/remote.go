@@ -123,7 +123,7 @@ func Pull(worktreePath string) error {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		outputStr := string(output)
-		
+
 		// Check for non-fast-forward scenario
 		if strings.Contains(outputStr, "Not possible to fast-forward") ||
 			strings.Contains(outputStr, "divergent branches") {
@@ -161,7 +161,7 @@ func Push(worktreePath string) error {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		outputStr := string(output)
-		
+
 		// Check for remote has new commits scenario
 		if strings.Contains(outputStr, "rejected") ||
 			strings.Contains(outputStr, "non-fast-forward") {

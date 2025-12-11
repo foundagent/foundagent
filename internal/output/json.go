@@ -10,8 +10,8 @@ import (
 
 // SuccessResponse represents a successful operation output
 type SuccessResponse struct {
-	Status  string                 `json:"status"`
-	Data    map[string]interface{} `json:"data"`
+	Status string                 `json:"status"`
+	Data   map[string]interface{} `json:"data"`
 }
 
 // ErrorResponse represents an error output

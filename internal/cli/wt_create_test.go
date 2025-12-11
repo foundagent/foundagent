@@ -24,7 +24,7 @@ func TestPreValidateWorktreeCreate(t *testing.T) {
 		Repos:     []config.RepoConfig{},
 		Settings:  config.SettingsConfig{AutoCreateWorktree: true},
 	}
-	
+
 	// This would need actual git repos to test fully
 	// For now, just verify the function signature works
 	err = preValidateWorktreeCreate(ws, emptyCfg, "feature-test", "", false)

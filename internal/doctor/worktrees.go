@@ -28,20 +28,20 @@ func (c WorktreesCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	issues := make([]string, 0)
-	
+
 	// Check each worktree
 	for _, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
 			wtPath := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir, wt)
-			
+
 			// Check if directory exists
 			if _, err := os.Stat(wtPath); os.IsNotExist(err) {
 				issues = append(issues, fmt.Sprintf("Missing worktree: %s", wt))
 				continue
 			}
-			
+
 			// Check if it's a valid git worktree (has .git file or directory)
 			gitPath := filepath.Join(wtPath, ".git")
 			if _, err := os.Stat(gitPath); os.IsNotExist(err) {
@@ -49,7 +49,7 @@ func (c WorktreesCheck) Run() CheckResult {
 			}
 		}
 	}
-	
+
 	if len(issues) > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -59,13 +59,13 @@ func (c WorktreesCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	// Count total worktrees
 	totalWorktrees := 0
 	for _, repo := range state.Repositories {
 		totalWorktrees += len(repo.Worktrees)
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,
@@ -94,9 +94,9 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	worktreesDir := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir)
-	
+
 	// Get all directories in worktrees/
 	entries, err := os.ReadDir(worktreesDir)
 	if err != nil {
@@ -108,7 +108,7 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 			Fixable: false,
 		}
 	}
-	
+
 	// Build map of known worktrees
 	knownWorktrees := make(map[string]bool)
 	for _, repo := range state.Repositories {
@@ -116,20 +116,20 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 			knownWorktrees[wt] = true
 		}
 	}
-	
+
 	// Check for orphaned directories
 	orphaned := make([]string, 0)
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
-		
+
 		name := entry.Name()
 		if !knownWorktrees[name] {
 			orphaned = append(orphaned, name)
 		}
 	}
-	
+
 	if len(orphaned) > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -139,7 +139,7 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,

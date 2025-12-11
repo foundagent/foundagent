@@ -27,7 +27,7 @@ func (c ConfigStateConsistencyCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	state, err := c.Workspace.LoadState()
 	if err != nil {
 		return CheckResult{
@@ -38,19 +38,19 @@ func (c ConfigStateConsistencyCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	// Build map of configured repositories
 	configRepos := make(map[string]bool)
 	for _, repo := range cfg.Repos {
 		configRepos[repo.URL] = true
 	}
-	
+
 	// Build map of state repositories
 	stateRepos := make(map[string]bool)
 	for _, repo := range state.Repositories {
 		stateRepos[repo.URL] = true
 	}
-	
+
 	// Check for repos in config but not in state
 	missing := make([]string, 0)
 	for url := range configRepos {
@@ -58,7 +58,7 @@ func (c ConfigStateConsistencyCheck) Run() CheckResult {
 			missing = append(missing, url)
 		}
 	}
-	
+
 	// Check for repos in state but not in config
 	orphaned := make([]string, 0)
 	for url := range stateRepos {
@@ -66,7 +66,7 @@ func (c ConfigStateConsistencyCheck) Run() CheckResult {
 			orphaned = append(orphaned, url)
 		}
 	}
-	
+
 	if len(missing) > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -76,7 +76,7 @@ func (c ConfigStateConsistencyCheck) Run() CheckResult {
 			Fixable:     false,
 		}
 	}
-	
+
 	if len(orphaned) > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -86,7 +86,7 @@ func (c ConfigStateConsistencyCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,
@@ -115,7 +115,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	// Load workspace file
 	wsFile, err := c.Workspace.LoadVSCodeWorkspace()
 	if err != nil {
@@ -127,7 +127,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	// Count worktrees in state
 	stateWorktrees := make(map[string]bool)
 	for _, repo := range state.Repositories {
@@ -135,7 +135,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			stateWorktrees[wt] = true
 		}
 	}
-	
+
 	// Count folders in workspace file
 	wsWorktrees := make(map[string]bool)
 	for _, folder := range wsFile.Folders {
@@ -146,7 +146,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			wsWorktrees[name] = true
 		}
 	}
-	
+
 	// Check for missing worktrees in workspace file
 	missing := 0
 	for wt := range stateWorktrees {
@@ -154,7 +154,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			missing++
 		}
 	}
-	
+
 	// Check for extra worktrees in workspace file
 	extra := 0
 	for wt := range wsWorktrees {
@@ -162,7 +162,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			extra++
 		}
 	}
-	
+
 	if missing > 0 || extra > 0 {
 		return CheckResult{
 			Name:        c.Name(),
@@ -172,7 +172,7 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			Fixable:     true,
 		}
 	}
-	
+
 	return CheckResult{
 		Name:    c.Name(),
 		Status:  StatusPass,

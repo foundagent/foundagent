@@ -72,7 +72,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if state.Repositories == nil || len(state.Repositories) == 0 {
+	if len(state.Repositories) == 0 {
 		return fmt.Errorf("No repositories configured in workspace. Add repositories with 'fa add <url> <name>'")
 	}
 
@@ -119,7 +119,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 	reposWithBranch := 0
 	totalRepos := len(state.Repositories)
 	missingRepos := make([]string, 0)
-	
+
 	for repoName := range state.Repositories {
 		hasBranch := false
 		if branches, ok := allWorktrees[repoName]; ok {
@@ -247,7 +247,7 @@ func warnUncommittedChanges(ws *workspace.Workspace, branch string) error {
 
 	for repoName := range state.Repositories {
 		worktreePath := ws.WorktreePath(repoName, branch)
-		
+
 		// Check if worktree exists
 		if _, err := os.Stat(worktreePath); err != nil {
 			continue
@@ -284,7 +284,7 @@ func createWorktreesForBranch(ws *workspace.Workspace, branch string) error {
 		return err
 	}
 
-	if state.Repositories == nil || len(state.Repositories) == 0 {
+	if len(state.Repositories) == 0 {
 		return fmt.Errorf("No repositories configured in workspace")
 	}
 

@@ -47,7 +47,7 @@ func DeleteBranch(bareRepoPath, branchName string, force bool) error {
 	if force {
 		deleteFlag = "-D"
 	}
-	
+
 	cmd := exec.Command("git", "--git-dir="+bareRepoPath, "branch", deleteFlag, branchName)
 	output, err := cmd.CombinedOutput()
 	if err != nil {

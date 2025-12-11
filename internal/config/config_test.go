@@ -105,7 +105,7 @@ func TestFindConfig(t *testing.T) {
 			// Create config file
 			configPath := filepath.Join(testDir, tt.configFile)
 			cfg := DefaultConfig("test")
-			
+
 			switch tt.expectedFormat {
 			case FormatYAML:
 				err = SaveYAML(configPath, cfg)

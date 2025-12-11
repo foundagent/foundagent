@@ -1,18 +1,9 @@
 package git
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/foundagent/foundagent/internal/errors"
-)
-
-var (
-	// validBranchNameRegex matches valid git branch names
-	// Git branch names cannot contain: space, ~, ^, :, ?, *, [, \
-	// Cannot start or end with /, cannot have consecutive slashes
-	// Cannot end with .lock
-	validBranchNameRegex = regexp.MustCompile(`^[a-zA-Z0-9._\-]+(/[a-zA-Z0-9._\-]+)*$`)
 )
 
 // ValidateBranchName validates that a branch name is valid for git

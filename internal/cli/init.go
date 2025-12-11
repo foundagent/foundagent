@@ -49,7 +49,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	cwd, err := os.Getwd()
 	if err != nil {
 		if initJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: Failed to get current directory: %v", err)
 		}
@@ -60,7 +60,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	ws, err := workspace.New(name, cwd)
 	if err != nil {
 		if initJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -70,7 +70,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	// Validate path length
 	if err := workspace.ValidatePathLength(ws.Path); err != nil {
 		if initJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -80,7 +80,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	// Create the workspace
 	if err := ws.Create(initForce); err != nil {
 		if initJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -100,7 +100,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	if initForce {
 		action = "reinitialized"
 	}
-	
+
 	output.PrintMessage("✓ Workspace %s %s at: %s", ws.Name, action, ws.Path)
 	output.PrintMessage("")
 	output.PrintMessage("Next steps:")

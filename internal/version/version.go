@@ -50,7 +50,7 @@ func Full() string {
 Commit:     %s
 Build Date: %s
 Go Version: %s
-Platform:   %s/%s`, 
+Platform:   %s/%s`,
 		info.Version,
 		info.Commit,
 		info.BuildDate,

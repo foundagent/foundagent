@@ -125,7 +125,7 @@ func runSyncFetch(ws *workspace.Workspace) error {
 
 	// Human output
 	fmt.Println(workspace.FormatSyncResults(results, "fetch"))
-	
+
 	summary := workspace.CalculateSummary(results)
 	fmt.Printf("\nSummary: %d synced, %d failed\n", summary.Synced+summary.Updated, summary.Failed)
 
@@ -164,7 +164,7 @@ func runSyncPull(ws *workspace.Workspace, branch string) error {
 
 	// Human output
 	fmt.Println(workspace.FormatSyncResults(results, "pull"))
-	
+
 	summary := workspace.CalculateSummary(results)
 	fmt.Printf("\nSummary: %d updated, %d skipped, %d failed\n", summary.Updated, summary.Skipped, summary.Failed)
 
@@ -202,15 +202,15 @@ func runSyncPush(ws *workspace.Workspace) error {
 
 	// Human output
 	fmt.Println(workspace.FormatSyncResults(results, "push"))
-	
+
 	summary := workspace.CalculateSummary(results)
-	
+
 	// Check if nothing to push
 	if summary.Pushed == 0 && summary.Failed == 0 {
 		fmt.Println("\nNothing to push")
 		return nil
 	}
-	
+
 	fmt.Printf("\nSummary: %d pushed, %d failed\n", summary.Pushed, summary.Failed)
 
 	if summary.Failed > 0 {
@@ -222,10 +222,10 @@ func runSyncPush(ws *workspace.Workspace) error {
 
 func outputSyncJSON(results []workspace.SyncResult) error {
 	summary := workspace.CalculateSummary(results)
-	
+
 	output := struct {
-		Repos   []workspace.SyncResult  `json:"repos"`
-		Summary workspace.SyncSummary   `json:"summary"`
+		Repos   []workspace.SyncResult `json:"repos"`
+		Summary workspace.SyncSummary  `json:"summary"`
 	}{
 		Repos:   results,
 		Summary: summary,

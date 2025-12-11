@@ -24,7 +24,7 @@ func Execute() error {
 func init() {
 	// Global flags
 	rootCmd.PersistentFlags().BoolVar(&showVersion, "version", false, "Show version information")
-	
+
 	// Override RunE to handle --version flag
 	rootCmd.RunE = func(cmd *cobra.Command, args []string) error {
 		if showVersion {

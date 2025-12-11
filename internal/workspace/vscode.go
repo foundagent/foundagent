@@ -53,7 +53,7 @@ func (w *Workspace) createVSCodeWorkspace() error {
 // LoadVSCodeWorkspace loads the VS Code workspace file
 func (w *Workspace) LoadVSCodeWorkspace() (*VSCodeWorkspace, error) {
 	workspacePath := w.VSCodeWorkspacePath()
-	
+
 	data, err := os.ReadFile(workspacePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -211,34 +211,34 @@ func (w *Workspace) GetCurrentBranchFromWorkspace() (string, error) {
 
 	// Look for worktree folders pattern: repos/worktrees/<repo>/<branch>
 	worktreePrefix := filepath.Join(ReposDir, WorktreesDir) + string(filepath.Separator)
-	
+
 	for _, folder := range workspace.Folders {
 		// Clean the path
 		cleanPath := filepath.Clean(folder.Path)
-		
+
 		// Check if it's a worktree folder
 		if !filepath.IsAbs(cleanPath) {
 			// Convert to absolute for checking
 			cleanPath = filepath.Join(w.Path, cleanPath)
 		}
-		
+
 		// Get relative path from workspace root
 		relPath, err := filepath.Rel(w.Path, cleanPath)
 		if err != nil {
 			continue
 		}
-		
+
 		// Check if it starts with repos/worktrees/
 		if !strings.HasPrefix(relPath, worktreePrefix) {
 			continue
 		}
-		
+
 		// Extract branch from path: repos/worktrees/<repo>/<branch>
 		rel, err := filepath.Rel(worktreePrefix, relPath)
 		if err != nil {
 			continue
 		}
-		
+
 		// Split path and get branch name
 		parts := strings.Split(rel, string(filepath.Separator))
 		if len(parts) >= 2 {
@@ -246,7 +246,7 @@ func (w *Workspace) GetCurrentBranchFromWorkspace() (string, error) {
 			return parts[1], nil
 		}
 	}
-	
+
 	return "", errors.New(
 		errors.ErrCodeWorktreeNotFound,
 		"No worktrees found in workspace file",
@@ -291,7 +291,7 @@ func (w *Workspace) ReplaceWorktreeFolders(targetBranch string) error {
 		return err
 	}
 
-	if state.Repositories == nil || len(state.Repositories) == 0 {
+	if len(state.Repositories) == 0 {
 		return errors.New(
 			errors.ErrCodeInvalidConfig,
 			"No repositories configured in workspace",
@@ -310,7 +310,7 @@ func (w *Workspace) ReplaceWorktreeFolders(targetBranch string) error {
 			// If relative path fails, check the path directly
 			relPath = folder.Path
 		}
-		
+
 		// Keep folders that aren't worktrees
 		if !strings.HasPrefix(relPath, worktreePrefix) && relPath != filepath.Join(ReposDir, WorktreesDir) {
 			newFolders = append(newFolders, folder)
@@ -320,7 +320,7 @@ func (w *Workspace) ReplaceWorktreeFolders(targetBranch string) error {
 	// Add new worktree folders for target branch
 	for repoName := range state.Repositories {
 		worktreePath := w.WorktreePath(repoName, targetBranch)
-		
+
 		// Check if worktree exists
 		if _, err := os.Stat(worktreePath); err != nil {
 			continue // Skip if worktree doesn't exist

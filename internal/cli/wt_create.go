@@ -69,7 +69,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	// Validate branch name
 	if err := git.ValidateBranchName(targetBranch); err != nil {
 		if createJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -80,7 +80,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	ws, err := workspace.Discover("")
 	if err != nil {
 		if createJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -91,7 +91,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	cfg, err := config.Load(ws.Path)
 	if err != nil {
 		if createJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -106,7 +106,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 			"Add repositories with 'fa add <url>'",
 		)
 		if createJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -116,7 +116,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	// Phase 1: Pre-validation (atomic all-or-nothing)
 	if err := preValidateWorktreeCreate(ws, cfg, targetBranch, createFrom, createForce); err != nil {
 		if createJSON {
-			output.PrintError(err)
+			_ = output.PrintError(err)
 		} else {
 			output.PrintErrorMessage("Error: %v", err)
 		}
@@ -186,7 +186,7 @@ func preValidateWorktreeCreate(ws *workspace.Workspace, cfg *config.Config, targ
 		}
 
 		if exists && !force {
-			validationErrors = append(validationErrors, 
+			validationErrors = append(validationErrors,
 				fmt.Sprintf("%s: worktree already exists", repo.Name))
 			continue
 		}
@@ -217,11 +217,11 @@ func preValidateWorktreeCreate(ws *workspace.Workspace, cfg *config.Config, targ
 	}
 
 	if len(validationErrors) > 0 {
-		msg := fmt.Sprintf("Validation failed:\n")
+		msg := "Validation failed:\n"
 		for _, e := range validationErrors {
 			msg += fmt.Sprintf("  - %s\n", e)
 		}
-		
+
 		if sourceBranch != "" {
 			msg += "\nUse --force to recreate existing worktrees"
 		} else {
