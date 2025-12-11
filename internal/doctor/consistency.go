@@ -132,18 +132,19 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 	stateWorktrees := make(map[string]bool)
 	for _, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
-			stateWorktrees[wt] = true
+			// Store as repo/branch format
+			stateWorktrees[repo.Name+"/"+wt] = true
 		}
 	}
 
 	// Count folders in workspace file
 	wsWorktrees := make(map[string]bool)
 	for _, folder := range wsFile.Folders {
-		// Extract worktree name from path
-		// Path format: repos/worktrees/{name}
+		// Extract worktree path from folder path
+		// Path format: repos/worktrees/{repoName}/{branch}
 		if len(folder.Path) > len("repos/worktrees/") {
-			name := folder.Path[len("repos/worktrees/"):]
-			wsWorktrees[name] = true
+			path := folder.Path[len("repos/worktrees/"):]
+			wsWorktrees[path] = true
 		}
 	}
 
