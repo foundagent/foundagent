@@ -121,22 +121,41 @@ jobs:
         cat >> release_notes.md << EOF
         ## Installation
 
-        ### Linux / macOS
-        \`\`\`bash
-        # Download the appropriate binary for your platform
-        # For Linux AMD64:
-        curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-linux-amd64
-        chmod +x foundagent-linux-amd64
-        sudo mv foundagent-linux-amd64 /usr/local/bin/fa
+        ### macOS
         
-        # For macOS ARM64 (Apple Silicon):
+        **Apple Silicon:**
+        \`\`\`bash
         curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-darwin-arm64
         chmod +x foundagent-darwin-arm64
         sudo mv foundagent-darwin-arm64 /usr/local/bin/fa
         \`\`\`
 
+        **Intel Mac:**
+        \`\`\`bash
+        curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-darwin-amd64
+        chmod +x foundagent-darwin-amd64
+        sudo mv foundagent-darwin-amd64 /usr/local/bin/fa
+        \`\`\`
+
+        ### Linux
+        
+        **AMD64/x86_64:**
+        \`\`\`bash
+        curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-linux-amd64
+        chmod +x foundagent-linux-amd64
+        sudo mv foundagent-linux-amd64 /usr/local/bin/fa
+        \`\`\`
+
+        **ARM64:**
+        \`\`\`bash
+        curl -LO https://github.com/foundagent/foundagent/releases/download/$VERSION/foundagent-linux-arm64
+        chmod +x foundagent-linux-arm64
+        sudo mv foundagent-linux-arm64 /usr/local/bin/fa
+        \`\`\`
+
         ### Windows
-        Download the appropriate \`.exe\` file and add it to your PATH.
+        
+        Download the appropriate \`.exe\` file for your architecture (amd64 or arm64) and add it to your PATH.
 
         ### Verify Installation
         \`\`\`bash
