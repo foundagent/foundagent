@@ -451,7 +451,7 @@ Foundagent uses **graceful degradation** for network-dependent operations:
 | `worktree switch` | No | Works fully offline |
 | `workspace sync` | Yes (fetches remotes) | Warns and skips remote sync |
 | `workspace status` | No | Shows local state; warns if remote check skipped |
-| `repo add` | Yes (initial clone) | Fails with clear error |
+| `add` | Yes (initial clone) | Fails with clear error |
 
 **Behavior**:
 - Operations that CAN work offline MUST work offline
