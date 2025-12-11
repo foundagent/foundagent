@@ -34,18 +34,18 @@ func (c WorktreesCheck) Run() CheckResult {
 	// Check each worktree
 	for _, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
-			wtPath := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir, wt)
+			wtPath := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.WorktreesDir, repo.Name, wt)
 
 			// Check if directory exists
 			if _, err := os.Stat(wtPath); os.IsNotExist(err) {
-				issues = append(issues, fmt.Sprintf("Missing worktree: %s", wt))
+				issues = append(issues, fmt.Sprintf("Missing worktree: %s/%s", repo.Name, wt))
 				continue
 			}
 
 			// Check if it's a valid git worktree (has .git file or directory)
 			gitPath := filepath.Join(wtPath, ".git")
 			if _, err := os.Stat(gitPath); os.IsNotExist(err) {
-				issues = append(issues, fmt.Sprintf("Invalid git worktree: %s", wt))
+				issues = append(issues, fmt.Sprintf("Invalid git worktree: %s/%s", repo.Name, wt))
 			}
 		}
 	}
@@ -109,24 +109,50 @@ func (c OrphanedWorktreesCheck) Run() CheckResult {
 		}
 	}
 
-	// Build map of known worktrees
-	knownWorktrees := make(map[string]bool)
+	// Build map of known worktrees by repo name
+	knownRepoWorktrees := make(map[string]map[string]bool)
 	for _, repo := range state.Repositories {
+		if _, exists := knownRepoWorktrees[repo.Name]; !exists {
+			knownRepoWorktrees[repo.Name] = make(map[string]bool)
+		}
 		for _, wt := range repo.Worktrees {
-			knownWorktrees[wt] = true
+			knownRepoWorktrees[repo.Name][wt] = true
 		}
 	}
 
-	// Check for orphaned directories
+	// Check for orphaned directories (repos or worktrees)
 	orphaned := make([]string, 0)
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
 
-		name := entry.Name()
-		if !knownWorktrees[name] {
-			orphaned = append(orphaned, name)
+		repoName := entry.Name()
+		
+		// Check if this repo exists in state
+		worktreesForRepo, repoExists := knownRepoWorktrees[repoName]
+		if !repoExists {
+			// Entire repo directory is orphaned
+			orphaned = append(orphaned, repoName)
+			continue
+		}
+		
+		// Check worktrees within this repo
+		repoPath := filepath.Join(worktreesDir, repoName)
+		wtEntries, err := os.ReadDir(repoPath)
+		if err != nil {
+			continue
+		}
+		
+		for _, wtEntry := range wtEntries {
+			if !wtEntry.IsDir() {
+				continue
+			}
+			
+			wtName := wtEntry.Name()
+			if !worktreesForRepo[wtName] {
+				orphaned = append(orphaned, repoName+"/"+wtName)
+			}
 		}
 	}
 
