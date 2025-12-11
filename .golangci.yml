@@ -47,8 +47,8 @@ run:
 
 output:
   formats:
-    - text:
-        path: stdout
-        colors: true
-        print-linter-name: true
-        print-issued-lines: true
+    text:
+      path: stdout
+      colors: true
+      print-linter-name: true
+      print-issued-lines: true
