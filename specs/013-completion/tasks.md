@@ -25,8 +25,8 @@
 
 **Purpose**: Verify existing infrastructure supports completion command
 
-- [ ] T001 Verify Cobra dependency in go.mod supports completion (v1.7+)
-- [ ] T002 [P] Create completion command skeleton in internal/cli/completion.go
+- [X] T001 Verify Cobra dependency in go.mod supports completion (v1.7+)
+- [X] T002 [P] Create completion command skeleton in internal/cli/completion.go
 
 ---
 
@@ -36,10 +36,10 @@
 
 **⚠️ CRITICAL**: No shell-specific work can begin until this phase is complete
 
-- [ ] T003 Implement shell validation logic in internal/cli/completion.go (validate "bash", "zsh", "fish", "powershell")
-- [ ] T004 Implement error handling for invalid shell argument (E001 error code per constitution)
-- [ ] T005 [P] Create completion_helpers.go with workspace discovery wrapper for dynamic completions in internal/cli/completion_helpers.go
-- [ ] T006 Add `completion` command to rootCmd in internal/cli/root.go (or appropriate init location)
+- [X] T003 Implement shell validation logic in internal/cli/completion.go (validate "bash", "zsh", "fish", "powershell")
+- [X] T004 Implement error handling for invalid shell argument (E001 error code per constitution)
+- [X] T005 [P] Create completion_helpers.go with workspace discovery wrapper for dynamic completions in internal/cli/completion_helpers.go
+- [X] T006 Add `completion` command to rootCmd in internal/cli/root.go (or appropriate init location)
 
 **Checkpoint**: Foundation ready - shell-specific and dynamic completion work can proceed
 
@@ -53,14 +53,14 @@
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Table-driven test: bash generates non-empty script containing "complete" in internal/cli/completion_test.go
-- [ ] T008 [P] [US1] Test: bash script includes installation instructions header in internal/cli/completion_test.go
+- [X] T007 [P] [US1] Table-driven test: bash generates non-empty script containing "complete" in internal/cli/completion_test.go
+- [X] T008 [P] [US1] Test: bash script includes installation instructions header in internal/cli/completion_test.go
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Implement GenBashCompletionV2 call with descriptions in internal/cli/completion.go
-- [ ] T010 [US1] Add Bash-specific installation header (current session, Linux, macOS with/without Homebrew) in internal/cli/completion.go
-- [ ] T011 [US1] Add Bash alias setup instructions (complete -F for fa) in installation header
+- [X] T009 [US1] Implement GenBashCompletionV2 call with descriptions in internal/cli/completion.go
+- [X] T010 [US1] Add Bash-specific installation header (current session, Linux, macOS with/without Homebrew) in internal/cli/completion.go
+- [X] T011 [US1] Add Bash alias setup instructions (complete -F for fa) in installation header
 
 **Checkpoint**: `fa completion bash` produces sourceable script, static completions work
 
@@ -74,13 +74,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T012 [P] [US2] Table-driven test: zsh generates script containing "#compdef" in internal/cli/completion_test.go
-- [ ] T013 [P] [US2] Test: zsh script includes installation instructions header in internal/cli/completion_test.go
+- [X] T012 [P] [US2] Table-driven test: zsh generates script containing "#compdef" in internal/cli/completion_test.go
+- [X] T013 [P] [US2] Test: zsh script includes installation instructions header in internal/cli/completion_test.go
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Implement GenZshCompletion call in internal/cli/completion.go
-- [ ] T015 [US2] Add Zsh-specific installation header (fpath, oh-my-zsh, compdef for alias) in internal/cli/completion.go
+- [X] T014 [US2] Implement GenZshCompletion call in internal/cli/completion.go
+- [X] T015 [US2] Add Zsh-specific installation header (fpath, oh-my-zsh, compdef for alias) in internal/cli/completion.go
 
 **Checkpoint**: `fa completion zsh` produces valid script, static completions work
 
@@ -94,12 +94,12 @@
 
 ### Tests for User Story 3
 
-- [ ] T016 [P] [US3] Table-driven test: fish generates script containing "complete -c" in internal/cli/completion_test.go
+- [X] T016 [P] [US3] Table-driven test: fish generates script containing "complete -c" in internal/cli/completion_test.go
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Implement GenFishCompletion call with descriptions in internal/cli/completion.go
-- [ ] T018 [US3] Add Fish-specific installation header in internal/cli/completion.go
+- [X] T017 [US3] Implement GenFishCompletion call with descriptions in internal/cli/completion.go
+- [X] T018 [US3] Add Fish-specific installation header in internal/cli/completion.go
 
 **Checkpoint**: `fa completion fish` produces valid script
 
@@ -113,12 +113,12 @@
 
 ### Tests for User Story 4
 
-- [ ] T019 [P] [US4] Table-driven test: powershell generates script containing "Register-ArgumentCompleter" in internal/cli/completion_test.go
+- [X] T019 [P] [US4] Table-driven test: powershell generates script containing "Register-ArgumentCompleter" in internal/cli/completion_test.go
 
 ### Implementation for User Story 4
 
-- [ ] T020 [US4] Implement GenPowerShellCompletionWithDesc call in internal/cli/completion.go
-- [ ] T021 [US4] Add PowerShell-specific installation header in internal/cli/completion.go
+- [X] T020 [US4] Implement GenPowerShellCompletionWithDesc call in internal/cli/completion.go
+- [X] T021 [US4] Add PowerShell-specific installation header in internal/cli/completion.go
 
 **Checkpoint**: `fa completion powershell` produces valid script
 
@@ -132,18 +132,18 @@
 
 ### Tests for User Story 5
 
-- [ ] T022 [P] [US5] Test: getWorktreeCompletions returns names from mock workspace in internal/cli/completion_helpers_test.go
-- [ ] T023 [P] [US5] Test: getRepoCompletions returns repo names from mock workspace in internal/cli/completion_helpers_test.go
-- [ ] T024 [P] [US5] Test: completion helpers return empty list when outside workspace (graceful degradation) in internal/cli/completion_helpers_test.go
+- [X] T022 [P] [US5] Test: getWorktreeCompletions returns names from mock workspace in internal/cli/completion_helpers_test.go
+- [X] T023 [P] [US5] Test: getRepoCompletions returns repo names from mock workspace in internal/cli/completion_helpers_test.go
+- [X] T024 [P] [US5] Test: completion helpers return empty list when outside workspace (graceful degradation) in internal/cli/completion_helpers_test.go
 
 ### Implementation for User Story 5
 
-- [ ] T025 [US5] Implement getWorktreeCompletions() with workspace.Discover() and prefix filtering in internal/cli/completion_helpers.go
-- [ ] T026 [US5] Implement getRepoCompletions() with workspace.Discover() and prefix filtering in internal/cli/completion_helpers.go
-- [ ] T027 [US5] Add ValidArgsFunction to worktree switch command (existing cmd file)
-- [ ] T028 [US5] Add ValidArgsFunction to worktree remove command (existing cmd file)
-- [ ] T029 [US5] Add ValidArgsFunction to repo remove command (existing cmd file)
-- [ ] T030 [US5] Ensure ShellCompDirectiveNoFileComp is returned to prevent file fallback
+- [X] T025 [US5] Implement getWorktreeCompletions() with workspace.Discover() and prefix filtering in internal/cli/completion_helpers.go
+- [X] T026 [US5] Implement getRepoCompletions() with workspace.Discover() and prefix filtering in internal/cli/completion_helpers.go
+- [X] T027 [US5] Add ValidArgsFunction to worktree switch command (existing cmd file)
+- [X] T028 [US5] Add ValidArgsFunction to worktree remove command (existing cmd file)
+- [X] T029 [US5] Add ValidArgsFunction to repo remove command (existing cmd file)
+- [X] T030 [US5] Ensure ShellCompDirectiveNoFileComp is returned to prevent file fallback
 
 **Checkpoint**: Dynamic completions work for worktree/repo names when in workspace, gracefully empty when outside
 
@@ -153,11 +153,11 @@
 
 **Purpose**: Final validation and documentation
 
-- [ ] T031 [P] Add --help examples showing installation for each shell in internal/cli/completion.go
-- [ ] T032 [P] Verify both `fa` and `foundagent` commands work with generated scripts
-- [ ] T033 Run all completion tests with `go test ./internal/cli/... -run Completion`
-- [ ] T034 Run quickstart.md validation steps manually
-- [ ] T035 [P] Update any CLI reference documentation if maintained separately
+- [X] T031 [P] Add --help examples showing installation for each shell in internal/cli/completion.go
+- [X] T032 [P] Verify both `fa` and `foundagent` commands work with generated scripts
+- [X] T033 Run all completion tests with `go test ./internal/cli/... -run Completion`
+- [X] T034 Run quickstart.md validation steps manually
+- [X] T035 [P] Update any CLI reference documentation if maintained separately
 
 ---
 

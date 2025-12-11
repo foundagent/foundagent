@@ -13,6 +13,7 @@ var repoRemoveCmd = &cobra.Command{
 	Use:     "remove <repo>...",
 	Aliases: []string{"rm"},
 	Short:   "Remove repositories from workspace",
+	ValidArgsFunction: getRepoCompletions,
 	Long: `Remove one or more repositories from the workspace.
 
 This command removes repositories completely: deletes bare clone, removes all worktrees,
