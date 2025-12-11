@@ -26,6 +26,7 @@ var removeCmd = &cobra.Command{
 	Use:     "remove <branch>",
 	Aliases: []string{"rm"},
 	Short:   "Remove worktrees across all repositories",
+	ValidArgsFunction: getWorktreeCompletions,
 	Long: `Remove worktrees for a branch across ALL repositories in the workspace.
 
 This command removes worktrees atomically - if safety checks fail, no worktrees

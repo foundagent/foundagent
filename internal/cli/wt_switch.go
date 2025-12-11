@@ -41,7 +41,8 @@ Examples:
 
   # Switch with JSON output
   fa wt switch feature-123 --json`,
-	RunE: runSwitch,
+	ValidArgsFunction: getBranchCompletions,
+	RunE:              runSwitch,
 }
 
 func init() {
