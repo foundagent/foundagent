@@ -309,7 +309,10 @@ func (f *Fixer) fixWorkspaceFileConsistency() CheckResult {
 	}
 
 	// Rebuild workspace file from state
-	folders := make([]workspace.VSCodeFolder, 0)
+	// Start with workspace root folder
+	folders := []workspace.VSCodeFolder{
+		{Path: "."},
+	}
 
 	for repoName, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {

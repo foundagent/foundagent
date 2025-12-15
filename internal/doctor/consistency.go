@@ -140,6 +140,10 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 	// Count folders in workspace file
 	wsWorktrees := make(map[string]bool)
 	for _, folder := range wsFile.Folders {
+		// Skip workspace root folder
+		if folder.Path == "." {
+			continue
+		}
 		// Extract worktree path from folder path
 		// Path format: repos/worktrees/{repoName}/{branch}
 		if len(folder.Path) > len("repos/worktrees/") {
