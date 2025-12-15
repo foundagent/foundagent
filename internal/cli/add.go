@@ -25,8 +25,8 @@ var addCmd = &cobra.Command{
 	Long: `Add repositories to the workspace by cloning them as bare clones
 and creating worktrees for the default branch.
 
-The repository is cloned to repos/.bare/<name>.git/ and a worktree
-for the default branch is created at repos/worktrees/<name>/<branch>/.
+The repository is cloned to repos/<name>/.bare/ and a worktree
+for the default branch is created at repos/<name>/worktrees/<branch>/.
 
 Multiple repositories can be added in parallel by providing multiple URLs.
 An optional custom name can be provided after the URL.

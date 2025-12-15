@@ -29,12 +29,11 @@ func (c RepositoriesCheck) Run() CheckResult {
 		}
 	}
 
-	bareDir := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.BareDir)
 	issues := make([]string, 0)
 
 	// Check each repository
 	for _, repo := range state.Repositories {
-		repoPath := filepath.Join(bareDir, repo.Name+".git")
+		repoPath := filepath.Join(c.Workspace.Path, workspace.ReposDir, repo.Name, workspace.BareDir)
 
 		// Check if directory exists
 		if _, err := os.Stat(repoPath); os.IsNotExist(err) {
@@ -88,10 +87,10 @@ func (c OrphanedReposCheck) Run() CheckResult {
 		}
 	}
 
-	bareDir := filepath.Join(c.Workspace.Path, workspace.ReposDir, workspace.BareDir)
+	reposDir := filepath.Join(c.Workspace.Path, workspace.ReposDir)
 
-	// Get all .git directories in bare/
-	entries, err := os.ReadDir(bareDir)
+	// Get all repo directories in repos/
+	entries, err := os.ReadDir(reposDir)
 	if err != nil {
 		// Directory doesn't exist or can't be read
 		return CheckResult{
@@ -105,7 +104,7 @@ func (c OrphanedReposCheck) Run() CheckResult {
 	// Build map of known repos
 	knownRepos := make(map[string]bool)
 	for _, repo := range state.Repositories {
-		knownRepos[repo.Name+".git"] = true
+		knownRepos[repo.Name] = true
 	}
 
 	// Check for orphaned directories
@@ -116,8 +115,12 @@ func (c OrphanedReposCheck) Run() CheckResult {
 		}
 
 		name := entry.Name()
+		// Check if this repo directory has a .bare subdirectory and is not in state
 		if !knownRepos[name] {
-			orphaned = append(orphaned, name)
+			bareDir := filepath.Join(reposDir, name, workspace.BareDir)
+			if _, err := os.Stat(bareDir); err == nil {
+				orphaned = append(orphaned, name)
+			}
 		}
 	}
 
