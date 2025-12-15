@@ -49,7 +49,7 @@ func (w *Workspace) SyncAllRepos(verbose bool) ([]SyncResult, error) {
 
 	// Execute fetch in parallel
 	parallelResults := ExecuteParallel(repoNames, func(repoName string) error {
-		bareRepoPath := filepath.Join(w.Path, ReposDir, BareDir, repoName+".git")
+		bareRepoPath := filepath.Join(w.Path, ReposDir, repoName, BareDir)
 		return git.Fetch(bareRepoPath)
 	})
 
@@ -94,7 +94,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 	results := make([]SyncResult, 0)
 
 	for repoName := range state.Repositories {
-		worktreePath := filepath.Join(w.Path, ReposDir, WorktreesDir, repoName, branch)
+		worktreePath := filepath.Join(w.Path, ReposDir, repoName, WorktreesDir, branch)
 
 		// Check if worktree exists
 		result := SyncResult{

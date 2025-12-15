@@ -209,8 +209,8 @@ func (w *Workspace) GetCurrentBranchFromWorkspace() (string, error) {
 		return "", err
 	}
 
-	// Look for worktree folders pattern: repos/worktrees/<repo>/<branch>
-	worktreePrefix := filepath.Join(ReposDir, WorktreesDir) + string(filepath.Separator)
+	// Look for worktree folders pattern: repos/<repo>/worktrees/<branch>
+	reposPrefix := ReposDir + string(filepath.Separator)
 
 	for _, folder := range workspace.Folders {
 		// Clean the path
@@ -228,22 +228,17 @@ func (w *Workspace) GetCurrentBranchFromWorkspace() (string, error) {
 			continue
 		}
 
-		// Check if it starts with repos/worktrees/
-		if !strings.HasPrefix(relPath, worktreePrefix) {
+		// Check if it starts with repos/
+		if !strings.HasPrefix(relPath, reposPrefix) {
 			continue
 		}
 
-		// Extract branch from path: repos/worktrees/<repo>/<branch>
-		rel, err := filepath.Rel(worktreePrefix, relPath)
-		if err != nil {
-			continue
-		}
-
-		// Split path and get branch name
-		parts := strings.Split(rel, string(filepath.Separator))
-		if len(parts) >= 2 {
+		// Extract branch from path: repos/<repo>/worktrees/<branch>
+		// Path structure: repos/<repo>/worktrees/<branch>
+		parts := strings.Split(relPath, string(filepath.Separator))
+		if len(parts) >= 4 && parts[0] == ReposDir && parts[2] == WorktreesDir {
 			// Return the branch name (last component)
-			return parts[1], nil
+			return parts[3], nil
 		}
 	}
 

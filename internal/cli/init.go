@@ -21,8 +21,8 @@ var initCmd = &cobra.Command{
 This creates a new directory with the workspace structure including:
 - .foundagent.yaml (configuration file)
 - .foundagent/state.json (runtime state)
-- repos/.bare/ (bare repository clones)
-- repos/worktrees/ (working directories)
+- repos/<repo>/.bare/ (bare repository clones per repo)
+- repos/<repo>/worktrees/ (working directories per repo)
 - <name>.code-workspace (VS Code workspace file)`,
 	Example: `  # Create a new workspace
   fa init my-project
