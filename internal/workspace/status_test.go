@@ -144,3 +144,64 @@ func TestCalculateSummary(t *testing.T) {
 	assert.Equal(t, 1, summary.ReposNotCloned)
 	assert.Equal(t, 2, summary.TotalWorktrees)
 }
+
+func TestGetModifiedFiles(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	ws, err := New("test-workspace", tmpDir)
+	require.NoError(t, err)
+
+	// Test with non-existent path (should return empty list)
+	files := ws.getModifiedFiles("/nonexistent/path")
+	assert.Empty(t, files)
+
+	// Test with non-git directory
+	nonGitDir := filepath.Join(tmpDir, "not-a-git-repo")
+	err = os.MkdirAll(nonGitDir, 0755)
+	require.NoError(t, err)
+
+	files = ws.getModifiedFiles(nonGitDir)
+	assert.Empty(t, files)
+}
+
+func TestGetUntrackedFiles(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	ws, err := New("test-workspace", tmpDir)
+	require.NoError(t, err)
+
+	// Test with non-existent path (should return empty list)
+	files := ws.getUntrackedFiles("/nonexistent/path")
+	assert.Empty(t, files)
+
+	// Test with non-git directory
+	nonGitDir := filepath.Join(tmpDir, "not-a-git-repo")
+	err = os.MkdirAll(nonGitDir, 0755)
+	require.NoError(t, err)
+
+	files = ws.getUntrackedFiles(nonGitDir)
+	assert.Empty(t, files)
+}
+
+func TestDetectWorktreeStatus(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	ws, err := New("test-workspace", tmpDir)
+	require.NoError(t, err)
+
+	// Test with non-existent worktree
+	status := ws.detectWorktreeStatus("/nonexistent/path", false)
+	assert.Equal(t, "missing", status.Status)
+
+	// Test with existing directory but not a git repo
+	nonGitDir := filepath.Join(tmpDir, "not-a-git-worktree")
+	err = os.MkdirAll(nonGitDir, 0755)
+	require.NoError(t, err)
+
+	status = ws.detectWorktreeStatus(nonGitDir, false)
+	assert.NotEmpty(t, status.Status)
+
+	// Test verbose mode
+	status = ws.detectWorktreeStatus(nonGitDir, true)
+	assert.NotEmpty(t, status.Status)
+}

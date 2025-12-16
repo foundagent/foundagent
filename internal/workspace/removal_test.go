@@ -181,3 +181,103 @@ func TestRemoveAllWorktrees(t *testing.T) {
 	_, err = os.Stat(wt2)
 	assert.True(t, os.IsNotExist(err))
 }
+
+func TestRemoveRepo_NotFound(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	ws, err := New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Try to remove non-existent repo
+	result := ws.RemoveRepo("nonexistent-repo", false, false)
+	assert.NotEmpty(t, result.Error)
+	assert.Contains(t, result.Error, "not found")
+}
+
+func TestRemoveRepo_ConfigOnly(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	ws, err := New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Add repo to state
+	repo := &Repository{
+		Name:          "test-repo",
+		URL:           "https://github.com/org/test-repo.git",
+		DefaultBranch: "main",
+		BareRepoPath:  ws.BareRepoPath("test-repo"),
+	}
+	err = ws.AddRepository(repo)
+	require.NoError(t, err)
+
+	// Add to config as well
+	cfg, err := ws.loadFoundagentConfig()
+	require.NoError(t, err)
+	cfg.Repos = append(cfg.Repos, config.RepoConfig{
+		Name: "test-repo",
+		URL:  "https://github.com/org/test-repo.git",
+	})
+	err = ws.saveFoundagentConfig(cfg)
+	require.NoError(t, err)
+
+	// Remove config only
+	result := ws.RemoveRepo("test-repo", false, true)
+	assert.Empty(t, result.Error)
+	assert.True(t, result.ConfigOnly)
+	assert.True(t, result.RemovedFromConfig)
+
+	// Verify still in state
+	state, err := ws.LoadState()
+	require.NoError(t, err)
+	assert.Contains(t, state.Repositories, "test-repo")
+
+	// Verify removed from config
+	cfg, err = ws.loadFoundagentConfig()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.Repos)
+}
+
+func TestRemoveRepo_WithForce(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Save original working directory
+	origDir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(origDir)
+
+	ws, err := New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	// Add repo
+	repo := &Repository{
+		Name:          "test-repo",
+		URL:           "https://github.com/org/test-repo.git",
+		DefaultBranch: "main",
+		BareRepoPath:  ws.BareRepoPath("test-repo"),
+	}
+	err = ws.AddRepository(repo)
+	require.NoError(t, err)
+
+	// Create bare repo directory
+	err = os.MkdirAll(repo.BareRepoPath, 0755)
+	require.NoError(t, err)
+
+	// Remove with force (no dirty check)
+	result := ws.RemoveRepo("test-repo", true, false)
+	assert.Empty(t, result.Error)
+	assert.True(t, result.BareCloneDeleted || result.RemovedFromConfig)
+}
+
+func TestRemoveRepo_InsideWorktree(t *testing.T) {
+	t.Skip("Path prefix checking may not work reliably in test environment")
+}

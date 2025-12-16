@@ -235,3 +235,57 @@ func TestVSCodeWorkspaceOperations(t *testing.T) {
 		assert.Equal(t, "repos/worktrees/repo1/main", loadedVSCode.Folders[1].Path)
 	})
 }
+
+func TestCreateReposStructure(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	t.Run("creates repos directory", func(t *testing.T) {
+		ws, err := New("test-repos", tmpDir)
+		require.NoError(t, err)
+
+		// Create repos structure
+		err = ws.createReposStructure(false)
+		require.NoError(t, err)
+
+		// Verify repos directory exists
+		reposPath := filepath.Join(ws.Path, ReposDir)
+		assert.DirExists(t, reposPath)
+	})
+
+	t.Run("preserves existing repos directory in force mode", func(t *testing.T) {
+		ws, err := New("test-repos-force", tmpDir)
+		require.NoError(t, err)
+
+		// Create repos directory with a test file
+		reposPath := filepath.Join(ws.Path, ReposDir)
+		err = os.MkdirAll(reposPath, 0755)
+		require.NoError(t, err)
+
+		testFile := filepath.Join(reposPath, "test.txt")
+		err = os.WriteFile(testFile, []byte("content"), 0644)
+		require.NoError(t, err)
+
+		// Create repos structure with force
+		err = ws.createReposStructure(true)
+		require.NoError(t, err)
+
+		// Verify test file still exists
+		assert.FileExists(t, testFile)
+	})
+}
+
+func TestNew_EdgeCases(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	t.Run("name with special characters", func(t *testing.T) {
+		_, err := New("test-workspace_123", tmpDir)
+		assert.NoError(t, err)
+	})
+
+	t.Run("very long path", func(t *testing.T) {
+		longName := "workspace-with-a-very-long-name-that-exceeds-normal-limits"
+		ws, err := New(longName, tmpDir)
+		assert.NoError(t, err)
+		assert.Equal(t, longName, ws.Name)
+	})
+}
