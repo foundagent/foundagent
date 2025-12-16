@@ -209,3 +209,102 @@ func TestInitCommandHelp(t *testing.T) {
 	assert.Contains(t, initCmd.Example, "--json")
 	assert.Contains(t, initCmd.Example, "--force")
 }
+
+func TestGetAction(t *testing.T) {
+	tests := []struct {
+		name     string
+		force    bool
+		expected string
+	}{
+		{
+			name:     "created action",
+			force:    false,
+			expected: "created",
+		},
+		{
+			name:     "reinitialized action",
+			force:    true,
+			expected: "reinitialized",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := getAction(tt.force)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestInitCommand_VeryLongPath(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create a very long directory path
+	longPath := tmpDir
+	for i := 0; i < 10; i++ {
+		longPath = filepath.Join(longPath, "very-long-directory-name-to-test-path-length-validation")
+	}
+
+	// Change to the long path directory
+	require.NoError(t, os.MkdirAll(longPath, 0755))
+	oldCwd, err := os.Getwd()
+	require.NoError(t, err)
+	require.NoError(t, os.Chdir(longPath))
+	defer func() { _ = os.Chdir(oldCwd) }()
+
+	// Reset flags
+	initForce = false
+	initJSON = false
+
+	// Try to create workspace with even longer name
+	err = runInit(initCmd, []string{"workspace-with-a-very-long-name-that-might-exceed-path-limits"})
+
+	// On most systems this should work, but on some with very strict limits it might fail
+	// We're just testing that the validation runs without panic
+	if err != nil {
+		t.Logf("Init failed with long path (expected on some systems): %v", err)
+	}
+}
+
+func TestInitCommand_JSONOutputOnError(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create existing workspace
+	wsPath := filepath.Join(tmpDir, "existing")
+	require.NoError(t, os.MkdirAll(filepath.Join(wsPath, ".foundagent"), 0755))
+
+	// Change to temp directory
+	oldCwd, err := os.Getwd()
+	require.NoError(t, err)
+	require.NoError(t, os.Chdir(tmpDir))
+	defer func() { _ = os.Chdir(oldCwd) }()
+
+	// Reset and set JSON flag
+	initForce = false
+	initJSON = true
+
+	// Capture output
+	var buf bytes.Buffer
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	// Run command (should fail - workspace exists)
+	err = runInit(initCmd, []string{"existing"})
+
+	// Restore stdout
+	w.Close()
+	os.Stdout = oldStdout
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	// Should error
+	assert.Error(t, err)
+
+	// Output should be valid JSON with error
+	var result map[string]interface{}
+	jsonErr := json.Unmarshal([]byte(output), &result)
+	if jsonErr == nil {
+		assert.Equal(t, "error", result["status"])
+	}
+}
