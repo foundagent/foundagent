@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"os"
 	"testing"
 
 	"github.com/foundagent/foundagent/internal/config"
@@ -45,4 +46,77 @@ func TestCreateResultStructure(t *testing.T) {
 	assert.Equal(t, "main", result.SourceBranch)
 	assert.Equal(t, "success", result.Status)
 	assert.Empty(t, result.Error)
+}
+
+func TestWtCreateCommand_InvalidBranchName(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	createJSON = false
+	createFrom = ""
+	createForce = false
+
+	// Run with invalid branch name
+	err = runCreate(createCmd, []string{"invalid..branch"})
+
+	// Should fail with validation error
+	assert.Error(t, err)
+}
+
+func TestWtCreateCommand_OutsideWorkspace(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Change to non-workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(tmpDir)
+
+	// Reset flags
+	createJSON = false
+	createFrom = ""
+	createForce = false
+
+	// Run create command
+	err := runCreate(createCmd, []string{"feature-test"})
+
+	// Should fail with workspace not found error
+	assert.Error(t, err)
+}
+
+func TestWtCreateCommand_NoRepositories(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	createJSON = false
+	createFrom = ""
+	createForce = false
+
+	// Run create command (should fail - no repos)
+	err = runCreate(createCmd, []string{"feature-test"})
+
+	// Should fail with "no repositories" error
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "repositories")
 }

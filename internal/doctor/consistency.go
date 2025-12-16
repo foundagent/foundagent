@@ -2,6 +2,8 @@ package doctor
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
 
 	"github.com/foundagent/foundagent/internal/config"
 	"github.com/foundagent/foundagent/internal/workspace"
@@ -145,10 +147,13 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 			continue
 		}
 		// Extract worktree path from folder path
-		// Path format: repos/worktrees/{repoName}/{branch}
-		if len(folder.Path) > len("repos/worktrees/") {
-			path := folder.Path[len("repos/worktrees/"):]
-			wsWorktrees[path] = true
+		// Path format: repos/{repoName}/worktrees/{branch}
+		// We need to extract {repoName}/{branch} part
+		parts := strings.Split(folder.Path, string(filepath.Separator))
+		if len(parts) >= 4 && parts[0] == "repos" && parts[2] == "worktrees" {
+			// Store as repoName/branch
+			key := parts[1] + "/" + parts[3]
+			wsWorktrees[key] = true
 		}
 	}
 

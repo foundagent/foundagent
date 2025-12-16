@@ -19,11 +19,37 @@ func TestGet(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	str := String()
-	assert.Contains(t, str, "foundagent")
+	// Save original Version
+	origVersion := Version
+	defer func() { Version = origVersion }()
 
-	// Should contain either version number or "dev"
-	assert.True(t, len(str) > 0)
+	tests := []struct {
+		name     string
+		version  string
+		contains []string
+	}{
+		{
+			name:     "dev version",
+			version:  "dev",
+			contains: []string{"foundagent", "dev", "commit"},
+		},
+		{
+			name:     "release version",
+			version:  "1.2.3",
+			contains: []string{"foundagent", "v1.2.3"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			Version = tt.version
+			str := String()
+
+			for _, substr := range tt.contains {
+				assert.Contains(t, str, substr)
+			}
+		})
+	}
 }
 
 func TestFull(t *testing.T) {
