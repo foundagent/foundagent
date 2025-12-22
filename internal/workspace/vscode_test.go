@@ -273,3 +273,57 @@ func TestGetAvailableBranches(t *testing.T) {
 	assert.Contains(t, branches, "develop")
 	assert.Len(t, branches, 3)
 }
+
+func TestGetCurrentBranchFromWorkspace_NoFile(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace without VS Code file
+	ws, err := New("test-branch", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Should return error when file doesn't exist
+	_, err = ws.GetCurrentBranchFromWorkspace()
+	assert.Error(t, err)
+}
+
+func TestReplaceWorktreeFolders_NoRepositories(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := New("test-replace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Create empty state
+	state := &State{Repositories: make(map[string]*Repository)}
+	err = ws.SaveState(state)
+	require.NoError(t, err)
+
+	// Create VS Code workspace file
+	vscodeWs := &VSCodeWorkspace{
+		Folders: []VSCodeFolder{{Path: "."}},
+	}
+	err = ws.SaveVSCodeWorkspace(vscodeWs)
+	require.NoError(t, err)
+
+	// Should fail with no repositories
+	err = ws.ReplaceWorktreeFolders("feature-123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "No repositories")
+}
+
+func TestReplaceWorktreeFolders_NoVSCodeFile(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Should fail when VS Code file doesn't exist
+	ws, err := New("test-no-vscode", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	err = ws.ReplaceWorktreeFolders("feature-123")
+	assert.Error(t, err)
+}
