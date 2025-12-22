@@ -189,3 +189,137 @@ func TestStatusCommand_OutsideWorkspace(t *testing.T) {
 	// Should error because not in a workspace
 	assert.Error(t, err)
 }
+
+func TestOutputStatusHuman_NoRepos(t *testing.T) {
+	status := &workspace.WorkspaceStatus{
+		WorkspaceName: "test-workspace",
+		WorkspacePath: "/tmp/test",
+		Summary: workspace.StatusSummary{
+			TotalRepos:     0,
+			TotalWorktrees: 0,
+			TotalBranches:  0,
+		},
+		Repos:     []workspace.RepoStatus{},
+		Worktrees: []workspace.WorktreeStatus{},
+	}
+
+	// Capture output
+	var buf bytes.Buffer
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := outputStatusHuman(status, false)
+
+	w.Close()
+	os.Stdout = oldStdout
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	assert.NoError(t, err)
+	assert.Contains(t, output, "No repositories configured")
+	assert.Contains(t, output, "fa add")
+}
+
+func TestOutputStatusHuman_WithUncommittedChanges(t *testing.T) {
+	status := &workspace.WorkspaceStatus{
+		WorkspaceName: "test-workspace",
+		WorkspacePath: "/tmp/test",
+		Summary: workspace.StatusSummary{
+			TotalRepos:            1,
+			TotalWorktrees:        1,
+			TotalBranches:         1,
+			HasUncommittedChanges: true,
+			DirtyWorktrees:        1,
+		},
+		Repos: []workspace.RepoStatus{
+			{Name: "test-repo", URL: "https://github.com/org/test.git", IsCloned: true},
+		},
+		Worktrees: []workspace.WorktreeStatus{},
+	}
+
+	// Capture output
+	var buf bytes.Buffer
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := outputStatusHuman(status, false)
+
+	w.Close()
+	os.Stdout = oldStdout
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	assert.NoError(t, err)
+	assert.Contains(t, output, "Uncommitted changes")
+}
+
+func TestOutputStatusHuman_ConfigOutOfSync(t *testing.T) {
+	status := &workspace.WorkspaceStatus{
+		WorkspaceName: "test-workspace",
+		WorkspacePath: "/tmp/test",
+		Summary: workspace.StatusSummary{
+			TotalRepos:      2,
+			TotalWorktrees:  0,
+			TotalBranches:   0,
+			ConfigInSync:    false,
+			ReposNotCloned:  1,
+		},
+		Repos: []workspace.RepoStatus{
+			{Name: "cloned-repo", URL: "https://github.com/org/test.git", IsCloned: true},
+			{Name: "not-cloned", URL: "https://github.com/org/test2.git", IsCloned: false},
+		},
+		Worktrees: []workspace.WorktreeStatus{},
+	}
+
+	// Capture output
+	var buf bytes.Buffer
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := outputStatusHuman(status, false)
+
+	w.Close()
+	os.Stdout = oldStdout
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	assert.NoError(t, err)
+	assert.Contains(t, output, "not cloned")
+	assert.Contains(t, output, "cloned-repo")
+	assert.Contains(t, output, "not-cloned")
+}
+
+func TestOutputStatusHuman_VerboseMode(t *testing.T) {
+	status := &workspace.WorkspaceStatus{
+		WorkspaceName: "test-workspace",
+		WorkspacePath: "/tmp/test",
+		Summary: workspace.StatusSummary{
+			TotalRepos:     1,
+			TotalWorktrees: 0,
+			TotalBranches:  0,
+		},
+		Repos: []workspace.RepoStatus{
+			{Name: "test-repo", URL: "https://github.com/org/test.git", IsCloned: true},
+		},
+		Worktrees: []workspace.WorktreeStatus{},
+	}
+
+	// Capture output
+	var buf bytes.Buffer
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := outputStatusHuman(status, true)
+
+	w.Close()
+	os.Stdout = oldStdout
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	assert.NoError(t, err)
+	assert.Contains(t, output, "URL: https://github.com/org/test.git")
+}
