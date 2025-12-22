@@ -211,3 +211,34 @@ func TestWtListCommand_OutsideWorkspace(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "workspace")
 }
+
+func TestPrintHumanList(t *testing.T) {
+	worktrees := []worktreeInfo{
+		{Branch: "main", Repo: "repo1", Path: "/path/to/repo1/main", Status: "clean", IsCurrent: true},
+		{Branch: "main", Repo: "repo2", Path: "/path/to/repo2/main", Status: "modified", IsCurrent: false},
+		{Branch: "feature", Repo: "repo1", Path: "/path/to/repo1/feature", Status: "clean", IsCurrent: false},
+	}
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	printHumanList(worktrees)
+
+	w.Close()
+	os.Stdout = oldStdout
+
+	var buf bytes.Buffer
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	// Should contain branch names
+	assert.Contains(t, output, "main")
+	assert.Contains(t, output, "feature")
+	// Should contain repo names
+	assert.Contains(t, output, "repo1")
+	assert.Contains(t, output, "repo2")
+	// Should contain paths
+	assert.Contains(t, output, "/path/to/repo1/main")
+}

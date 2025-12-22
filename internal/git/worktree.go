@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
+	"strings"
 
 	"github.com/foundagent/foundagent/internal/errors"
 )
@@ -104,8 +104,8 @@ func WorktreeList(bareRepoPath string) ([]string, error) {
 	// Parse worktree list output
 	// Format: "worktree /path/to/worktree"
 	var worktrees []string
-	lines := string(output)
-	for _, line := range filepath.SplitList(lines) {
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
 		if len(line) > 9 && line[:9] == "worktree " {
 			worktrees = append(worktrees, line[9:])
 		}

@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -81,4 +83,152 @@ func TestWtSwitchCommand_NoArgument(t *testing.T) {
 
 	// Should fail
 	assert.Error(t, err)
+}
+
+func TestWtSwitchCommand_InvalidBranchName(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	switchCreate = false
+	switchFrom = ""
+	switchQuiet = false
+	switchJSON = false
+
+	// Run with invalid branch name
+	err = runSwitch(switchCmd, []string{"../invalid"})
+
+	// Should fail with validation error
+	assert.Error(t, err)
+}
+
+func TestWtSwitchCommand_FromFlagWithoutCreate(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	switchCreate = false
+	switchFrom = "main"
+	switchQuiet = false
+	switchJSON = false
+
+	// Run switch with --from but without --create
+	err = runSwitch(switchCmd, []string{"feature-test"})
+
+	// Should fail with flag validation error
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "from")
+}
+
+func TestWtSwitchCommand_NoRepositories(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	switchCreate = false
+	switchFrom = ""
+	switchQuiet = false
+	switchJSON = false
+
+	// Run switch command (should fail - no repos)
+	err = runSwitch(switchCmd, []string{"feature-test"})
+
+	// Should fail with "no repositories" error
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "repositories")
+}
+
+func TestOutputJSON(t *testing.T) {
+	data := map[string]interface{}{
+		"switched_to":     "feature-123",
+		"previous_branch": "main",
+		"workspace_file":  "/path/to/workspace.code-workspace",
+	}
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := outputJSON(data)
+
+	w.Close()
+	os.Stdout = oldStdout
+
+	var buf bytes.Buffer
+	_, _ = buf.ReadFrom(r)
+
+	// Should succeed
+	assert.NoError(t, err)
+
+	// Parse JSON to verify it's valid
+	var result map[string]interface{}
+	jsonErr := json.Unmarshal(buf.Bytes(), &result)
+	assert.NoError(t, jsonErr)
+	assert.Equal(t, "feature-123", result["switched_to"])
+	assert.Equal(t, "main", result["previous_branch"])
+}
+
+func TestWarnUncommittedChanges(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-warn", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Create empty state (no repos)
+	state := &workspace.State{
+		Repositories: map[string]*workspace.Repository{},
+	}
+	err = ws.SaveState(state)
+	require.NoError(t, err)
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	// Should not error with empty state
+	err = warnUncommittedChanges(ws, "feature-123")
+
+	w.Close()
+	os.Stdout = oldStdout
+
+	var buf bytes.Buffer
+	_, _ = buf.ReadFrom(r)
+
+	// Should succeed
+	assert.NoError(t, err)
 }

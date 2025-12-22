@@ -158,7 +158,14 @@ func TestWorktreeList(t *testing.T) {
 		t.Fatalf("WorktreeList() error = %v", err)
 	}
 
-	// Should have at least the 2 we created
+	// Log what we found for debugging
+	t.Logf("Found %d worktrees", len(worktrees))
+	for i, wt := range worktrees {
+		t.Logf("Worktree %d: %+v", i, wt)
+	}
+
+	// Should have at least 2 worktrees (could have 3 if HEAD is included)
+	// Changed to >= 2 to be more flexible
 	if len(worktrees) < 2 {
 		t.Errorf("WorktreeList() returned %d worktrees, want at least 2", len(worktrees))
 	}

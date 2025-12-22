@@ -89,12 +89,46 @@ func TestFindWorktree(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, ws.Create(false))
 
-	// FindWorktree checks if we're in a repo directory
-	// It requires the CWD to be in repos dir
-	// For this test, just verify it doesn't error when called from outside repos
-	_, err = ws.FindWorktree("feature")
+	// Save current directory
+	origDir, err := os.Getwd()
 	require.NoError(t, err)
-	// Result will be empty string since we're not in a repo directory
+	defer os.Chdir(origDir)
+
+	t.Run("from outside repos directory", func(t *testing.T) {
+		// When called from outside repos, should return empty string
+		path, err := ws.FindWorktree("feature")
+		require.NoError(t, err)
+		assert.Empty(t, path)
+	})
+
+	t.Run("from inside repos directory", func(t *testing.T) {
+		// Create a repo worktree structure
+		repoWorktreeDir := filepath.Join(ws.Path, ReposDir, "myrepo", WorktreesDir, "main")
+		err := os.MkdirAll(repoWorktreeDir, 0755)
+		require.NoError(t, err)
+
+		// Change to the worktree directory
+		err = os.Chdir(repoWorktreeDir)
+		require.NoError(t, err)
+
+		// Get the absolute workspace path and resolve symlinks (macOS /var -> /private/var)
+		absWsPath, err := filepath.Abs(ws.Path)
+		require.NoError(t, err)
+		absWsPath, err = filepath.EvalSymlinks(absWsPath)
+		require.NoError(t, err)
+
+		// Create a new workspace instance with absolute path
+		wsAbs := &Workspace{
+			Name: ws.Name,
+			Path: absWsPath,
+		}
+
+		// Should return the path to the requested branch
+		path, err := wsAbs.FindWorktree("feature-123")
+		require.NoError(t, err)
+		expected := wsAbs.WorktreePath("myrepo", "feature-123")
+		assert.Equal(t, expected, path)
+	})
 }
 
 func TestGetWorktreesForRepo_Function(t *testing.T) {
