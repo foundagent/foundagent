@@ -63,3 +63,88 @@ func TestAddRepository_ForceWithExistingDirectory(t *testing.T) {
 	// Should fail on URL validation before it tries to remove
 	assert.Equal(t, "error", result.Status)
 }
+
+func TestRunAdd_InvalidURL_Human(t *testing.T) {
+	tmpDir := t.TempDir()
+	originalWd, _ := os.Getwd()
+	defer os.Chdir(originalWd)
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	require.NoError(t, ws.Create(false))
+
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	cmd := addCmd
+	err = cmd.RunE(cmd, []string{"not a valid url"})
+
+	assert.Error(t, err)
+}
+
+func TestRunAdd_WithReconcileFlag(t *testing.T) {
+	tmpDir := t.TempDir()
+	originalWd, _ := os.Getwd()
+	defer os.Chdir(originalWd)
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	require.NoError(t, ws.Create(false))
+
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	// Call with no args triggers reconcile mode
+	cmd := addCmd
+	err = cmd.RunE(cmd, []string{})
+
+	assert.NoError(t, err)
+}
+
+func TestRunAdd_ReconcileModeJSONFlag(t *testing.T) {
+	tmpDir := t.TempDir()
+	originalWd, _ := os.Getwd()
+	defer os.Chdir(originalWd)
+	defer func() { addJSON = false }()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	require.NoError(t, ws.Create(false))
+
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	addJSON = true
+	cmd := addCmd
+	// Call with no args triggers reconcile mode
+	err = cmd.RunE(cmd, []string{})
+
+	assert.NoError(t, err)
+}
+
+func TestRunAdd_MultipleURLs(t *testing.T) {
+	tmpDir := t.TempDir()
+	originalWd, _ := os.Getwd()
+	defer os.Chdir(originalWd)
+	defer func() { addJSON = true }()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	require.NoError(t, ws.Create(false))
+
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	addJSON = true
+	cmd := addCmd
+	// Test with invalid URLs to avoid actual network calls
+	_ = cmd.RunE(cmd, []string{
+		"not-a-valid-url",
+		"also-invalid",
+	})
+}
+
