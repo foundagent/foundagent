@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"errors"
+	"os"
 	"strings"
 	"testing"
 
@@ -160,4 +161,125 @@ func TestFormatSyncResults_MultilineOutput(t *testing.T) {
 	output := FormatSyncResults(results, "sync")
 	lines := strings.Split(strings.TrimSpace(output), "\n")
 	assert.Len(t, lines, 2, "Should have one line per result")
+}
+
+func TestSyncAllRepos_NoRepos(t *testing.T) {
+	tmpDir := t.TempDir()
+	ws, err := New("test-ws", tmpDir)
+	assert.NoError(t, err)
+	assert.NoError(t, ws.Create(false))
+
+	results, err := ws.SyncAllRepos(false)
+	assert.NoError(t, err)
+	assert.Empty(t, results)
+}
+
+func TestSyncAllRepos_WithRepo(t *testing.T) {
+	tmpDir := t.TempDir()
+	ws, err := New("test-ws", tmpDir)
+	assert.NoError(t, err)
+	assert.NoError(t, ws.Create(false))
+
+	// Create state with a repo
+	state, _ := ws.LoadState()
+	state.Repositories = map[string]*Repository{
+		"test-repo": {
+			Name: "test-repo",
+		},
+	}
+	ws.SaveState(state)
+
+	// Create bare repo directory (not a real git repo)
+	repoPath := ws.BareRepoPath("test-repo")
+	err = os.MkdirAll(repoPath, 0755)
+	assert.NoError(t, err)
+
+	// This will fail but exercises the code
+	results, err := ws.SyncAllRepos(false)
+	
+	// Should get results even if fetch fails
+	assert.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, "test-repo", results[0].RepoName)
+}
+
+func TestPullAllWorktrees_NoRepos(t *testing.T) {
+	tmpDir := t.TempDir()
+	ws, err := New("test-ws", tmpDir)
+	assert.NoError(t, err)
+	assert.NoError(t, ws.Create(false))
+
+	results, err := ws.PullAllWorktrees("main", false, false)
+	assert.NoError(t, err)
+	assert.Empty(t, results)
+}
+
+func TestPullAllWorktrees_WithRepo(t *testing.T) {
+	tmpDir := t.TempDir()
+	ws, err := New("test-ws", tmpDir)
+	assert.NoError(t, err)
+	assert.NoError(t, ws.Create(false))
+
+	// Create state with a repo
+	state, _ := ws.LoadState()
+	state.Repositories = map[string]*Repository{
+		"test-repo": {
+			Name: "test-repo",
+		},
+	}
+	ws.SaveState(state)
+
+	// Create bare repo directory
+	repoPath := ws.BareRepoPath("test-repo")
+	err = os.MkdirAll(repoPath, 0755)
+	assert.NoError(t, err)
+
+	// Create worktree directory (not a real git worktree)
+	wtPath := ws.WorktreePath("test-repo", "main")
+	err = os.MkdirAll(wtPath, 0755)
+	assert.NoError(t, err)
+
+	results, err := ws.PullAllWorktrees("main", false, false)
+	
+	// Should get results
+	assert.NoError(t, err)
+	assert.NotEmpty(t, results)
+}
+
+func TestPushAllRepos_NoRepos(t *testing.T) {
+	tmpDir := t.TempDir()
+	ws, err := New("test-ws", tmpDir)
+	assert.NoError(t, err)
+	assert.NoError(t, ws.Create(false))
+
+	results, err := ws.PushAllRepos(false)
+	assert.NoError(t, err)
+	assert.Empty(t, results)
+}
+
+func TestPushAllRepos_WithRepo(t *testing.T) {
+	tmpDir := t.TempDir()
+	ws, err := New("test-ws", tmpDir)
+	assert.NoError(t, err)
+	assert.NoError(t, ws.Create(false))
+
+	// Create state with a repo
+	state, _ := ws.LoadState()
+	state.Repositories = map[string]*Repository{
+		"test-repo": {
+			Name: "test-repo",
+		},
+	}
+	ws.SaveState(state)
+
+	// Create bare repo directory
+	repoPath := ws.BareRepoPath("test-repo")
+	err = os.MkdirAll(repoPath, 0755)
+	assert.NoError(t, err)
+
+	results, err := ws.PushAllRepos(false)
+	
+	// Should get results even if push fails
+	assert.NoError(t, err)
+	assert.Len(t, results, 1)
 }
