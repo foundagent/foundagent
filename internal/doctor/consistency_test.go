@@ -296,19 +296,21 @@ func TestWorkspaceFileConsistencyCheck_WithoutRootFolder(t *testing.T) {
 }
 
 func TestConfigStateConsistencyCheck_InSync(t *testing.T) {
-	t.Skip("Skipping due to config loading issues in test environment")
 	tempDir := t.TempDir()
 	ws := &workspace.Workspace{Name: "workspace", Path: tempDir}
 
+	// Create .foundagent directory first
+	os.MkdirAll(filepath.Join(tempDir, ".foundagent"), 0755)
+
 	// Create matching config and state
-	configContent := `repos:
-  - url: "https://github.com/test/repo.git"
-    name: "test-repo"
+	configContent := `workspace:
+  name: workspace
+repos:
+  - url: https://github.com/test/repo.git
+    name: test-repo
 `
 	os.WriteFile(filepath.Join(tempDir, ".foundagent.yaml"), []byte(configContent), 0644)
 
-	// Create .foundagent directory
-	os.MkdirAll(filepath.Join(tempDir, ".foundagent"), 0755)
 
 	state := &workspace.State{
 		Repositories: map[string]*workspace.Repository{
@@ -334,8 +336,13 @@ func TestConfigStateConsistencyCheck_MissingInState(t *testing.T) {
 	tempDir := t.TempDir()
 	ws := &workspace.Workspace{Name: "workspace", Path: tempDir}
 
+	// Create .foundagent directory
+	os.MkdirAll(filepath.Join(tempDir, ".foundagent"), 0755)
+
 	// Config has repo that state doesn't
-	configContent := `repos:
+	configContent := `workspace:
+  name: workspace
+repos:
   - url: https://github.com/test/repo.git
     name: test-repo
   - url: https://github.com/test/another.git
@@ -367,14 +374,18 @@ func TestConfigStateConsistencyCheck_MissingInState(t *testing.T) {
 }
 
 func TestConfigStateConsistencyCheck_OrphanedInState(t *testing.T) {
-	t.Skip("Skipping due to config loading issues in test environment")
 	tempDir := t.TempDir()
 	ws := &workspace.Workspace{Name: "workspace", Path: tempDir}
 
+	// Create .foundagent directory first
+	os.MkdirAll(filepath.Join(tempDir, ".foundagent"), 0755)
+
 	// State has repo that config doesn't
-	configContent := `repos:
-  - url: "https://github.com/test/repo.git"
-    name: "test-repo"
+	configContent := `workspace:
+  name: workspace
+repos:
+  - url: https://github.com/test/repo.git
+    name: test-repo
 `
 	os.WriteFile(filepath.Join(tempDir, ".foundagent.yaml"), []byte(configContent), 0644)
 
