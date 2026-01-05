@@ -238,3 +238,4 @@ func TestCreate_WithVSCode(t *testing.T) {
 	_, err = os.Stat(wsPath)
 	assert.NoError(t, err)
 }
+
