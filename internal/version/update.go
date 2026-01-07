@@ -15,9 +15,12 @@ type GithubRelease struct {
 	HTMLURL string `json:"html_url"`
 }
 
+// ReleaseURL is the URL for the GitHub releases API (can be overridden in tests)
+var ReleaseURL = "https://api.github.com/repos/foundagent/foundagent/releases/latest"
+
 // CheckForUpdate queries GitHub releases API for the latest version
 func CheckForUpdate(ctx context.Context) (updateAvailable bool, latestVersion string, downloadURL string, err error) {
-	const releaseURL = "https://api.github.com/repos/foundagent/foundagent/releases/latest"
+	releaseURL := ReleaseURL
 
 	// Create request with timeout
 	req, err := http.NewRequestWithContext(ctx, "GET", releaseURL, nil)
