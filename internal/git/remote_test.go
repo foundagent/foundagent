@@ -149,25 +149,28 @@ func TestPull(t *testing.T) {
 	require.NoError(t, os.WriteFile(testFile, []byte("new content"), 0644))
 
 	cmd = exec.Command("git", "-C", otherClone, "add", ".")
-	require.NoError(t, cmd.Run())
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to add: %s", string(output))
 
 	cmd = exec.Command("git", "-C", otherClone, "commit", "-m", "Add new file")
 	output, err = cmd.CombinedOutput()
 	require.NoError(t, err, "Failed to commit: %s", string(output))
 
-	cmd = exec.Command("git", "-C", otherClone, "push")
+	cmd = exec.Command("git", "-C", otherClone, "push", "origin", "main")
 	output, err = cmd.CombinedOutput()
 	require.NoError(t, err, "Failed to push from other clone: %s", string(output))
 
-	// Verify the file exists in otherClone
-	if _, statErr := os.Stat(testFile); os.IsNotExist(statErr) {
-		t.Fatal("Test file doesn't exist in otherClone after commit")
-	}
-
-	// Debug: Check that remote has the new commit
+	// Verify the commit is in the remote bare repo
 	cmd = exec.Command("git", "-C", remoteRepo, "log", "--oneline", "-3")
-	out, _ := cmd.CombinedOutput()
-	t.Logf("Remote repo log: %s", string(out))
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to get remote log: %s", string(output))
+	t.Logf("Remote repo log after push: %s", string(output))
+	require.Contains(t, string(output), "Add new file", "Remote should have the new commit")
+
+	// Fetch in workRepo first to ensure refs are updated
+	cmd = exec.Command("git", "-C", workRepo, "fetch", "origin")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to fetch: %s", string(output))
 
 	// Pull in original repo
 	err = Pull(workRepo)
@@ -179,6 +182,9 @@ func TestPull(t *testing.T) {
 		cmd = exec.Command("git", "-C", workRepo, "branch", "-vv")
 		out, _ = cmd.CombinedOutput()
 		t.Logf("Branches: %s", string(out))
+		cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-5", "origin/main")
+		out, _ = cmd.CombinedOutput()
+		t.Logf("origin/main log: %s", string(out))
 		t.Fatalf("Pull() error = %v", err)
 	}
 
@@ -194,9 +200,6 @@ func TestPull(t *testing.T) {
 		cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-5")
 		out, _ = cmd.CombinedOutput()
 		t.Logf("Git log: %s", string(out))
-		cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-5", "origin/main")
-		out, _ = cmd.CombinedOutput()
-		t.Logf("Git log origin/main: %s", string(out))
 		t.Error("Pulled file does not exist")
 	}
 }
@@ -273,7 +276,8 @@ func TestGetAheadBehindCount(t *testing.T) {
 	otherClone := filepath.Join(tmpDir, "other-clone")
 
 	cmd = exec.Command("git", "clone", remoteRepo, otherClone)
-	require.NoError(t, cmd.Run(), "Failed to clone")
+	output, err := cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to clone: %s", string(output))
 
 	cmd = exec.Command("git", "-C", otherClone, "config", "user.email", "test@example.com")
 	require.NoError(t, cmd.Run())
@@ -285,19 +289,35 @@ func TestGetAheadBehindCount(t *testing.T) {
 	require.NoError(t, os.WriteFile(remoteFile, []byte("remote"), 0644))
 
 	cmd = exec.Command("git", "-C", otherClone, "add", ".")
-	require.NoError(t, cmd.Run())
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to add: %s", string(output))
 
 	cmd = exec.Command("git", "-C", otherClone, "commit", "-m", "Remote commit")
-	require.NoError(t, cmd.Run())
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to commit: %s", string(output))
 
-	cmd = exec.Command("git", "-C", otherClone, "push")
-	output, err := cmd.CombinedOutput()
+	cmd = exec.Command("git", "-C", otherClone, "push", "origin", "main")
+	output, err = cmd.CombinedOutput()
 	require.NoError(t, err, "Failed to push from other clone: %s", string(output))
+
+	// Verify the commit is in the remote
+	cmd = exec.Command("git", "-C", remoteRepo, "log", "--oneline", "-3")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to get remote log")
+	t.Logf("Remote repo log after push: %s", string(output))
+	require.Contains(t, string(output), "Remote commit", "Remote should have the new commit")
 
 	// Fetch to update refs - use explicit git command for reliability
 	cmd = exec.Command("git", "-C", workRepo, "fetch", "origin")
 	output, err = cmd.CombinedOutput()
 	require.NoError(t, err, "Failed to fetch: %s", string(output))
+
+	// Verify fetch updated the remote tracking branch
+	cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-3", "origin/main")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to get origin/main log")
+	t.Logf("origin/main log after fetch: %s", string(output))
+	require.Contains(t, string(output), "Remote commit", "origin/main should have the new commit after fetch")
 
 	_, behind, err = GetAheadBehindCount(workRepo, "main")
 	if err != nil {
