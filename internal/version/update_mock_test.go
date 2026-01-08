@@ -26,19 +26,17 @@ func TestCheckForUpdate_MockServer_Success(t *testing.T) {
 	}))
 	defer server.Close()
 
-	// Save and restore original values
+	// Save and restore original version
 	origVersion := Version
-	origReleaseURL := ReleaseURL
 	defer func() {
 		Version = origVersion
-		ReleaseURL = origReleaseURL
 	}()
 
 	Version = "1.0.0"
-	ReleaseURL = server.URL
 
 	ctx := context.Background()
-	updateAvailable, latestVersion, downloadURL, err := CheckForUpdate(ctx)
+	checker := NewUpdateCheckerWithURL(server.URL)
+	updateAvailable, latestVersion, downloadURL, err := checker.CheckForUpdate(ctx)
 
 	require.NoError(t, err)
 	assert.True(t, updateAvailable)
