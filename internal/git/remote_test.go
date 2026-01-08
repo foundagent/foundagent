@@ -144,6 +144,11 @@ func TestPull(t *testing.T) {
 	cmd = exec.Command("git", "-C", otherClone, "config", "user.name", "Test User")
 	require.NoError(t, cmd.Run())
 
+	// Ensure we're on main branch (clone might default to different branch name)
+	cmd = exec.Command("git", "-C", otherClone, "checkout", "-B", "main", "origin/main")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to checkout main: %s", string(output))
+
 	// Make and push changes from other clone
 	testFile := filepath.Join(otherClone, "new-file.txt")
 	require.NoError(t, os.WriteFile(testFile, []byte("new content"), 0644))
@@ -284,6 +289,11 @@ func TestGetAheadBehindCount(t *testing.T) {
 
 	cmd = exec.Command("git", "-C", otherClone, "config", "user.name", "Test User")
 	require.NoError(t, cmd.Run())
+
+	// Ensure we're on main branch (clone might default to different branch name)
+	cmd = exec.Command("git", "-C", otherClone, "checkout", "-B", "main", "origin/main")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to checkout main: %s", string(output))
 
 	remoteFile := filepath.Join(otherClone, "remote-change.txt")
 	require.NoError(t, os.WriteFile(remoteFile, []byte("remote"), 0644))
