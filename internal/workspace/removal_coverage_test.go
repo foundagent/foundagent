@@ -3,6 +3,7 @@ package workspace
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -145,6 +146,10 @@ func TestRemoveRepo_ConfigOnlyMode_Complete(t *testing.T) {
 }
 
 func TestRemoveRepo_RemoveConfigError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)
@@ -172,6 +177,10 @@ func TestRemoveRepo_RemoveConfigError(t *testing.T) {
 }
 
 func TestRemoveRepo_RemoveWorktreesError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)
@@ -207,6 +216,10 @@ func TestRemoveRepo_RemoveWorktreesError(t *testing.T) {
 }
 
 func TestRemoveRepo_BareCloneDeleteError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)
@@ -243,6 +256,10 @@ func TestRemoveRepo_BareCloneDeleteError(t *testing.T) {
 }
 
 func TestRemoveRepo_UpdateWorkspaceFileError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)

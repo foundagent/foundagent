@@ -69,6 +69,10 @@ func TestCreate_ConfigError(t *testing.T) {
 }
 
 func TestCreate_StateError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)
@@ -159,6 +163,10 @@ func TestCreateReposStructure_ForceWithExistingRepos(t *testing.T) {
 }
 
 func TestCreateReposStructure_PermissionDenied(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)

@@ -3,6 +3,7 @@ package cli
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/foundagent/foundagent/internal/config"
@@ -33,6 +34,10 @@ func TestAddRepository_HasRepositoryError(t *testing.T) {
 }
 
 func TestAddRepository_ForceRemoveError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
+
 	tmpDir := t.TempDir()
 	ws, err := workspace.New("test-ws", tmpDir)
 	require.NoError(t, err)
