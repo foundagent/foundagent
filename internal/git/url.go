@@ -2,7 +2,7 @@ package git
 
 import (
 	"fmt"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -64,7 +64,9 @@ func InferName(url string) (string, error) {
 	repoPath = strings.TrimSuffix(repoPath, ".git")
 
 	// Get the base name (last component of path)
-	name := path.Base(repoPath)
+	// Use filepath.Base for file:// URLs to handle OS-specific path separators (e.g., Windows backslashes)
+	// For SSH/HTTPS URLs, paths use forward slashes which filepath.Base handles correctly
+	name := filepath.Base(repoPath)
 
 	if name == "" || name == "." || name == "/" {
 		return "", errors.New(
