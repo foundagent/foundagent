@@ -135,7 +135,8 @@ func TestPull(t *testing.T) {
 	otherClone := filepath.Join(tmpDir, "other-clone")
 
 	cmd := exec.Command("git", "clone", remoteRepo, otherClone)
-	require.NoError(t, cmd.Run(), "Failed to clone")
+	output, err := cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to clone: %s", string(output))
 
 	cmd = exec.Command("git", "-C", otherClone, "config", "user.email", "test@example.com")
 	require.NoError(t, cmd.Run())
@@ -151,19 +152,36 @@ func TestPull(t *testing.T) {
 	require.NoError(t, cmd.Run())
 
 	cmd = exec.Command("git", "-C", otherClone, "commit", "-m", "Add new file")
-	require.NoError(t, cmd.Run())
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to commit: %s", string(output))
 
 	cmd = exec.Command("git", "-C", otherClone, "push")
-	require.NoError(t, cmd.Run(), "Failed to push from other clone")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to push from other clone: %s", string(output))
+
+	// Fetch first to ensure we have the remote refs
+	cmd = exec.Command("git", "-C", workRepo, "fetch", "origin")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to fetch: %s", string(output))
 
 	// Pull in original repo
-	err := Pull(workRepo)
+	err = Pull(workRepo)
 	if err != nil {
 		t.Fatalf("Pull() error = %v", err)
 	}
 
 	// Verify new file exists
-	if _, err := os.Stat(filepath.Join(workRepo, "new-file.txt")); os.IsNotExist(err) {
+	pulledFile := filepath.Join(workRepo, "new-file.txt")
+	if _, err := os.Stat(pulledFile); os.IsNotExist(err) {
+		// Debug: list files and show git status
+		files, _ := os.ReadDir(workRepo)
+		t.Logf("Files in workRepo: %v", files)
+		cmd = exec.Command("git", "-C", workRepo, "status")
+		out, _ := cmd.CombinedOutput()
+		t.Logf("Git status: %s", string(out))
+		cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-5")
+		out, _ = cmd.CombinedOutput()
+		t.Logf("Git log: %s", string(out))
 		t.Error("Pulled file does not exist")
 	}
 }
