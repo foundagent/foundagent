@@ -50,6 +50,10 @@ func setupRemoteTestRepo(t *testing.T) (string, string) {
 	cmd = exec.Command("git", "-C", workRepo, "push", "-u", "origin", "main")
 	require.NoError(t, cmd.Run())
 
+	// Set HEAD in bare repo to point to main (critical for clones to default to main)
+	cmd = exec.Command("git", "-C", remoteRepo, "symbolic-ref", "HEAD", "refs/heads/main")
+	require.NoError(t, cmd.Run(), "Failed to set HEAD in bare repo")
+
 	return workRepo, remoteRepo
 }
 

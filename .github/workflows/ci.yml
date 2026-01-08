@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        go: ['1.25']
+        go: ['1.23']
     
     steps:
     - name: Checkout code
@@ -32,13 +32,19 @@ jobs:
     - name: Verify dependencies
       run: go mod verify
 
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config --global init.defaultBranch main
+        git config --global user.email "test@example.com"
+        git config --global user.name "Test User"
+
     - name: Configure Git (Windows)
       if: runner.os == 'Windows'
       shell: bash
       run: |
         git config --global core.askpass ""
         git config --global credential.helper ""
-        git config --global init.defaultBranch main
 
     - name: Run tests (Unix)
       if: runner.os != 'Windows'
@@ -87,7 +93,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.25'
+        go-version: '1.23'
         cache: true
 
     - name: golangci-lint
@@ -108,7 +114,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.25'
+        go-version: '1.23'
         cache: true
 
     - name: Build
