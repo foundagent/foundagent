@@ -276,17 +276,29 @@ func TestGetAheadBehindCount(t *testing.T) {
 	require.NoError(t, cmd.Run())
 
 	cmd = exec.Command("git", "-C", otherClone, "push")
-	require.NoError(t, cmd.Run(), "Failed to push from other clone")
+	output, err := cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to push from other clone: %s", string(output))
 
-	// Fetch to update refs
-	err = Fetch(workRepo)
-	require.NoError(t, err, "Failed to fetch")
+	// Fetch to update refs - use explicit git command for reliability
+	cmd = exec.Command("git", "-C", workRepo, "fetch", "origin")
+	output, err = cmd.CombinedOutput()
+	require.NoError(t, err, "Failed to fetch: %s", string(output))
 
 	_, behind, err = GetAheadBehindCount(workRepo, "main")
 	if err != nil {
 		t.Fatalf("GetAheadBehindCount() error = %v", err)
 	}
 	if behind != 1 {
+		// Debug: show rev-list output
+		cmd = exec.Command("git", "-C", workRepo, "rev-list", "--left-right", "--count", "main...origin/main")
+		out, _ := cmd.CombinedOutput()
+		t.Logf("rev-list output: %s", string(out))
+		cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-5", "main")
+		out, _ = cmd.CombinedOutput()
+		t.Logf("local main log: %s", string(out))
+		cmd = exec.Command("git", "-C", workRepo, "log", "--oneline", "-5", "origin/main")
+		out, _ = cmd.CombinedOutput()
+		t.Logf("origin/main log: %s", string(out))
 		t.Errorf("GetAheadBehindCount() behind = %d, want 1", behind)
 	}
 }
