@@ -260,11 +260,11 @@ func TestOutputStatusHuman_ConfigOutOfSync(t *testing.T) {
 		WorkspaceName: "test-workspace",
 		WorkspacePath: "/tmp/test",
 		Summary: workspace.StatusSummary{
-			TotalRepos:      2,
-			TotalWorktrees:  0,
-			TotalBranches:   0,
-			ConfigInSync:    false,
-			ReposNotCloned:  1,
+			TotalRepos:     2,
+			TotalWorktrees: 0,
+			TotalBranches:  0,
+			ConfigInSync:   false,
+			ReposNotCloned: 1,
 		},
 		Repos: []workspace.RepoStatus{
 			{Name: "cloned-repo", URL: "https://github.com/org/test.git", IsCloned: true},

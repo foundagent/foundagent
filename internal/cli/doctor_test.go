@@ -74,7 +74,7 @@ func TestDoctorCommand_WithBrokenState(t *testing.T) {
 	os.Stdout = w
 
 	// Run doctor command
-	err = runDoctor(doctorCmd, []string{})
+	_ = runDoctor(doctorCmd, []string{})
 
 	// Restore stdout
 	w.Close()

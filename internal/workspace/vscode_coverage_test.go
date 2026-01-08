@@ -16,7 +16,7 @@ func TestReplaceWorktreeFolders_NoRepos(t *testing.T) {
 	require.NoError(t, ws.Create(false))
 
 	err = ws.ReplaceWorktreeFolders("feature")
-	
+
 	// Should error - no repositories
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "No repositories configured")
@@ -138,7 +138,7 @@ func TestReplaceWorktreeFolders_NonexistentWorktrees(t *testing.T) {
 
 	// Replace with feature branch (worktree doesn't exist)
 	err = ws.ReplaceWorktreeFolders("feature")
-	
+
 	// Should succeed but not add any folders
 	require.NoError(t, err)
 
@@ -216,7 +216,7 @@ func TestLoadVSCodeWorkspace_InvalidJSON(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = ws.LoadVSCodeWorkspace()
-	
+
 	// Should error on invalid JSON
 	assert.Error(t, err)
 }
@@ -225,11 +225,11 @@ func TestLoadVSCodeWorkspace_MissingFile(t *testing.T) {
 	tmpDir := t.TempDir()
 	ws, err := New("test-ws", tmpDir)
 	require.NoError(t, err)
-	
+
 	// Don't create workspace - file won't exist
 
 	_, err = ws.LoadVSCodeWorkspace()
-	
+
 	// Should error on missing file
 	assert.Error(t, err)
 }

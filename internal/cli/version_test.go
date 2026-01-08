@@ -136,7 +136,7 @@ func TestVersionCommand_Check(t *testing.T) {
 	var stdoutBuf, stderrBuf bytes.Buffer
 	oldStdout := os.Stdout
 	oldStderr := os.Stderr
-	
+
 	rOut, wOut, _ := os.Pipe()
 	rErr, wErr, _ := os.Pipe()
 	os.Stdout = wOut
@@ -152,20 +152,20 @@ func TestVersionCommand_Check(t *testing.T) {
 	os.Stderr = oldStderr
 	_, _ = stdoutBuf.ReadFrom(rOut)
 	_, _ = stderrBuf.ReadFrom(rErr)
-	
+
 	stdout := stdoutBuf.String()
 	stderr := stderrBuf.String()
 
 	// Should succeed (update check failures are warnings only)
 	assert.NoError(t, err)
-	
+
 	// Output should contain version or update info or warning
 	hasVersion := strings.Contains(stdout, version.String())
-	hasUpdateCheck := strings.Contains(stdout, "up to date") || 
+	hasUpdateCheck := strings.Contains(stdout, "up to date") ||
 		strings.Contains(stdout, "Update available") ||
 		strings.Contains(stderr, "Failed to check for updates")
-	
-	assert.True(t, hasVersion || hasUpdateCheck, 
+
+	assert.True(t, hasVersion || hasUpdateCheck,
 		"Expected version info or update check result, got stdout: %q, stderr: %q", stdout, stderr)
 }
 

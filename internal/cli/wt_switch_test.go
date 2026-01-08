@@ -237,10 +237,10 @@ func TestRunSwitch_NoWorkspace(t *testing.T) {
 	tmpDir := t.TempDir()
 	originalWd, _ := os.Getwd()
 	defer os.Chdir(originalWd)
-	
+
 	err := os.Chdir(tmpDir)
 	require.NoError(t, err)
-	
+
 	cmd := switchCmd
 	err = cmd.RunE(cmd, []string{"main"})
 	assert.Error(t, err)
@@ -250,15 +250,15 @@ func TestRunSwitch_NoArgs(t *testing.T) {
 	tmpDir := t.TempDir()
 	originalWd, _ := os.Getwd()
 	defer os.Chdir(originalWd)
-	
+
 	ws, err := workspace.New("test-ws", tmpDir)
 	require.NoError(t, err)
 	require.NoError(t, ws.Create(false))
 	require.NoError(t, ws.SaveState(&workspace.State{Repositories: map[string]*workspace.Repository{}}))
-	
+
 	err = os.Chdir(tmpDir)
 	require.NoError(t, err)
-	
+
 	cmd := switchCmd
 	err = cmd.RunE(cmd, []string{})
 	assert.Error(t, err)

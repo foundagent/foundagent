@@ -11,11 +11,11 @@ import (
 
 func TestDetectStatusParallel(t *testing.T) {
 	tmpDir := t.TempDir()
-	
+
 	// Create test worktrees
 	wt1Path := filepath.Join(tmpDir, "wt1")
 	wt2Path := filepath.Join(tmpDir, "wt2")
-	
+
 	// Create wt1 with changes
 	if err := os.MkdirAll(filepath.Join(wt1Path, ".git"), 0755); err != nil {
 		t.Fatal(err)
@@ -23,24 +23,24 @@ func TestDetectStatusParallel(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(wt1Path, "test.txt"), []byte("content"), 0644); err != nil {
 		t.Fatal(err)
 	}
-	
+
 	// Create wt2 without .git (will error)
 	if err := os.MkdirAll(wt2Path, 0755); err != nil {
 		t.Fatal(err)
 	}
-	
+
 	worktrees := []worktreeInfo{
 		{Path: wt1Path, Branch: "main"},
 		{Path: wt2Path, Branch: "dev"},
 		{Path: "/nonexistent", Branch: "feature"},
 	}
-	
+
 	result := detectStatusParallel(worktrees)
-	
+
 	if len(result) != 3 {
 		t.Errorf("Expected 3 worktrees, got %d", len(result))
 	}
-	
+
 	// All should have some status set
 	for i, wt := range result {
 		if wt.Status == "" {
@@ -52,7 +52,7 @@ func TestDetectStatusParallel(t *testing.T) {
 func TestDetectStatusParallel_EmptyList(t *testing.T) {
 	worktrees := []worktreeInfo{}
 	result := detectStatusParallel(worktrees)
-	
+
 	if len(result) != 0 {
 		t.Errorf("Expected empty list, got %d worktrees", len(result))
 	}
@@ -61,18 +61,18 @@ func TestDetectStatusParallel_EmptyList(t *testing.T) {
 func TestDetectStatusParallel_SingleWorktree(t *testing.T) {
 	tmpDir := t.TempDir()
 	wtPath := filepath.Join(tmpDir, "wt")
-	
+
 	// Create valid git worktree structure
 	if err := os.MkdirAll(filepath.Join(wtPath, ".git"), 0755); err != nil {
 		t.Fatal(err)
 	}
-	
+
 	worktrees := []worktreeInfo{
 		{Path: wtPath, Branch: "main"},
 	}
-	
+
 	result := detectStatusParallel(worktrees)
-	
+
 	if len(result) != 1 {
 		t.Errorf("Expected 1 worktree, got %d", len(result))
 	}
@@ -132,4 +132,3 @@ func TestRunList_DiscoveryError(t *testing.T) {
 		t.Error("Expected error when running list outside workspace")
 	}
 }
-

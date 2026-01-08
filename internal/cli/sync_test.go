@@ -102,10 +102,10 @@ func TestRunSync_NoWorkspace(t *testing.T) {
 	tmpDir := t.TempDir()
 	originalWd, _ := os.Getwd()
 	defer os.Chdir(originalWd)
-	
+
 	err := os.Chdir(tmpDir)
 	assert.NoError(t, err)
-	
+
 	err = runSync(syncCmd, []string{})
 	assert.Error(t, err)
 }

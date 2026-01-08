@@ -41,7 +41,7 @@ func TestAddRepository_ForceRemoveError(t *testing.T) {
 	// Create a repository directory that can't be removed
 	repoPath := ws.BareRepoPath("test-repo")
 	require.NoError(t, os.MkdirAll(repoPath, 0755))
-	
+
 	// Create a file we can't delete (read-only directory on unix)
 	subDir := filepath.Join(repoPath, "protected")
 	require.NoError(t, os.MkdirAll(subDir, 0555))
@@ -77,10 +77,10 @@ func TestAddRepository_GetDefaultBranchError(t *testing.T) {
 	// Create a bare repo path that will fail GetDefaultBranch
 	repoPath := ws.BareRepoPath("test-repo")
 	require.NoError(t, os.MkdirAll(filepath.Join(repoPath, "refs", "heads"), 0755))
-	
+
 	// Create a minimal .git structure but no HEAD file
 	// This will cause GetDefaultBranch to fail
-	
+
 	result := addRepository(ws, repoToAdd{
 		URL:  "file://" + repoPath, // Use file:// to avoid network
 		Name: "test-repo",

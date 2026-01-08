@@ -189,10 +189,10 @@ func TestRunCreate_NoWorkspace(t *testing.T) {
 	tmpDir := t.TempDir()
 	originalWd, _ := os.Getwd()
 	defer os.Chdir(originalWd)
-	
+
 	err := os.Chdir(tmpDir)
 	require.NoError(t, err)
-	
+
 	cmd := createCmd
 	err = cmd.RunE(cmd, []string{"feature-branch"})
 	assert.Error(t, err)
@@ -203,10 +203,10 @@ func TestRunCreate_NoWorkspace_JSONMode(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer os.Chdir(originalWd)
 	defer func() { createJSON = false }()
-	
+
 	err := os.Chdir(tmpDir)
 	require.NoError(t, err)
-	
+
 	createJSON = true
 	cmd := createCmd
 	err = cmd.RunE(cmd, []string{"feature-branch"})

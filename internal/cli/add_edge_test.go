@@ -147,4 +147,3 @@ func TestRunAdd_MultipleURLs(t *testing.T) {
 		"also-invalid",
 	})
 }
-

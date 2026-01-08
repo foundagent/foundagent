@@ -10,12 +10,12 @@ import (
 
 func TestWorktreeAdd(t *testing.T) {
 	bareRepo := setupTestBareRepo(t)
-	
+
 	// Create feature branch
 	CreateBranch(bareRepo, "feature", "main")
 
 	worktreePath := filepath.Join(filepath.Dir(bareRepo), "worktree-feature")
-	
+
 	opts := WorktreeAddOptions{
 		BareRepoPath: bareRepo,
 		WorktreePath: worktreePath,
@@ -44,7 +44,7 @@ func TestWorktreeAddNew(t *testing.T) {
 	bareRepo := setupTestBareRepo(t)
 
 	worktreePath := filepath.Join(filepath.Dir(bareRepo), "worktree-new-branch")
-	
+
 	err := WorktreeAddNew(bareRepo, worktreePath, "new-feature", "main")
 	if err != nil {
 		t.Fatalf("WorktreeAddNew() error = %v", err)
@@ -81,7 +81,7 @@ func TestWorktreeRemove(t *testing.T) {
 	CreateBranch(bareRepo, "to-remove", "main")
 
 	worktreePath := filepath.Join(filepath.Dir(bareRepo), "worktree-to-remove")
-	
+
 	opts := WorktreeAddOptions{
 		BareRepoPath: bareRepo,
 		WorktreePath: worktreePath,
@@ -107,7 +107,7 @@ func TestWorktreeRemove_WithForce(t *testing.T) {
 	CreateBranch(bareRepo, "force-remove", "main")
 
 	worktreePath := filepath.Join(filepath.Dir(bareRepo), "worktree-force-remove")
-	
+
 	opts := WorktreeAddOptions{
 		BareRepoPath: bareRepo,
 		WorktreePath: worktreePath,
@@ -200,7 +200,7 @@ func TestWorktreeAddNew_InvalidSourceBranch(t *testing.T) {
 
 func TestWorktreeRemove_NonexistentWorktree(t *testing.T) {
 	bareRepo := setupTestBareRepo(t)
-	
+
 	err := WorktreeRemove(bareRepo, "/nonexistent/worktree", false)
 	if err == nil {
 		t.Error("WorktreeRemove() should return error for nonexistent worktree")
@@ -219,7 +219,7 @@ func TestWorktreeAdd_DuplicateWorktree(t *testing.T) {
 	CreateBranch(bareRepo, "duplicate-wt", "main")
 
 	worktreePath := filepath.Join(filepath.Dir(bareRepo), "duplicate-worktree")
-	
+
 	opts := WorktreeAddOptions{
 		BareRepoPath: bareRepo,
 		WorktreePath: worktreePath,

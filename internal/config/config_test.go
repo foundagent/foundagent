@@ -481,19 +481,19 @@ func TestAddRepo_InfersName(t *testing.T) {
 
 func TestSaveJSON_WriteError(t *testing.T) {
 	cfg := DefaultConfig("test")
-	
+
 	// Try to save to a directory path (should fail)
 	tmpDir := t.TempDir()
 	err := os.MkdirAll(filepath.Join(tmpDir, "file.json"), 0755)
 	require.NoError(t, err)
-	
+
 	err = SaveJSON(filepath.Join(tmpDir, "file.json"), cfg)
 	assert.Error(t, err)
 }
 
 func TestSaveTOML_WriteError(t *testing.T) {
 	cfg := DefaultConfig("test")
-	
+
 	// Try to save to read-only location
 	err := SaveTOML("/root/.foundagent.toml", cfg)
 	assert.Error(t, err)

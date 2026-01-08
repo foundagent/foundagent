@@ -26,7 +26,7 @@ func TestAddWorktreeFolder(t *testing.T) {
 	// Verify folder was added
 	vscodeData, err := ws.LoadVSCodeWorkspace()
 	require.NoError(t, err)
-	
+
 	found := false
 	for _, folder := range vscodeData.Folders {
 		if filepath.Base(folder.Path) == "feature" {
@@ -42,7 +42,7 @@ func TestAddWorktreeFolder(t *testing.T) {
 
 	vscodeData, err = ws.LoadVSCodeWorkspace()
 	require.NoError(t, err)
-	
+
 	count := 0
 	for _, folder := range vscodeData.Folders {
 		if filepath.Base(folder.Path) == "feature" {
@@ -139,10 +139,10 @@ func TestRemoveWorktreeFoldersFromVSCode(t *testing.T) {
 
 func TestGetCurrentBranchFromWorkspace(t *testing.T) {
 	tests := []struct {
-		name           string
-		repoName       string
-		branchName     string
-		expectError    bool
+		name        string
+		repoName    string
+		branchName  string
+		expectError bool
 	}{
 		{
 			name:        "single worktree",

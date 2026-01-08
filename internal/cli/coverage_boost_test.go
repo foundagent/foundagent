@@ -30,7 +30,7 @@ func TestDiscoverWorktrees_WithBranchFilter(t *testing.T) {
 	// Create worktree structure manually
 	wtPath := filepath.Join(ws.Path, "worktrees", "repo1", "main")
 	os.MkdirAll(wtPath, 0755)
-	
+
 	// Create a .git file to make it look like a worktree
 	os.WriteFile(filepath.Join(wtPath, ".git"), []byte("gitdir: somewhere"), 0644)
 

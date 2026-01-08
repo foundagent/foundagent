@@ -48,7 +48,7 @@ func TestRemoveRepoFromConfig(t *testing.T) {
 	// Create config with a repo
 	cfg := config.DefaultConfig(ws.Name)
 	config.AddRepo(cfg, "https://github.com/test/repo.git", "test-repo", "main")
-	
+
 	// Save config
 	require.NoError(t, config.Save(ws.Path, cfg))
 
@@ -80,7 +80,7 @@ func TestRemoveRepoFromWorkspaceFile(t *testing.T) {
 
 	vscodeData, err := ws.LoadVSCodeWorkspace()
 	require.NoError(t, err)
-	
+
 	// Add with absolute path to ensure it matches
 	vscodeData.Folders = append(vscodeData.Folders, VSCodeFolder{
 		Path: worktreePath,
@@ -100,7 +100,7 @@ func TestRemoveRepoFromWorkspaceFile(t *testing.T) {
 	vscodeData, err = ws.LoadVSCodeWorkspace()
 	require.NoError(t, err)
 	finalFolderCount := len(vscodeData.Folders)
-	
+
 	// Should have removed at least one folder (the worktree we added)
 	assert.Less(t, finalFolderCount, initialFolderCount, "Should have removed the worktree folder")
 }
@@ -114,7 +114,7 @@ func TestLoadSaveFoundagentConfig(t *testing.T) {
 	// Create and save config
 	cfg := config.DefaultConfig(ws.Name)
 	config.AddRepo(cfg, "https://github.com/test/repo.git", "test-repo", "main")
-	
+
 	err = ws.saveFoundagentConfig(cfg)
 	require.NoError(t, err)
 

@@ -9,7 +9,7 @@ import (
 
 func TestDetectWorktreeStatus_UncommittedChanges(t *testing.T) {
 	tmpDir := t.TempDir()
-	
+
 	// Create a directory that exists
 	err := os.MkdirAll(tmpDir+"/testpath", 0755)
 	if err != nil {
@@ -18,7 +18,7 @@ func TestDetectWorktreeStatus_UncommittedChanges(t *testing.T) {
 
 	// Test with existing path (will fail on git check but tests path existence)
 	status, desc := detectWorktreeStatus(tmpDir + "/testpath")
-	
+
 	// Should get to the git check phase
 	assert.NotEmpty(t, status)
 	_ = desc
@@ -27,7 +27,7 @@ func TestDetectWorktreeStatus_UncommittedChanges(t *testing.T) {
 func TestDetectWorktreeStatus_NonExistentPath(t *testing.T) {
 	// Test with non-existent path
 	status, desc := detectWorktreeStatus("/nonexistent/path/that/does/not/exist")
-	
+
 	assert.Equal(t, "error", status)
 	assert.Contains(t, desc, "not found")
 }
@@ -39,7 +39,7 @@ func TestMarkCurrentWorktree_NoMatch(t *testing.T) {
 	}
 
 	result := markCurrentWorktree(worktrees, "/completely/different/path")
-	
+
 	// None should be marked as current
 	for _, wt := range result {
 		assert.False(t, wt.IsCurrent)
@@ -53,7 +53,7 @@ func TestMarkCurrentWorktree_WithMatch(t *testing.T) {
 	}
 
 	result := markCurrentWorktree(worktrees, "/path/to/repo1/branch1/subdir")
-	
+
 	// First one should be marked as current
 	assert.True(t, result[0].IsCurrent)
 	assert.False(t, result[1].IsCurrent)

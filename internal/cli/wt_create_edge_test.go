@@ -143,7 +143,7 @@ func TestCreateWorktreeForRepo_NonExistentRepo(t *testing.T) {
 	}
 
 	result := createWorktreeForRepo(ws, repo, "feature", "", false)
-	
+
 	assert.Equal(t, "error", result.Status)
 	assert.NotEmpty(t, result.Error)
 }
@@ -168,7 +168,7 @@ func TestCreateWorktreeForRepo_WithSourceBranch(t *testing.T) {
 
 	// Will fail on git operations but tests the code path
 	result := createWorktreeForRepo(ws, repo, "feature", "main", false)
-	
+
 	assert.Equal(t, "error", result.Status)
 }
 
@@ -198,7 +198,7 @@ func TestCreateWorktreeForRepo_ForceRemoveWorktree(t *testing.T) {
 	// Create bare repo directory
 	bareRepoPath := ws.BareRepoPath("test-repo")
 	require.NoError(t, os.MkdirAll(bareRepoPath, 0755))
-	
+
 	// Create existing worktree path
 	wtPath := ws.WorktreePath("test-repo", "feature")
 	require.NoError(t, os.MkdirAll(wtPath, 0755))

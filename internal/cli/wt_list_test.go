@@ -140,7 +140,7 @@ func TestWtListCommand_EmptyWorkspace(t *testing.T) {
 	os.Stderr = oldStderr
 	_, _ = stdoutBuf.ReadFrom(rOut)
 	_, _ = stderrBuf.ReadFrom(rErr)
-	
+
 	output := stdoutBuf.String() + stderrBuf.String()
 
 	// Should succeed with "No repositories" or "add repositories" message

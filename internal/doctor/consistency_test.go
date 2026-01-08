@@ -311,7 +311,6 @@ repos:
 `
 	os.WriteFile(filepath.Join(tempDir, ".foundagent.yaml"), []byte(configContent), 0644)
 
-
 	state := &workspace.State{
 		Repositories: map[string]*workspace.Repository{
 			"test-repo": {

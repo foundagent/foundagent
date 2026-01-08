@@ -264,7 +264,7 @@ func TestGetAheadBehindCount(t *testing.T) {
 	err = Fetch(workRepo)
 	require.NoError(t, err, "Failed to fetch")
 
-	ahead, behind, err = GetAheadBehindCount(workRepo, "main")
+	_, behind, err = GetAheadBehindCount(workRepo, "main")
 	if err != nil {
 		t.Fatalf("GetAheadBehindCount() error = %v", err)
 	}

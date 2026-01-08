@@ -196,7 +196,7 @@ func TestSyncAllRepos_WithRepo(t *testing.T) {
 
 	// This will fail but exercises the code
 	results, err := ws.SyncAllRepos(false)
-	
+
 	// Should get results even if fetch fails
 	assert.NoError(t, err)
 	assert.Len(t, results, 1)
@@ -240,7 +240,7 @@ func TestPullAllWorktrees_WithRepo(t *testing.T) {
 	assert.NoError(t, err)
 
 	results, err := ws.PullAllWorktrees("main", false, false)
-	
+
 	// Should get results
 	assert.NoError(t, err)
 	assert.NotEmpty(t, results)
@@ -278,7 +278,7 @@ func TestPushAllRepos_WithRepo(t *testing.T) {
 	assert.NoError(t, err)
 
 	results, err := ws.PushAllRepos(false)
-	
+
 	// Should get results even if push fails
 	assert.NoError(t, err)
 	assert.Len(t, results, 1)
