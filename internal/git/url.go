@@ -15,6 +15,8 @@ var (
 	sshPattern = regexp.MustCompile(`^git@[^:]+:(.+)$`)
 	// HTTPS: https://github.com/owner/repo.git
 	httpsPattern = regexp.MustCompile(`^https?://[^/]+/(.+)$`)
+	// File: file:///path/to/repo (for local repositories)
+	filePattern = regexp.MustCompile(`^file://(.+)$`)
 )
 
 // ParseURL parses a Git URL and extracts the repository path
@@ -36,6 +38,11 @@ func ParseURL(url string) (string, error) {
 
 	// Try HTTPS pattern
 	if matches := httpsPattern.FindStringSubmatch(url); len(matches) > 1 {
+		return matches[1], nil
+	}
+
+	// Try file:// pattern (for local repositories)
+	if matches := filePattern.FindStringSubmatch(url); len(matches) > 1 {
 		return matches[1], nil
 	}
 

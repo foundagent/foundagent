@@ -36,8 +36,10 @@ func TestAddRepository_CloneBareError(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, ws.Create(false))
 
+	// Use a non-existent local path to test clone failure without network
+	nonExistentPath := "/nonexistent/path/to/repo"
 	repo := repoToAdd{
-		URL:  "https://github.com/nonexistent-user-12345678/nonexistent-repo-12345678.git",
+		URL:  nonExistentPath,
 		Name: "test-repo",
 	}
 

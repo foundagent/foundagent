@@ -11,11 +11,11 @@ func TestClone(t *testing.T) {
 	// Create a source repo to clone
 	tmpDir := t.TempDir()
 	sourceRepo := filepath.Join(tmpDir, "source")
-	
+
 	exec.Command("git", "init", sourceRepo).Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.email", "test@example.com").Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.name", "Test User").Run()
-	
+
 	readmePath := filepath.Join(sourceRepo, "README.md")
 	os.WriteFile(readmePath, []byte("# Test"), 0644)
 	exec.Command("git", "-C", sourceRepo, "add", ".").Run()
@@ -51,11 +51,11 @@ func TestCloneBare(t *testing.T) {
 	// Create a source repo to clone
 	tmpDir := t.TempDir()
 	sourceRepo := filepath.Join(tmpDir, "source")
-	
+
 	exec.Command("git", "init", sourceRepo).Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.email", "test@example.com").Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.name", "Test User").Run()
-	
+
 	readmePath := filepath.Join(sourceRepo, "README.md")
 	os.WriteFile(readmePath, []byte("# Test"), 0644)
 	exec.Command("git", "-C", sourceRepo, "add", ".").Run()
@@ -90,8 +90,9 @@ func TestClone_InvalidURL(t *testing.T) {
 	tmpDir := t.TempDir()
 	targetPath := filepath.Join(tmpDir, "should-fail")
 
+	// Use a non-existent local path instead of a GitHub URL to avoid auth issues
 	opts := CloneOptions{
-		URL:        "https://github.com/nonexistent/totally-fake-repo-12345.git",
+		URL:        filepath.Join(tmpDir, "nonexistent-repo"),
 		TargetPath: targetPath,
 		Bare:       false,
 		Progress:   false,
@@ -107,11 +108,11 @@ func TestClone_WithProgress(t *testing.T) {
 	// Create a source repo
 	tmpDir := t.TempDir()
 	sourceRepo := filepath.Join(tmpDir, "source")
-	
+
 	exec.Command("git", "init", sourceRepo).Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.email", "test@example.com").Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.name", "Test User").Run()
-	
+
 	readmePath := filepath.Join(sourceRepo, "README.md")
 	os.WriteFile(readmePath, []byte("# Test"), 0644)
 	exec.Command("git", "-C", sourceRepo, "add", ".").Run()
@@ -141,11 +142,11 @@ func TestCloneBare_WithProgress(t *testing.T) {
 	// Create a source repo
 	tmpDir := t.TempDir()
 	sourceRepo := filepath.Join(tmpDir, "source")
-	
+
 	exec.Command("git", "init", sourceRepo).Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.email", "test@example.com").Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.name", "Test User").Run()
-	
+
 	readmePath := filepath.Join(sourceRepo, "README.md")
 	os.WriteFile(readmePath, []byte("# Test"), 0644)
 	exec.Command("git", "-C", sourceRepo, "add", ".").Run()
@@ -194,11 +195,11 @@ func TestCloneBare_ExistingDirectory(t *testing.T) {
 	// Create a source repo
 	tmpDir := t.TempDir()
 	sourceRepo := filepath.Join(tmpDir, "source")
-	
+
 	exec.Command("git", "init", sourceRepo).Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.email", "test@example.com").Run()
 	exec.Command("git", "-C", sourceRepo, "config", "user.name", "Test User").Run()
-	
+
 	readmePath := filepath.Join(sourceRepo, "README.md")
 	os.WriteFile(readmePath, []byte("# Test"), 0644)
 	exec.Command("git", "-C", sourceRepo, "add", ".").Run()
