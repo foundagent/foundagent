@@ -5,33 +5,50 @@ import (
 	"os/exec"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func setupRemoteTestRepo(t *testing.T) (string, string) {
 	t.Helper()
 
 	tmpDir := t.TempDir()
-	
+
 	// Create "remote" repo
 	remoteRepo := filepath.Join(tmpDir, "remote.git")
-	exec.Command("git", "init", "--bare", remoteRepo).Run()
+	cmd := exec.Command("git", "init", "--bare", remoteRepo)
+	require.NoError(t, cmd.Run(), "Failed to init bare repo")
 
 	// Create local working repo
 	workRepo := filepath.Join(tmpDir, "work")
-	exec.Command("git", "init", workRepo).Run()
-	exec.Command("git", "-C", workRepo, "config", "user.email", "test@example.com").Run()
-	exec.Command("git", "-C", workRepo, "config", "user.name", "Test User").Run()
-	
+	cmd = exec.Command("git", "init", workRepo)
+	require.NoError(t, cmd.Run(), "Failed to init work repo")
+
+	cmd = exec.Command("git", "-C", workRepo, "config", "user.email", "test@example.com")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "config", "user.name", "Test User")
+	require.NoError(t, cmd.Run())
+
 	// Create initial commit
 	readmePath := filepath.Join(workRepo, "README.md")
-	os.WriteFile(readmePath, []byte("# Test"), 0644)
-	exec.Command("git", "-C", workRepo, "add", ".").Run()
-	exec.Command("git", "-C", workRepo, "commit", "-m", "Initial commit").Run()
-	exec.Command("git", "-C", workRepo, "branch", "-M", "main").Run()
-	
+	require.NoError(t, os.WriteFile(readmePath, []byte("# Test"), 0644))
+
+	cmd = exec.Command("git", "-C", workRepo, "add", ".")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "commit", "-m", "Initial commit")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "branch", "-M", "main")
+	require.NoError(t, cmd.Run())
+
 	// Push to remote
-	exec.Command("git", "-C", workRepo, "remote", "add", "origin", remoteRepo).Run()
-	exec.Command("git", "-C", workRepo, "push", "-u", "origin", "main").Run()
+	cmd = exec.Command("git", "-C", workRepo, "remote", "add", "origin", remoteRepo)
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "push", "-u", "origin", "main")
+	require.NoError(t, cmd.Run())
 
 	return workRepo, remoteRepo
 }
@@ -39,12 +56,9 @@ func setupRemoteTestRepo(t *testing.T) (string, string) {
 func TestGetDefaultBranch(t *testing.T) {
 	_, remoteRepo := setupRemoteTestRepo(t)
 
-	// Clone the bare repo for testing
-	tmpDir := t.TempDir()
-	bareRepo := filepath.Join(tmpDir, "test-bare.git")
-	exec.Command("git", "clone", "--bare", remoteRepo, bareRepo).Run()
-
-	branch, err := GetDefaultBranch(bareRepo)
+	// The remote bare repo should have the default branch set
+	// Use the remote repo directly instead of cloning
+	branch, err := GetDefaultBranch(remoteRepo)
 	if err != nil {
 		t.Fatalf("GetDefaultBranch() error = %v", err)
 	}
@@ -59,11 +73,19 @@ func TestListRemoteBranches(t *testing.T) {
 	workRepo, _ := setupRemoteTestRepo(t)
 
 	// Create additional branches
-	exec.Command("git", "-C", workRepo, "checkout", "-b", "feature-1").Run()
-	os.WriteFile(filepath.Join(workRepo, "f1.txt"), []byte("feature 1"), 0644)
-	exec.Command("git", "-C", workRepo, "add", ".").Run()
-	exec.Command("git", "-C", workRepo, "commit", "-m", "Feature 1").Run()
-	exec.Command("git", "-C", workRepo, "push", "-u", "origin", "feature-1").Run()
+	cmd := exec.Command("git", "-C", workRepo, "checkout", "-b", "feature-1")
+	require.NoError(t, cmd.Run())
+
+	require.NoError(t, os.WriteFile(filepath.Join(workRepo, "f1.txt"), []byte("feature 1"), 0644))
+
+	cmd = exec.Command("git", "-C", workRepo, "add", ".")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "commit", "-m", "Feature 1")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "push", "-u", "origin", "feature-1")
+	require.NoError(t, cmd.Run())
 
 	// Use the work repo with remote configured for listing
 	branches, err := ListRemoteBranches(workRepo)
@@ -111,16 +133,28 @@ func TestPull(t *testing.T) {
 	// Create another clone to make changes
 	tmpDir := t.TempDir()
 	otherClone := filepath.Join(tmpDir, "other-clone")
-	exec.Command("git", "clone", remoteRepo, otherClone).Run()
-	exec.Command("git", "-C", otherClone, "config", "user.email", "test@example.com").Run()
-	exec.Command("git", "-C", otherClone, "config", "user.name", "Test User").Run()
+
+	cmd := exec.Command("git", "clone", remoteRepo, otherClone)
+	require.NoError(t, cmd.Run(), "Failed to clone")
+
+	cmd = exec.Command("git", "-C", otherClone, "config", "user.email", "test@example.com")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", otherClone, "config", "user.name", "Test User")
+	require.NoError(t, cmd.Run())
 
 	// Make and push changes from other clone
 	testFile := filepath.Join(otherClone, "new-file.txt")
-	os.WriteFile(testFile, []byte("new content"), 0644)
-	exec.Command("git", "-C", otherClone, "add", ".").Run()
-	exec.Command("git", "-C", otherClone, "commit", "-m", "Add new file").Run()
-	exec.Command("git", "-C", otherClone, "push").Run()
+	require.NoError(t, os.WriteFile(testFile, []byte("new content"), 0644))
+
+	cmd = exec.Command("git", "-C", otherClone, "add", ".")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", otherClone, "commit", "-m", "Add new file")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", otherClone, "push")
+	require.NoError(t, cmd.Run(), "Failed to push from other clone")
 
 	// Pull in original repo
 	err := Pull(workRepo)
@@ -178,9 +212,13 @@ func TestGetAheadBehindCount(t *testing.T) {
 
 	// Make local commit (ahead)
 	testFile := filepath.Join(workRepo, "local-change.txt")
-	os.WriteFile(testFile, []byte("local"), 0644)
-	exec.Command("git", "-C", workRepo, "add", ".").Run()
-	exec.Command("git", "-C", workRepo, "commit", "-m", "Local commit").Run()
+	require.NoError(t, os.WriteFile(testFile, []byte("local"), 0644))
+
+	cmd := exec.Command("git", "-C", workRepo, "add", ".")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", workRepo, "commit", "-m", "Local commit")
+	require.NoError(t, cmd.Run())
 
 	ahead, behind, err = GetAheadBehindCount(workRepo, "main")
 	if err != nil {
@@ -194,23 +232,37 @@ func TestGetAheadBehindCount(t *testing.T) {
 	}
 
 	// Push to sync
-	Push(workRepo)
+	err = Push(workRepo)
+	require.NoError(t, err, "Failed to push")
 
 	// Make remote commit (behind)
 	tmpDir := t.TempDir()
 	otherClone := filepath.Join(tmpDir, "other-clone")
-	exec.Command("git", "clone", remoteRepo, otherClone).Run()
-	exec.Command("git", "-C", otherClone, "config", "user.email", "test@example.com").Run()
-	exec.Command("git", "-C", otherClone, "config", "user.name", "Test User").Run()
-	
+
+	cmd = exec.Command("git", "clone", remoteRepo, otherClone)
+	require.NoError(t, cmd.Run(), "Failed to clone")
+
+	cmd = exec.Command("git", "-C", otherClone, "config", "user.email", "test@example.com")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", otherClone, "config", "user.name", "Test User")
+	require.NoError(t, cmd.Run())
+
 	remoteFile := filepath.Join(otherClone, "remote-change.txt")
-	os.WriteFile(remoteFile, []byte("remote"), 0644)
-	exec.Command("git", "-C", otherClone, "add", ".").Run()
-	exec.Command("git", "-C", otherClone, "commit", "-m", "Remote commit").Run()
-	exec.Command("git", "-C", otherClone, "push").Run()
+	require.NoError(t, os.WriteFile(remoteFile, []byte("remote"), 0644))
+
+	cmd = exec.Command("git", "-C", otherClone, "add", ".")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", otherClone, "commit", "-m", "Remote commit")
+	require.NoError(t, cmd.Run())
+
+	cmd = exec.Command("git", "-C", otherClone, "push")
+	require.NoError(t, cmd.Run(), "Failed to push from other clone")
 
 	// Fetch to update refs
-	Fetch(workRepo)
+	err = Fetch(workRepo)
+	require.NoError(t, err, "Failed to fetch")
 
 	ahead, behind, err = GetAheadBehindCount(workRepo, "main")
 	if err != nil {
@@ -229,7 +281,7 @@ func TestGetAheadBehindCount_NoBranchTracking(t *testing.T) {
 	exec.Command("git", "init", repoPath).Run()
 	exec.Command("git", "-C", repoPath, "config", "user.email", "test@example.com").Run()
 	exec.Command("git", "-C", repoPath, "config", "user.name", "Test User").Run()
-	
+
 	readmePath := filepath.Join(repoPath, "README.md")
 	os.WriteFile(readmePath, []byte("# Test"), 0644)
 	exec.Command("git", "-C", repoPath, "add", ".").Run()
