@@ -426,7 +426,8 @@ func removeWorktreeFoldersFromVSCode(ws *workspace.Workspace, worktrees []worktr
 		if err != nil {
 			continue
 		}
-		pathsToRemove[relPath] = true
+		// VS Code workspace files always use forward slashes
+		pathsToRemove[filepath.ToSlash(relPath)] = true
 	}
 
 	// Filter out removed paths
