@@ -149,7 +149,9 @@ func (c WorkspaceFileConsistencyCheck) Run() CheckResult {
 		// Extract worktree path from folder path
 		// Path format: repos/{repoName}/worktrees/{branch}
 		// We need to extract {repoName}/{branch} part
-		parts := strings.Split(folder.Path, string(filepath.Separator))
+		// Normalize path separators to forward slashes for consistent parsing
+		normalizedPath := filepath.ToSlash(folder.Path)
+		parts := strings.Split(normalizedPath, "/")
 		// Ensure we have at least 4 parts and the right structure
 		if len(parts) >= 4 && parts[0] == "repos" && parts[2] == "worktrees" {
 			// Store as repoName/branch

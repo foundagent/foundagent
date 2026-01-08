@@ -59,7 +59,7 @@ linters:
       # Exclude goconst for status string literals
       - linters:
           - goconst
-        text: "string .*(main|error|success|failed|removed|skipped|clean|modified|untracked|conflict|dev|unknown).* has .* occurrences"
+        text: "string .*(main|error|success|failed|removed|skipped|clean|modified|untracked|conflict|dev|unknown|windows).* has .* occurrences"
       # Exclude goconst for doctor check names
       - linters:
           - goconst

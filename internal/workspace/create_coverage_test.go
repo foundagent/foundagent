@@ -3,6 +3,7 @@ package workspace
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -116,6 +117,9 @@ func TestCreate_WithForcePreservesRepos(t *testing.T) {
 }
 
 func TestCreate_PermissionDeniedOnWorkspaceDir(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping permission test on Windows - permission model differs")
+	}
 	if os.Getuid() == 0 {
 		t.Skip("Skipping permission test when running as root")
 	}

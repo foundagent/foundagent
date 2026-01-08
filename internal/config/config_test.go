@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -330,6 +331,9 @@ func TestLoadJSON_InvalidFile(t *testing.T) {
 }
 
 func TestSaveYAML_InvalidPath(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping invalid path test on Windows - path handling differs")
+	}
 	cfg := DefaultConfig("test")
 	err := SaveYAML("/nonexistent/directory/.foundagent.yaml", cfg)
 	assert.Error(t, err)
