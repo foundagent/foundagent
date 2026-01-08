@@ -158,3 +158,325 @@ func TestConfigTemplateGeneration(t *testing.T) {
 	assert.Contains(t, contentStr, "auto_create_worktree: true")
 	assert.Contains(t, contentStr, "# Example repository entry:")
 }
+
+func TestRunReconcile_UpToDate(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Reconcile with empty config (no repos to clone)
+	addJSON = false
+	err = runReconcile(ws)
+	assert.NoError(t, err)
+
+	// Reset flag
+	addJSON = false
+}
+
+func TestRunReconcile_WithReposToClone(t *testing.T) {
+	t.Skip("Skipping test that would attempt network git clone operations")
+}
+
+func TestRunReconcile_JSONMode(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Reconcile in JSON mode
+	addJSON = true
+	err = runReconcile(ws)
+	assert.NoError(t, err)
+
+	// Reset flag
+	addJSON = false
+}
+
+func TestAddRepositories_Single(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Test adding single invalid repo
+	repos := []repoToAdd{
+		{URL: "not-a-url", Name: ""},
+	}
+
+	results := addRepositories(ws, repos)
+	assert.Len(t, results, 1)
+	assert.Equal(t, "error", results[0].Status)
+	assert.NotEmpty(t, results[0].Error)
+}
+
+func TestAddRepositories_Multiple(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Test adding multiple repos with invalid URLs (fail validation, not clone)
+	repos := []repoToAdd{
+		{URL: "invalid-url-1", Name: "repo1"},
+		{URL: "invalid-url-2", Name: "repo2"},
+	}
+
+	results := addRepositories(ws, repos)
+	assert.Len(t, results, 2)
+	// Both should fail validation
+	for _, r := range results {
+		assert.Equal(t, "error", r.Status)
+		assert.NotEmpty(t, r.Error)
+	}
+}
+
+func TestAddRepository_InvalidURL(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Test invalid URL
+	repo := repoToAdd{URL: "not-a-url", Name: ""}
+	result := addRepository(ws, repo)
+
+	assert.Equal(t, "error", result.Status)
+	assert.NotEmpty(t, result.Error)
+	assert.Contains(t, result.Error, "Invalid")
+}
+
+func TestAddRepository_WithCustomName(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Test with custom name using invalid URL (fails validation, not clone)
+	repo := repoToAdd{URL: "not-a-valid-url", Name: "custom-name"}
+	result := addRepository(ws, repo)
+
+	assert.Equal(t, "error", result.Status) // URL validation fails
+	assert.NotEmpty(t, result.Error)
+}
+
+func TestAddRepository_AlreadyExists(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Add a repository to state
+	repo := &workspace.Repository{
+		Name:          "existing-repo",
+		URL:           "https://github.com/org/repo.git",
+		DefaultBranch: "main",
+		BareRepoPath:  ws.BareRepoPath("existing-repo"),
+	}
+	err = ws.AddRepository(repo)
+	require.NoError(t, err)
+
+	// Try to add again without force
+	addForce = false
+	repoToAddAgain := repoToAdd{URL: "https://github.com/org/repo.git", Name: "existing-repo"}
+	result := addRepository(ws, repoToAddAgain)
+
+	assert.Equal(t, "success", result.Status)
+	assert.True(t, result.Skipped)
+	assert.Equal(t, "existing-repo", result.Name)
+
+	// Reset flag
+	addForce = false
+}
+
+func TestAddRepository_ForceOverwrite(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Add a repository and create its bare repo directory
+	repo := &workspace.Repository{
+		Name:          "existing-repo",
+		URL:           "https://github.com/org/repo.git",
+		DefaultBranch: "main",
+		BareRepoPath:  ws.BareRepoPath("existing-repo"),
+	}
+	err = ws.AddRepository(repo)
+	require.NoError(t, err)
+
+	// Create the bare repo directory
+	err = os.MkdirAll(repo.BareRepoPath, 0755)
+	require.NoError(t, err)
+
+	// Try to add again with force using invalid URL
+	addForce = true
+	repoToAddAgain := repoToAdd{URL: "invalid-url", Name: "existing-repo"}
+	result := addRepository(ws, repoToAddAgain)
+
+	// Should fail on URL validation
+	assert.Equal(t, "error", result.Status)
+	assert.NotEmpty(t, result.Error)
+
+	// Reset flag
+	addForce = false
+}
+
+func TestAddRepository_InferName(t *testing.T) {
+	t.Skip("Skipping test that would attempt network git clone operations")
+}
+
+func TestRunAdd_NoWorkspace(t *testing.T) {
+	// Save original working directory
+	origDir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(origDir)
+
+	// Change to temp dir with no workspace
+	tmpDir := t.TempDir()
+	err = os.Chdir(tmpDir)
+	require.NoError(t, err)
+
+	// Try to run add - should fail with no workspace
+	addJSON = false
+	err = runAdd(addCmd, []string{"https://github.com/org/repo.git"})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "workspace")
+
+	// Reset flag
+	addJSON = false
+}
+
+func TestRunAdd_ReconcileMode(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Save original working directory
+	origDir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(origDir)
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	// Run add with no args (reconcile mode)
+	addJSON = false
+	err = runAdd(addCmd, []string{})
+	assert.NoError(t, err)
+
+	// Reset flag
+	addJSON = false
+}
+
+func TestRunAdd_InvalidURL(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Save original working directory
+	origDir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(origDir)
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	// Try to add invalid URL
+	addJSON = false
+	err = runAdd(addCmd, []string{"not-a-valid-url"})
+	assert.Error(t, err)
+
+	// Reset flag
+	addJSON = false
+}
+
+func TestRunAdd_JSONMode(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Save original working directory
+	origDir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(origDir)
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	// Add invalid URL in JSON mode - single result doesn't return error
+	addJSON = true
+	err = runAdd(addCmd, []string{"invalid-url"})
+	// JSON mode with single result prints JSON but doesn't error
+	assert.NoError(t, err)
+
+	// Reset flag
+	addJSON = false
+}
+
+func TestRunAdd_MultipleInvalidURLs(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Save original working directory
+	origDir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(origDir)
+
+	// Create workspace
+	ws, err := workspace.New("test-ws", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	err = os.Chdir(ws.Path)
+	require.NoError(t, err)
+
+	// Try to add multiple invalid URLs
+	addJSON = false
+	err = runAdd(addCmd, []string{"invalid-1", "invalid-2"})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to add")
+
+	// Reset flag
+	addJSON = false
+}

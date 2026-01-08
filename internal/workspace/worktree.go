@@ -85,14 +85,35 @@ func (w *Workspace) FindWorktree(branch string) (string, error) {
 		return "", err
 	}
 
+	// Resolve symlinks and get absolute paths for reliable comparison
+	absCwd, err := filepath.Abs(cwd)
+	if err != nil {
+		return "", err
+	}
+	absCwd, err = filepath.EvalSymlinks(absCwd)
+	if err != nil {
+		// If EvalSymlinks fails, use the absolute path as-is
+		absCwd, _ = filepath.Abs(cwd)
+	}
+
+	absWsPath, err := filepath.Abs(w.Path)
+	if err != nil {
+		return "", err
+	}
+	absWsPath, err = filepath.EvalSymlinks(absWsPath)
+	if err != nil {
+		// If EvalSymlinks fails, use the absolute path as-is
+		absWsPath, _ = filepath.Abs(w.Path)
+	}
+
 	// Check if we're in a repo directory
-	reposBase := filepath.Join(w.Path, ReposDir)
-	if !strings.HasPrefix(cwd, reposBase) {
+	reposBase := filepath.Join(absWsPath, ReposDir)
+	if !strings.HasPrefix(absCwd, reposBase+string(filepath.Separator)) && absCwd != reposBase {
 		return "", nil
 	}
 
 	// Extract repo name from path (format: repos/<repo-name>/worktrees/<branch>/...)
-	rel, err := filepath.Rel(reposBase, cwd)
+	rel, err := filepath.Rel(reposBase, absCwd)
 	if err != nil {
 		return "", err
 	}
@@ -103,7 +124,7 @@ func (w *Workspace) FindWorktree(branch string) (string, error) {
 	}
 
 	repoName := parts[0]
-	return w.WorktreePath(repoName, branch), nil
+	return filepath.Join(absWsPath, ReposDir, repoName, WorktreesDir, branch), nil
 }
 
 // GetWorktreesForRepo returns all worktrees for a repository

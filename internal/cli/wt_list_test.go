@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"bytes"
+	"encoding/json"
+	"os"
 	"testing"
 
 	"github.com/foundagent/foundagent/internal/workspace"
@@ -99,4 +102,143 @@ func TestDetectWorktreeStatus(t *testing.T) {
 	status, desc := detectWorktreeStatus("/nonexistent/path")
 	assert.Equal(t, "error", status)
 	assert.Equal(t, "worktree path not found", desc)
+}
+
+func TestWtListCommand_EmptyWorkspace(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	assert.NoError(t, err)
+	err = ws.Create(false)
+	assert.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	listJSONFlag = false
+
+	// Capture output (both stdout and stderr)
+	var stdoutBuf, stderrBuf bytes.Buffer
+	oldStdout := os.Stdout
+	oldStderr := os.Stderr
+	rOut, wOut, _ := os.Pipe()
+	rErr, wErr, _ := os.Pipe()
+	os.Stdout = wOut
+	os.Stderr = wErr
+
+	// Run list command
+	err = runList(listCmd, []string{})
+
+	// Restore stdout/stderr
+	wOut.Close()
+	wErr.Close()
+	os.Stdout = oldStdout
+	os.Stderr = oldStderr
+	_, _ = stdoutBuf.ReadFrom(rOut)
+	_, _ = stderrBuf.ReadFrom(rErr)
+
+	output := stdoutBuf.String() + stderrBuf.String()
+
+	// Should succeed with "No repositories" or "add repositories" message
+	assert.NoError(t, err)
+	hasExpectedMessage := assert.Contains(t, output, "No repositories") ||
+		assert.Contains(t, output, "add repositories")
+	assert.True(t, hasExpectedMessage)
+}
+
+func TestWtListCommand_JSONOutput(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	assert.NoError(t, err)
+	err = ws.Create(false)
+	assert.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	listJSONFlag = true
+
+	// Capture output
+	var buf bytes.Buffer
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	// Run list command
+	err = runList(listCmd, []string{})
+
+	// Restore stdout
+	w.Close()
+	os.Stdout = oldStdout
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	// Should succeed with JSON output
+	assert.NoError(t, err)
+
+	// Parse JSON
+	var result map[string]interface{}
+	jsonErr := json.Unmarshal([]byte(output), &result)
+	assert.NoError(t, jsonErr)
+	assert.Contains(t, result, "workspace_name")
+	assert.Contains(t, result, "worktrees")
+}
+
+func TestWtListCommand_OutsideWorkspace(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Change to non-workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(tmpDir)
+
+	// Reset flags
+	listJSONFlag = false
+
+	// Run list command (should fail)
+	err := runList(listCmd, []string{})
+
+	// Should fail with workspace not found error
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "workspace")
+}
+
+func TestPrintHumanList(t *testing.T) {
+	worktrees := []worktreeInfo{
+		{Branch: "main", Repo: "repo1", Path: "/path/to/repo1/main", Status: "clean", IsCurrent: true},
+		{Branch: "main", Repo: "repo2", Path: "/path/to/repo2/main", Status: "modified", IsCurrent: false},
+		{Branch: "feature", Repo: "repo1", Path: "/path/to/repo1/feature", Status: "clean", IsCurrent: false},
+	}
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	printHumanList(worktrees)
+
+	w.Close()
+	os.Stdout = oldStdout
+
+	var buf bytes.Buffer
+	_, _ = buf.ReadFrom(r)
+	output := buf.String()
+
+	// Should contain branch names
+	assert.Contains(t, output, "main")
+	assert.Contains(t, output, "feature")
+	// Should contain repo names
+	assert.Contains(t, output, "repo1")
+	assert.Contains(t, output, "repo2")
+	// Should contain paths
+	assert.Contains(t, output, "/path/to/repo1/main")
 }

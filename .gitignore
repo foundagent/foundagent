@@ -10,6 +10,8 @@
 
 # Output of the go coverage tool
 *.out
+test_output.txt
+coverage.out
 
 # Go workspace file
 go.work

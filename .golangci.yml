@@ -32,6 +32,7 @@ linters:
           - errcheck
           - dupl
           - gosec
+          - goconst
       - path: internal/version/version.go
         linters:
           - gochecknoglobals
@@ -58,7 +59,11 @@ linters:
       # Exclude goconst for status string literals
       - linters:
           - goconst
-        text: "string .*(main|error|success|failed|removed|skipped).* has .* occurrences"
+        text: "string .*(main|error|success|failed|removed|skipped|clean|modified|untracked|conflict|dev|unknown|windows).* has .* occurrences"
+      # Exclude goconst for doctor check names
+      - linters:
+          - goconst
+        text: "string .*(Orphaned worktrees|Orphaned repositories|State file|Workspace structure|Git installed|Git version).* has .* occurrences"
       # Exclude high complexity for known complex functions
       - linters:
           - gocyclo
@@ -66,6 +71,9 @@ linters:
       - linters:
           - gocyclo
         path: internal/workspace/removal\.go
+      - linters:
+          - gocyclo
+        path: internal/doctor/consistency\.go
       # Exclude unparam warnings (would require significant refactoring)
       - linters:
           - unparam

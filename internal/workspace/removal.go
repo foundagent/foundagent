@@ -272,10 +272,10 @@ func (w *Workspace) removeRepoFromWorkspaceFile(repoName string) error {
 
 // loadFoundagentConfig loads the config using the config package
 func (w *Workspace) loadFoundagentConfig() (*config.Config, error) {
-	return config.Load(w.ConfigPath())
+	return config.Load(w.Path)
 }
 
 // saveFoundagentConfig saves the config using the config package
 func (w *Workspace) saveFoundagentConfig(cfg *config.Config) error {
-	return config.Save(w.ConfigPath(), cfg)
+	return config.Save(w.Path, cfg)
 }

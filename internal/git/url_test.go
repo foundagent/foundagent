@@ -39,6 +39,16 @@ func TestParseURL(t *testing.T) {
 			expected: "owner/repo.git",
 		},
 		{
+			name:     "file URL",
+			url:      "file:///path/to/repo",
+			expected: "/path/to/repo",
+		},
+		{
+			name:     "file URL with .git",
+			url:      "file:///path/to/repo.git",
+			expected: "/path/to/repo.git",
+		},
+		{
 			name:        "empty URL",
 			url:         "",
 			expectError: true,
@@ -86,6 +96,16 @@ func TestInferName(t *testing.T) {
 			expected: "my-repo",
 		},
 		{
+			name:     "file URL",
+			url:      "file:///path/to/my-repo",
+			expected: "my-repo",
+		},
+		{
+			name:     "file URL with .git",
+			url:      "file:///path/to/my-repo.git",
+			expected: "my-repo",
+		},
+		{
 			name:     "nested path",
 			url:      "git@github.com:org/team/my-repo.git",
 			expected: "my-repo",
@@ -124,6 +144,11 @@ func TestValidateURL(t *testing.T) {
 		{
 			name:  "valid HTTPS URL",
 			url:   "https://github.com/owner/repo.git",
+			valid: true,
+		},
+		{
+			name:  "valid file URL",
+			url:   "file:///path/to/repo",
 			valid: true,
 		},
 		{

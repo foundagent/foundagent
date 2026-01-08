@@ -2,7 +2,7 @@ package git
 
 import (
 	"fmt"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -15,6 +15,8 @@ var (
 	sshPattern = regexp.MustCompile(`^git@[^:]+:(.+)$`)
 	// HTTPS: https://github.com/owner/repo.git
 	httpsPattern = regexp.MustCompile(`^https?://[^/]+/(.+)$`)
+	// File: file:///path/to/repo (for local repositories)
+	filePattern = regexp.MustCompile(`^file://(.+)$`)
 )
 
 // ParseURL parses a Git URL and extracts the repository path
@@ -39,6 +41,11 @@ func ParseURL(url string) (string, error) {
 		return matches[1], nil
 	}
 
+	// Try file:// pattern (for local repositories)
+	if matches := filePattern.FindStringSubmatch(url); len(matches) > 1 {
+		return matches[1], nil
+	}
+
 	return "", errors.New(
 		errors.ErrCodeInvalidRepository,
 		fmt.Sprintf("Invalid Git URL format: %s", url),
@@ -57,7 +64,9 @@ func InferName(url string) (string, error) {
 	repoPath = strings.TrimSuffix(repoPath, ".git")
 
 	// Get the base name (last component of path)
-	name := path.Base(repoPath)
+	// Use filepath.Base for file:// URLs to handle OS-specific path separators (e.g., Windows backslashes)
+	// For SSH/HTTPS URLs, paths use forward slashes which filepath.Base handles correctly
+	name := filepath.Base(repoPath)
 
 	if name == "" || name == "." || name == "/" {
 		return "", errors.New(

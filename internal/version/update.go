@@ -15,12 +15,35 @@ type GithubRelease struct {
 	HTMLURL string `json:"html_url"`
 }
 
-// CheckForUpdate queries GitHub releases API for the latest version
-func CheckForUpdate(ctx context.Context) (updateAvailable bool, latestVersion string, downloadURL string, err error) {
-	const releaseURL = "https://api.github.com/repos/foundagent/foundagent/releases/latest"
+// UpdateChecker handles checking for updates
+type UpdateChecker struct {
+	releaseURL string
+}
 
+// DefaultReleaseURL is the default URL for the GitHub releases API
+const DefaultReleaseURL = "https://api.github.com/repos/foundagent/foundagent/releases/latest"
+
+// ReleaseURL can be overridden for testing purposes (deprecated: use NewUpdateCheckerWithURL instead)
+var ReleaseURL = DefaultReleaseURL
+
+// NewUpdateChecker creates a new UpdateChecker with the default release URL
+func NewUpdateChecker() *UpdateChecker {
+	return &UpdateChecker{
+		releaseURL: DefaultReleaseURL,
+	}
+}
+
+// NewUpdateCheckerWithURL creates a new UpdateChecker with a custom release URL
+func NewUpdateCheckerWithURL(url string) *UpdateChecker {
+	return &UpdateChecker{
+		releaseURL: url,
+	}
+}
+
+// CheckForUpdate queries GitHub releases API for the latest version
+func (u *UpdateChecker) CheckForUpdate(ctx context.Context) (updateAvailable bool, latestVersion string, downloadURL string, err error) {
 	// Create request with timeout
-	req, err := http.NewRequestWithContext(ctx, "GET", releaseURL, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", u.releaseURL, nil)
 	if err != nil {
 		return false, "", "", err
 	}
@@ -56,4 +79,11 @@ func CheckForUpdate(ctx context.Context) (updateAvailable bool, latestVersion st
 	updateAvailable = latestVersion != currentVersion
 
 	return updateAvailable, latestVersion, downloadURL, nil
+}
+
+// CheckForUpdate is a convenience function that uses the default UpdateChecker
+// It respects the ReleaseURL variable for backward compatibility with tests
+func CheckForUpdate(ctx context.Context) (updateAvailable bool, latestVersion string, downloadURL string, err error) {
+	checker := NewUpdateCheckerWithURL(ReleaseURL)
+	return checker.CheckForUpdate(ctx)
 }

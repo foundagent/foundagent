@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -97,4 +99,89 @@ func TestRemoveOutput(t *testing.T) {
 	assert.Equal(t, 2, output.TotalRemoved)
 	assert.Equal(t, 0, output.TotalFailed)
 	assert.True(t, output.BranchesDeleted)
+}
+
+func TestWtRemoveCommand_OutsideWorkspace(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Change to non-workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(tmpDir)
+
+	// Reset flags
+	removeJSON = false
+	removeForce = false
+	removeDeleteBranch = false
+
+	// Run remove command
+	err := runRemove(removeCmd, []string{"feature-test"})
+
+	// Should fail with workspace not found error
+	assert.Error(t, err)
+}
+
+func TestWtRemoveCommand_NoRepositories(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create workspace
+	ws, err := workspace.New("test-workspace", tmpDir)
+	require.NoError(t, err)
+	err = ws.Create(false)
+	require.NoError(t, err)
+
+	// Change to workspace directory
+	oldCwd, _ := os.Getwd()
+	defer func() { _ = os.Chdir(oldCwd) }()
+	_ = os.Chdir(ws.Path)
+
+	// Reset flags
+	removeJSON = false
+	removeForce = false
+	removeDeleteBranch = false
+
+	// Run remove command (should fail - no repos)
+	err = runRemove(removeCmd, []string{"feature-test"})
+
+	// Should fail with "no repositories" error
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "repositories")
+}
+
+func TestPrintRemoveJSON(t *testing.T) {
+	output := removeOutput{
+		Branch:          "feature-123",
+		TotalRemoved:    2,
+		TotalSkipped:    1,
+		TotalFailed:     0,
+		BranchesDeleted: true,
+		Results: []removeResult{
+			{RepoName: "repo1", Branch: "feature-123", Status: "removed"},
+			{RepoName: "repo2", Branch: "feature-123", Status: "removed"},
+			{RepoName: "repo3", Branch: "feature-123", Status: "skipped", Reason: "not found"},
+		},
+	}
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := printRemoveJSON(output)
+
+	w.Close()
+	os.Stdout = oldStdout
+
+	var buf bytes.Buffer
+	_, _ = buf.ReadFrom(r)
+
+	// Should succeed
+	assert.NoError(t, err)
+
+	// Parse JSON to verify it's valid
+	var result map[string]interface{}
+	jsonErr := json.Unmarshal(buf.Bytes(), &result)
+	assert.NoError(t, jsonErr)
+	assert.Equal(t, "feature-123", result["branch"])
+	assert.Equal(t, float64(2), result["total_removed"])
 }
