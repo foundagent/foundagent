@@ -316,8 +316,10 @@ func (f *Fixer) fixWorkspaceFileConsistency() CheckResult {
 
 	for repoName, repo := range state.Repositories {
 		for _, wt := range repo.Worktrees {
+			// VS Code workspace files always use forward slashes regardless of OS
+			path := workspace.ReposDir + "/" + repoName + "/" + workspace.WorktreesDir + "/" + wt
 			folders = append(folders, workspace.VSCodeFolder{
-				Path: filepath.Join(workspace.ReposDir, repoName, workspace.WorktreesDir, wt),
+				Path: path,
 			})
 		}
 	}
