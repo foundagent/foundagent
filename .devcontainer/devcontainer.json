@@ -1,0 +1,39 @@
+{
+	"name": "Foundagent Development Container",
+	"image": "mcr.microsoft.com/devcontainers/go:1-1.25-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"golang.go",
+				"ms-vscode.makefile-tools",
+				"EditorConfig.EditorConfig",
+				"redhat.vscode-yaml",
+				"GitHub.copilot"
+			],
+			"settings": {
+				"go.useLanguageServer": true,
+				"go.lintTool": "golangci-lint",
+				"go.lintFlags": [
+					"--fast"
+				],
+				"go.testFlags": [
+					"-v",
+					"-race"
+				],
+				"editor.formatOnSave": true,
+				"[go]": {
+					"editor.defaultFormatter": "golang.go"
+				}
+			}
+		}
+	},
+	"postCreateCommand": "go mod download && go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+	"remoteUser": "vscode",
+	"remoteEnv": {
+		"GOPROXY": "https://proxy.golang.org,direct"
+	}
+}
