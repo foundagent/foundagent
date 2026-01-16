@@ -129,7 +129,7 @@ A developer realizes they need to add more changes to their last commit across r
 - **Partial commit failure**: One repo fails to commit (e.g., pre-commit hook fails) — report failure, show which repos succeeded
 - **Partial push failure**: Some repos push, some fail — clearly report status for each, suggest resolution for failures
 - **Dirty index vs worktree**: Some changes staged, some not — commit only staged (matching git behavior)
-- **Detached HEAD**: Repo in detached state — raise error E402, allow with `--allow-detached`
+- **Detached HEAD**: Repo in detached state — raise error E502, allow with `--allow-detached`
 - **Pre-commit hooks**: Respect per-repo pre-commit hooks — if one fails, that repo's commit fails
 
 **Deferred to future iteration:**
