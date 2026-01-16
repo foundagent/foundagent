@@ -32,6 +32,17 @@ const (
 	ErrCodeNetworkError         = "E401" // Network operation failed
 	ErrCodeAuthenticationFailed = "E402" // Authentication failed
 
+	// Commit/Push errors (E5xx)
+	ErrCodeEmptyCommitMessage = "E501" // Commit message cannot be empty
+	ErrCodeDetachedHead       = "E502" // Repository in detached HEAD state
+	ErrCodeNothingToCommit    = "E503" // No staged changes to commit
+	ErrCodeNothingToPush      = "E504" // No commits to push
+	ErrCodeCommitFailed       = "E505" // Commit operation failed
+	ErrCodePushFailed         = "E506" // Push operation failed
+	ErrCodeRepoNotFound       = "E507" // Specified repository not found
+	ErrCodeNoUpstream         = "E508" // No upstream branch configured
+	ErrCodeForcePushDenied    = "E509" // Force push denied in JSON mode
+
 	// General errors (E9xx)
 	ErrCodeUnknown = "E999" // Unknown error
 )
