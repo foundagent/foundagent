@@ -175,14 +175,14 @@ Hint: Run 'fa sync --pull' to fetch and merge remote changes, then retry push
 
 | Error | Code | Message | Remediation |
 |-------|------|---------|-------------|
-| No repos | E201 | "No repositories configured" | "Add repos with: fa add <url>" |
-| Repo not found | E202 | "Repository 'foo' not found" | "Check available repos with: fa status" |
-| Nothing to push | - | "Nothing to push" | (informational, not an error) |
-| Not in workspace | E200 | "Not in a Foundagent workspace" | "Run from workspace root or use: fa init" |
-| Remote rejected | E301 | "Push rejected by remote" | "Pull latest changes first: fa sync --pull" |
-| No upstream | E302 | "No upstream branch configured" | "Set upstream with: git push -u origin <branch>" |
-| Auth failed | E303 | "Authentication failed" | "Check SSH keys or credentials" |
-| Force denied | E304 | "Force push requires confirmation" | "Cannot force push in --json mode" |
+| No repos | E005 | "No repositories configured" | "Add repos with: fa add <url>" |
+| Repo not found | E507 | "Repository 'foo' not found" | "Check available repos with: fa status" |
+| Nothing to push | E504 | "Nothing to push" | (informational, not an error) |
+| Not in workspace | E005 | "Not in a Foundagent workspace" | "Run from workspace root or use: fa init" |
+| Remote rejected | E506 | "Push rejected by remote" | "Pull latest changes first: fa sync --pull" |
+| No upstream | E508 | "No upstream branch configured" | "Set upstream with: git push -u origin <branch>" |
+| Auth failed | E402 | "Authentication failed" | "Check SSH keys or credentials" |
+| Force denied | E509 | "Force push requires confirmation" | "Cannot force push in --json mode" |
 
 ## Relationship to fa sync --push
 

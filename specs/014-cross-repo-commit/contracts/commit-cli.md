@@ -189,9 +189,9 @@ Summary: 2 repos would be committed, 1 skipped
 
 | Error | Code | Message | Remediation |
 |-------|------|---------|-------------|
-| Empty message | E401 | "Commit message cannot be empty" | "Provide a message with -m or let editor open" |
-| No repos | E201 | "No repositories configured" | "Add repos with: fa add <url>" |
-| Repo not found | E202 | "Repository 'foo' not found" | "Check available repos with: fa status" |
-| Nothing to commit | - | "Nothing to commit" | "Stage changes first or use -a flag" |
-| Not in workspace | E200 | "Not in a Foundagent workspace" | "Run from workspace root or use: fa init" |
-| Detached HEAD | E402 | "Repository 'api' in detached HEAD" | "Use --allow-detached to commit anyway" |
+| Empty message | E501 | "Commit message cannot be empty" | "Provide a message with -m or let editor open" |
+| No repos | E005 | "No repositories configured" | "Add repos with: fa add <url>" |
+| Repo not found | E507 | "Repository 'foo' not found" | "Check available repos with: fa status" |
+| Nothing to commit | E503 | "Nothing to commit" | "Stage changes first or use -a flag" |
+| Not in workspace | E005 | "Not in a Foundagent workspace" | "Run from workspace root or use: fa init" |
+| Detached HEAD | E502 | "Repository 'api' in detached HEAD" | "Use --allow-detached to commit anyway" |
