@@ -8,6 +8,24 @@ import (
 	"github.com/foundagent/foundagent/internal/git"
 )
 
+// Sync status constants
+const (
+	SyncStatusSynced      = "synced"
+	SyncStatusUpdated     = "updated"
+	SyncStatusFailed      = "failed"
+	SyncStatusSkipped     = "skipped"
+	SyncStatusPushed      = "pushed"
+	SyncStatusUpToDate    = "up-to-date"
+	SyncStatusNothingPush = "nothing-to-push"
+)
+
+// Status symbol constants for output formatting
+const (
+	StatusSymbolSuccess = "✓"
+	StatusSymbolFailed  = "✗"
+	StatusSymbolSkipped = "⊘"
+)
+
 // SyncResult represents the result of syncing a single repo
 type SyncResult struct {
 	RepoName      string
@@ -59,16 +77,15 @@ func (w *Workspace) SyncAllRepos(verbose bool) ([]SyncResult, error) {
 		if pr.Error != nil {
 			results[i] = SyncResult{
 				RepoName: pr.RepoName,
-				Status:   "failed",
+				Status:   SyncStatusFailed,
 				Error:    pr.Error,
 			}
 		} else {
 			// Check if there are updates available
-			status := "synced"
 			// TODO: Detect actual updates by comparing refs
 			results[i] = SyncResult{
 				RepoName: pr.RepoName,
-				Status:   status,
+				Status:   SyncStatusSynced,
 			}
 		}
 	}
@@ -105,14 +122,14 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 		isDetached, err := git.IsDetachedHead(worktreePath)
 		if err != nil {
 			// Worktree might not exist
-			result.Status = "skipped"
+			result.Status = SyncStatusSkipped
 			result.Error = fmt.Errorf("branch %s not found", branch)
 			results = append(results, result)
 			continue
 		}
 
 		if isDetached {
-			result.Status = "skipped"
+			result.Status = SyncStatusSkipped
 			result.Error = fmt.Errorf("detached HEAD - cannot pull")
 			results = append(results, result)
 			continue
@@ -122,7 +139,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 		hasChanges, err := git.HasUncommittedChanges(worktreePath)
 		if err != nil {
 			// Worktree might not exist
-			result.Status = "skipped"
+			result.Status = SyncStatusSkipped
 			result.Error = fmt.Errorf("branch %s not found", branch)
 			results = append(results, result)
 			continue
@@ -132,14 +149,14 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 			if stash {
 				// Stash changes
 				if err := git.Stash(worktreePath); err != nil {
-					result.Status = "failed"
+					result.Status = SyncStatusFailed
 					result.Error = fmt.Errorf("failed to stash: %w", err)
 					results = append(results, result)
 					continue
 				}
 			} else {
 				// Skip dirty worktree
-				result.Status = "skipped"
+				result.Status = SyncStatusSkipped
 				result.Error = fmt.Errorf("uncommitted changes")
 				results = append(results, result)
 				continue
@@ -152,7 +169,7 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 		// Pop stash if we stashed
 		if stash && hasChanges {
 			if popErr := git.StashPop(worktreePath); popErr != nil {
-				result.Status = "failed"
+				result.Status = SyncStatusFailed
 				result.Error = fmt.Errorf("pull succeeded but failed to pop stash: %w", popErr)
 				results = append(results, result)
 				continue
@@ -160,10 +177,10 @@ func (w *Workspace) PullAllWorktrees(branch string, stash bool, verbose bool) ([
 		}
 
 		if pullErr != nil {
-			result.Status = "failed"
+			result.Status = SyncStatusFailed
 			result.Error = pullErr
 		} else {
-			result.Status = "updated"
+			result.Status = SyncStatusUpdated
 		}
 
 		results = append(results, result)
@@ -220,12 +237,12 @@ func (w *Workspace) PushAllRepos(verbose bool) ([]SyncResult, error) {
 		}
 
 		if pushErr != nil {
-			result.Status = "failed"
+			result.Status = SyncStatusFailed
 			result.Error = pushErr
 		} else if pushed {
-			result.Status = "pushed"
+			result.Status = SyncStatusPushed
 		} else {
-			result.Status = "nothing-to-push"
+			result.Status = SyncStatusNothingPush
 		}
 
 		results = append(results, result)
@@ -242,15 +259,15 @@ func CalculateSummary(results []SyncResult) SyncSummary {
 
 	for _, r := range results {
 		switch r.Status {
-		case "synced", "up-to-date":
+		case SyncStatusSynced, SyncStatusUpToDate:
 			summary.Synced++
-		case "updated":
+		case SyncStatusUpdated:
 			summary.Updated++
-		case "failed":
+		case SyncStatusFailed:
 			summary.Failed++
-		case "skipped":
+		case SyncStatusSkipped:
 			summary.Skipped++
-		case "pushed":
+		case SyncStatusPushed:
 			summary.Pushed++
 		}
 	}
@@ -263,11 +280,11 @@ func FormatSyncResults(results []SyncResult, operation string) string {
 	var output strings.Builder
 
 	for _, r := range results {
-		status := "✓"
-		if r.Status == "failed" {
-			status = "✗"
-		} else if r.Status == "skipped" {
-			status = "⊘"
+		status := StatusSymbolSuccess
+		if r.Status == SyncStatusFailed {
+			status = StatusSymbolFailed
+		} else if r.Status == SyncStatusSkipped {
+			status = StatusSymbolSkipped
 		}
 
 		output.WriteString(fmt.Sprintf("%s %s: %s", status, r.RepoName, r.Status))
